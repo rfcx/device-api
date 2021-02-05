@@ -1,0 +1,4 @@
+dist
+node_modules
+.eslintcache
+jest_html_reporters.html
