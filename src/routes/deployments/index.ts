@@ -7,12 +7,14 @@ import { jwtCheck } from '../../utils/auth'
 const router = express.Router()
 
 router.get('/', jwtCheck, (req: any, res: any) => {
+    const fullUid = req.user.sub
+    const uid = fullUid.substring(fullUid.lastIndexOf('|') + 1, fullUid.length)
     const option = {
         isActive: req.query.is_active || true,
         limit: req.query.limit || 100,
         offset: req.query.offset || 0
     }
-    deploymentsService.getDeployments(req.user.sub, option).then(data => {
+    deploymentsService.getDeployments(uid, option).then(data => {
         res.send(data)
     }).catch(err => {
         res.status(400).send(err)
@@ -23,35 +25,36 @@ router.post('/', jwtCheck, async (req: any, res: any) => {
     const deployment = req.body as Deployment
     const stream = deployment.stream
     const project = stream.project as Project || null
-    let projectId = project?.coreId || null
-    let streamId = stream?.coreId || null
-    // new stream
-    if(!streamId) {
-        // new project
-        if (project && !projectId) {
-            projectId = await api.createProjectToCore(req.headers.authorization, project)
-            project.coreId = projectId
-            await projectsService.createProject(req.user.sub, project, projectId)
-
-            streamId = await api.createStreamToCore(req.headers.authorization, stream, projectId)
-            stream.coreId = streamId
-            await streamsService.createStream(req.user.sub, stream, streamId)
-        // exist project
-        } else {
-            streamId = await api.createStreamToCore(req.headers.authorization, stream, projectId)
-            stream.coreId = streamId
-            await streamsService.createStream(req.user.sub, stream, streamId)
+    const fullUid = req.user.sub
+    const uid = fullUid.substring(fullUid.lastIndexOf('|') + 1, fullUid.length)
+    let projectId = project?.id || null
+    let streamId = stream?.id || null
+    try{
+        // new stream
+        if(!streamId) {
+            // new project
+            if (project && !projectId) {
+                projectId = await api.createProjectToCore(req.headers.authorization, project)
+                project.id = projectId
+                await projectsService.createProject(uid, project)
+        
+                streamId = await api.createStreamToCore(req.headers.authorization, stream, projectId)
+                stream.id = streamId
+                await streamsService.createStream(uid, stream, projectId)
+            // exist project
+            } else {
+                streamId = await api.createStreamToCore(req.headers.authorization, stream, projectId)
+                stream.id = streamId
+                await streamsService.createStream(uid, stream, projectId)
+            }
         }
+        deployment.stream = stream
+        deployment.stream.project = project
+        const data = await deploymentsService.createDeployments(uid, deployment)
+        res.send(data.dataValues.id)
+    } catch(error) {
+        res.status(400).send(error)
     }
-
-    deployment.stream = stream
-    deployment.stream.project = project
-    
-    deploymentsService.createDeployments(req.user.sub, deployment).then(data => {
-        res.send(data)
-    }).catch(err => {
-        res.status(400).send(err)
-    })
 })
 
 router.patch('/:id', jwtCheck, async (req: any, res: any) => {

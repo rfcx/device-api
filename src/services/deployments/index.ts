@@ -1,34 +1,41 @@
 const models = require('../../../modelsTimescale')
 import { Deployment, Project, Stream } from '../../types'
+import { randomString } from '../../utils/misc/hash'
 
 export const getDeployments = async (uid: string, opt: {isActive: boolean, limit: number, offset: number} ) => {
-    // const query = database.collection('users').doc(uid).collection('deployments').where("isActive", "==", opt.isActive).orderBy("updatedAt", "desc")
-    // let allDeployment: FirebaseFirestore.DocumentData[] = [] 
-    // try {
-    //     const data = await query.get()
-    //     data.docs.forEach(dp => {
-    //         allDeployment.push(dp.data())
-    //     })
-    //     return allDeployment
-    // } catch(error) {
-    //     return Promise.reject(error)
-    // }
+    return await models.Deployment.findAll({
+        where: {
+            created_by_id: uid,
+            is_active: opt.isActive
+        },
+        limit: opt.limit,
+        offset: opt.offset
+     })
   }
 
 export const createDeployments = async (uid: string, deployment: Deployment) => {
-    // if (!deployment.stream.coreId) { return Promise.reject('Failed on create Deployment') }
-    // await setActiveStatusToFalse(uid, deployment.stream.coreId)
-    // const query = database.collection('users').doc(uid).collection('deployments')
-    // try {
-    //     deployment.isActive = true
-    //     const result = await query.add(deployment)
-    //     if(result) {
-    //         return result.id
-    //     }
-    //     return Promise.reject('Failed on create Deployment')
-    // } catch(error) {
-    //     return Promise.reject(error)
-    // }
+    if (!deployment.stream.id) { return Promise.reject('Failed on create Deployment') }
+    const deploymentData = {
+        id: randomString(12),
+        created_at: deployment.createdAt,
+        deployed_at: deployment.updatedAt,
+        updated_at: deployment.updatedAt,
+        deleted_at: deployment.deletedAt || null,
+        deployment_key: deployment.deploymentKey,
+        device: deployment.device,
+        is_active: true,
+        created_by_id: uid,
+        stream_id: deployment.stream.id
+    }
+    try {
+        const result = await models.Deployment.create(deploymentData)
+        if(result) {
+            return result
+        }
+        return Promise.reject('Failed on create stream')
+    } catch(error) {
+        return Promise.reject(error)
+    }
 }
 
 export const updateDeployment = async (uid: string, docId: string, stream?: Stream | null, project?: Project) => {

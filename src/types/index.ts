@@ -11,7 +11,7 @@ export interface Deployment {
 }
 
 export interface Stream {
-  coreId?: string | null
+  id?: string | null
   name: string
   latitude: number
   longitude: number
@@ -20,7 +20,7 @@ export interface Stream {
 }
 
 export interface Project {
-  coreId?: string | null
+  id?: string | null
   name: string
   color: String
 }
