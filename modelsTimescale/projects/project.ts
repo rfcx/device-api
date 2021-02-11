@@ -24,11 +24,16 @@ module.exports = function (sequelize: any, DataTypes: any) {
 
   Project.associate = function(models: any) {
     Project.belongsTo(models.User, { as: 'created_by', foreignKey: 'created_by_id' })
+    Project.hasMany(models.Stream, { as: 'streams', foreignKey: 'project_id' })
   }
  
   Project.attributes = {
     full: ['id', 'name', 'color', 'created_by_id'],
-    lite: ['name', 'color']
+    lite: ['id', 'name', 'color']
+  }
+
+  Project.include = function (as = 'project', attributes = Project.attributes.lite, required = true) {
+    return { model: Project, as, attributes, required }
   }
 
   return Project

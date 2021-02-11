@@ -2,14 +2,36 @@ const models = require('../../../modelsTimescale')
 import { Deployment, Project, Stream } from '../../types'
 import { randomString } from '../../utils/misc/hash'
 
-export const getDeployments = async (uid: string, opt: {isActive: boolean, limit: number, offset: number} ) => {
+const streamBaseInclude = [
+    {
+      model: models.User,
+      as: 'created_by',
+      attributes: models.User.attributes.full
+    },
+    {
+      model: models.Stream,
+      as: 'stream',
+      attributes: models.Stream.attributes.lite,
+      include: {
+          model: models.Project,
+          as: 'project',
+          attributes: models.Project.attributes.lite,
+      }
+    }
+  ]
+
+export const getDeployments = async (uid: string, opt: {isActive: boolean, limit: number, offset: number, joinRelations: boolean} ) => {
     return await models.Deployment.findAll({
         where: {
             created_by_id: uid,
             is_active: opt.isActive
         },
         limit: opt.limit,
-        offset: opt.offset
+        offset: opt.offset,
+        attributes: {
+            exclude: ['is_active', 'created_by_id', 'stream_id']
+        },
+        include: opt.joinRelations ? streamBaseInclude : [],
      })
   }
 

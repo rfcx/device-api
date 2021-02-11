@@ -56,5 +56,9 @@ module.exports = function (sequelize: any, DataTypes: any) {
     lite: ['deployment_key', 'device', 'is_active']
   }
 
+  Deployment.include = function (as = 'deployment', attributes = Deployment.attributes.lite, required = true) {
+    return { model: Deployment, as, attributes, required }
+  }
+
   return Deployment
 }

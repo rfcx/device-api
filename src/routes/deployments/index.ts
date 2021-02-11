@@ -12,7 +12,8 @@ router.get('/', jwtCheck, (req: any, res: any) => {
     const option = {
         isActive: req.query.is_active || true,
         limit: req.query.limit || 100,
-        offset: req.query.offset || 0
+        offset: req.query.offset || 0,
+        joinRelations: true
     }
     deploymentsService.getDeployments(uid, option).then(data => {
         res.send(data)

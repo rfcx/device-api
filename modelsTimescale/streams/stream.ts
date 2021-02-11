@@ -37,11 +37,16 @@ module.exports = function (sequelize: any, DataTypes: any) {
   Stream.associate = function(models: any) {
     Stream.belongsTo(models.User, { as: 'created_by', foreignKey: 'created_by_id' })
     Stream.belongsTo(models.Project, { as: 'project', foreignKey: 'project_id' })
+    Stream.hasMany(models.Deployment, { as: 'deployments', foreignKey: 'stream_id' })
   }
  
   Stream.attributes = {
     full: ['id', 'name', 'latitude', 'longitude', 'altitude', 'created_by_id', 'project_id'],
-    lite: ['name', 'latitude', 'longitude', 'altitude']
+    lite: ['id', 'name', 'latitude', 'longitude', 'altitude']
+  }
+
+  Stream.include = function (as = 'stream', attributes = Stream.attributes.lite, required = true) {
+    return { model: Stream, as, attributes, required }
   }
 
   return Stream

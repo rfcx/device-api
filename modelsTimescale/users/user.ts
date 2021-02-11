@@ -23,5 +23,9 @@ module.exports = function (sequelize: any, DataTypes : any) {
     lite: ['name', 'email']
   }
 
+  User.include = function (as = 'user', attributes = User.attributes.lite, required = true) {
+    return { model: User, as, attributes, required }
+  }
+
   return User
 }
