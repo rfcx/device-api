@@ -65,7 +65,7 @@ export const updateStreamToCore = async (token: string | null, stream: Stream) =
     longitude: stream.longitude,
     altitude: stream.altitude
   }
-  return instance.patch(`/streams/${stream.coreId}`,
+  return instance.patch(`/streams/${stream.id}`,
     params,
     { headers: { 'Authorization': token } })
     .then(response => {
@@ -81,7 +81,7 @@ export const updateProjectToCore = async (token: string | null, project: Project
   const params = {
     name: project.name
   }
-  return instance.patch(`/projects/${project.coreId}`,
+  return instance.patch(`/projects/${project.id}`,
     params,
     { headers: { 'Authorization': token } })
     .then(response => {

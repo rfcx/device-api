@@ -64,20 +64,6 @@ export const createDeployments = async (uid: string, deployment: Deployment) => 
     }
 }
 
-export const updateDeployment = async (uid: string, docId: string, stream?: Stream | null, project?: Project) => {
-    // const query = database.collection('users').doc(uid).collection('deployments').doc(docId)
-    // try {
-    //     const isExisting = (await query.get()).exists
-    //     if(!isExisting) { return Promise.reject('Deployment id not found') }
-    //     if (stream) { await query.update({stream: stream, updatedAt: new Date()}) }
-    //     if (project) { await query.update({"stream.project": project, updatedAt: new Date()}) }
-
-    //     return Promise.resolve('Success')
-    // } catch(error) {
-    //     return Promise.reject(error)
-    // }
-}
-
 export const deleteDeployment = async (uid: string, docId: string) => {
     // const query = database.collection('users').doc(uid).collection('deployments').doc(docId)
     // try {

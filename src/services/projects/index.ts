@@ -21,21 +21,14 @@ export const createProject = async (uid: string, project: Project) => {
 }
 
 export const updateProject = async (uid: string, project: Project) => {
-    // if (!project.coreId) { return Promise.reject('Failed on update project') }
-    // const projectQuery = database.collection('users').doc(uid).collection('projects').doc(project.coreId)
-    // try {
-    //     const projectResult = await projectQuery.update(project)
-    //     if(projectResult) {
-    //         const streamQuery = database.collection('users').doc(uid).collection('streams').where("project.coreId", "==", project.coreId)
-    //         const streamResult = await streamQuery.get()
-    //         await Promise.all(streamResult.docs.map(async (doc) => {
-    //             await doc.ref.update({ project: project })
-    //         }))
-
-    //         return Promise.resolve('Success')
-    //     }
-    //     return Promise.reject('Failed on update project')
-    // } catch(error) {
-    //     return Promise.reject(error)
-    // }
+    if (!project.id) { return Promise.reject('Failed on update project') }
+    try {
+        const result = await models.Project.update(project, { where: { id: project.id, created_by_id: uid }})
+        if(result) {
+            return Promise.resolve('Success')
+        }
+        return Promise.reject('Failed on create project')
+    } catch(error) {
+        return Promise.reject(error)
+    }
 }

@@ -59,13 +59,14 @@ router.post('/', jwtCheck, async (req: any, res: any) => {
 })
 
 router.patch('/:id', jwtCheck, async (req: any, res: any) => {
+    const fullUid = req.user.sub
+    const uid = fullUid.substring(fullUid.lastIndexOf('|') + 1, fullUid.length)
     const stream = req.body.stream as Stream || null
     const project = req.body.project as Project || null
     if(project) {
         try {
             await api.updateProjectToCore(req.headers.authorization, project)
-            await projectsService.updateProject(req.user.sub, project)
-            await deploymentsService.updateDeployment(req.user.sub, req.params.id, null, project)
+            await projectsService.updateProject(uid, project)
         } catch (err) {
             return res.status(400).send(err)
         }
@@ -74,14 +75,13 @@ router.patch('/:id', jwtCheck, async (req: any, res: any) => {
     if(stream) {
         try {
             await api.updateStreamToCore(req.headers.authorization, stream)
-            await streamsService.updateStream(req.user.sub, stream)
-            await deploymentsService.updateDeployment(req.user.sub, req.params.id, stream)
+            await streamsService.updateStream(uid, stream)
         } catch (err) {
             return res.status(400).send(err)
         }
     }
 
-    return res.send()
+    return res.send("Update Success")
 })
 
 router.delete('/:id', jwtCheck, (req: any, res: any) => {

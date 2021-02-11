@@ -24,15 +24,14 @@ export const createStream = async (uid: string, stream: Stream, projectId: strin
 }
 
 export const updateStream = async (uid: string, stream: Stream) => {
-    // if (!stream.coreId) { return Promise.reject('Failed on update stream') }
-    // const query = database.collection('users').doc(uid).collection('streams').doc(stream.coreId)
-    // try {
-    //     const result = await query.update(stream)
-    //     if(result) {
-    //         return Promise.resolve('Success')
-    //     }
-    //     return Promise.reject('Failed on update stream')
-    // } catch(error) {
-    //     return Promise.reject(error)
-    // }
+    if (!stream.id) { return Promise.reject('Failed on update stream') }
+    try {
+        const result = await models.Stream.update(stream, { where: { id: stream.id, created_by_id: uid }})
+        if(result) {
+            return Promise.resolve('Success')
+        }
+        return Promise.reject('Failed on create stream')
+    } catch(error) {
+        return Promise.reject(error)
+    }
 }
