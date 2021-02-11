@@ -31,7 +31,6 @@ const options = {
     }
   }
 }
-console.log(config.POSTGRES_USER)
 const sequelize = new Sequelize(config.POSTGRES_DB, config.POSTGRES_USER, config.POSTGRES_PASSWORD, options)
 sequelize.authenticate() // check connection
 
