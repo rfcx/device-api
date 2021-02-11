@@ -1,4 +1,4 @@
-module.exports = function (sequelize, DataTypes) {
+module.exports = function (sequelize: any, DataTypes: any) {
   const Project = sequelize.define('Project', {
     id: {
       type: DataTypes.STRING,
@@ -22,8 +22,8 @@ module.exports = function (sequelize, DataTypes) {
     timestamps: false
   })
 
-  Project.associate = function(models) {
-    Project.belongTo(models.User, { as: 'created_by', foreignKey: 'created_by_id' })
+  Project.associate = function(models: any) {
+    Project.belongsTo(models.User, { as: 'created_by', foreignKey: 'created_by_id' })
   }
  
   Project.attributes = {

@@ -1,3 +1,4 @@
+const models = require('../../../modelsTimescale')
 import { Deployment, Project, Stream } from '../../types'
 
 export const getDeployments = async (uid: string, opt: {isActive: boolean, limit: number, offset: number} ) => {

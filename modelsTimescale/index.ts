@@ -1,13 +1,14 @@
 const Sequelize = require('sequelize')
-const utils = require('../utils/sequelize')
+const utils = require('../src/utils/sequelize')
+import config from '../src/config'
 
 const options = {
   dialect: 'postgres',
   dialectOptions: {
-    ssl: process.env.POSTGRES_SSL_ENABLED === 'true'
+    ssl: config.POSTGRES_SSL_ENABLED === 'true'
   },
-  host: process.env.POSTGRES_HOSTNAME,
-  port: process.env.POSTGRES_PORT,
+  host: config.POSTGRES_HOSTNAME,
+  port: config.POSTGRES_PORT,
   logging: false,
   define: {
     underscored: true,
@@ -30,15 +31,15 @@ const options = {
     }
   }
 }
-
-const sequelize = new Sequelize(process.env.POSTGRES_DB, process.env.POSTGRES_USER, process.env.POSTGRES_PASSWORD, options)
+console.log(config.POSTGRES_USER)
+const sequelize = new Sequelize(config.POSTGRES_DB, config.POSTGRES_USER, config.POSTGRES_PASSWORD, options)
 sequelize.authenticate() // check connection
 
 const models = {
   User: require('./users/user')(sequelize, Sequelize),
   Project: require('./projects/project')(sequelize, Sequelize),
   Stream: require('./streams/stream')(sequelize, Sequelize),
-  Deployment: require('./deployments/deployments')(sequelize, Sequelize)
+  Deployment: require('./deployments/deployment')(sequelize, Sequelize)
 }
 
 // Create associations

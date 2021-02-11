@@ -1,4 +1,4 @@
-module.exports = function (sequelize, DataTypes) {
+module.exports = function (sequelize: any, DataTypes: any) {
   const Stream = sequelize.define('Stream', {
     id: {
       type: DataTypes.STRING,
@@ -34,9 +34,9 @@ module.exports = function (sequelize, DataTypes) {
     timestamps: false
   })
 
-  Stream.associate = function(models) {
-    Stream.belongTo(models.User, { as: 'created_by', foreignKey: 'created_by_id' })
-    Stream.belongTo(models.Project, { as: 'project', foreignKey: 'project_id' })
+  Stream.associate = function(models: any) {
+    Stream.belongsTo(models.User, { as: 'created_by', foreignKey: 'created_by_id' })
+    Stream.belongsTo(models.Project, { as: 'project', foreignKey: 'project_id' })
   }
  
   Stream.attributes = {

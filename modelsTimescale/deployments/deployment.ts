@@ -1,4 +1,4 @@
-module.exports = function (sequelize, DataTypes) {
+module.exports = function (sequelize: any, DataTypes: any) {
   const Deployment = sequelize.define('Deployment', {
     id: {
       type: DataTypes.INTEGER,
@@ -47,9 +47,9 @@ module.exports = function (sequelize, DataTypes) {
     timestamps: false
   })
 
-  Deployment.associate = function(models) {
-    Deployment.belongTo(models.User, { as: 'created_by', foreignKey: 'created_by_id' })
-    Deployment.belongTo(models.Stream, { as: 'srream', foreignKey: 'stream_id' })
+  Deployment.associate = function(models: any) {
+    Deployment.belongsTo(models.User, { as: 'created_by', foreignKey: 'created_by_id' })
+    Deployment.belongsTo(models.Stream, { as: 'srream', foreignKey: 'stream_id' })
   }
  
   Deployment.attributes = {
