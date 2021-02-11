@@ -87,7 +87,6 @@ export const updateProjectToCore = async (token: string | null, project: Project
     .then(response => {
       return response.data
     }).catch(error => {
-      console.log(error)
       return Promise.reject(error)
     })
 }

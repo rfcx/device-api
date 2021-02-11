@@ -64,20 +64,15 @@ export const createDeployments = async (uid: string, deployment: Deployment) => 
     }
 }
 
-export const deleteDeployment = async (uid: string, docId: string) => {
-    // const query = database.collection('users').doc(uid).collection('deployments').doc(docId)
-    // try {
-    //     const isExisting = (await query.get()).exists
-    //     if(!isExisting) { return Promise.reject('Deployment id not found') }
-
-    //     const result = await query.delete()
-    //     if(result) {
-    //         return Promise.resolve('Success')
-    //     }
-    //     return Promise.reject('Failed on delete')
-    // } catch(error) {
-    //     return Promise.reject(error)
-    // }
+export const deleteDeployment = async (uid: string, deploymentId: string) => {
+    try {
+        const result = await models.Deployment.destroy({ where:{ id: deploymentId, created_by_id: uid } })
+        if(result) {
+            return Promise.resolve('Delete Success')
+        }
+    } catch(error) {
+        return Promise.reject(error)
+    }
 }
 
 async function setActiveStatusToFalse(uid: string, streamId: string, transaction: any) {
