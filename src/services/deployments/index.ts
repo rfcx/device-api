@@ -37,24 +37,28 @@ export const getDeployments = async (uid: string, opt: {isActive: boolean, limit
 
 export const createDeployments = async (uid: string, deployment: Deployment) => {
     if (!deployment.stream.id) { return Promise.reject('Failed on create Deployment') }
-    const deploymentData = {
-        id: randomString(12),
-        created_at: deployment.createdAt,
-        deployed_at: deployment.updatedAt,
-        updated_at: deployment.updatedAt,
-        deleted_at: deployment.deletedAt || null,
-        deployment_key: deployment.deploymentKey,
-        device: deployment.device,
-        is_active: true,
-        created_by_id: uid,
-        stream_id: deployment.stream.id
-    }
     try {
-        const result = await models.Deployment.create(deploymentData)
-        if(result) {
-            return result
-        }
-        return Promise.reject('Failed on create stream')
+        return models.sequelize.transaction( async(t) => {
+            // set active existing deployment that same stream to false
+            await setActiveStatusToFalse(uid, deployment.stream.id, t)
+            const deploymentData = {
+                id: randomString(12),
+                created_at: deployment.createdAt,
+                deployed_at: deployment.updatedAt,
+                updated_at: deployment.updatedAt,
+                deleted_at: deployment.deletedAt || null,
+                deployment_key: deployment.deploymentKey,
+                device: deployment.device,
+                is_active: true,
+                created_by_id: uid,
+                stream_id: deployment.stream.id
+            }
+            const result = await models.Deployment.create(deploymentData, { transaction: t })
+            if(result) {
+                return result
+            }
+            return Promise.reject('Failed on create stream')
+        })
     } catch(error) {
         return Promise.reject(error)
     }
@@ -90,10 +94,9 @@ export const deleteDeployment = async (uid: string, docId: string) => {
     // }
 }
 
-async function setActiveStatusToFalse(uid: string, streamId: string) {
-    // const query = database.collection('users').doc(uid).collection('deployments').where("isActive", "==", true).where("stream.id", "==", streamId)
-    // const result = await query.get()
-    // await Promise.all(result.docs.map(async (doc) => {
-    //     await doc.ref.update({ isActive: false })
-    // }))
+async function setActiveStatusToFalse(uid: string, streamId: string, transaction: any) {
+    const result = await models.Deployment.findAll( { where: { created_by_id: uid, stream_id: streamId } }, { transaction: transaction })
+    await Promise.all(result.map(async (dp: any) => {
+        await dp.update({ is_active: false }, { transaction: transaction })
+    }))
 }
