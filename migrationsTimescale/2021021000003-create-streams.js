@@ -3,9 +3,9 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('streams', {
       id: {
-        type: Sequelize.STRING,
-        primaryKey: true,
-        allowNull: false
+        type: Sequelize.STRING(12),
+        allowNull: false,
+        primaryKey: true
       },
       name: {
         type: Sequelize.STRING,
@@ -15,11 +15,11 @@ module.exports = {
         type: Sequelize.FLOAT,
         allowNull: false
       },
-      longiitude: {
+      longitude: {
         type: Sequelize.FLOAT,
         allowNull: false
       },
-      altiitude: {
+      altitude: {
         type: Sequelize.FLOAT,
         allowNull: false
       },

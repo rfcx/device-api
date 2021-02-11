@@ -3,8 +3,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('deployments', {
       id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
+        type: Sequelize.STRING(12),
         allowNull: false,
         primaryKey: true
       },
@@ -25,7 +24,7 @@ module.exports = {
         allowNull: true
       },
       deployment_key: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
         allowNull: false
       },
       device: {

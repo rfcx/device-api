@@ -1,9 +1,9 @@
 module.exports = function (sequelize: any, DataTypes: any) {
   const Stream = sequelize.define('Stream', {
     id: {
-      type: DataTypes.STRING,
-      primaryKey: true,
-      allowNull: false
+      type: DataTypes.STRING(12),
+      allowNull: false,
+      primaryKey: true
     },
     name: {
       type: DataTypes.STRING,
@@ -13,11 +13,11 @@ module.exports = function (sequelize: any, DataTypes: any) {
       type: DataTypes.FLOAT,
       allowNull: false
     },
-    longiitude: {
+    longitude: {
       type: DataTypes.FLOAT,
       allowNull: false
     },
-    altiitude: {
+    altitude: {
       type: DataTypes.FLOAT,
       allowNull: false
     },

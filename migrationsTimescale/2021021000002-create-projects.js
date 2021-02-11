@@ -3,9 +3,9 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('projects', {
       id: {
-        type: Sequelize.STRING,
-        primaryKey: true,
-        allowNull: false
+        type: Sequelize.STRING(12),
+        allowNull: false,
+        primaryKey: true
       },
       name: {
         type: Sequelize.STRING,

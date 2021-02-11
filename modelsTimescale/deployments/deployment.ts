@@ -1,8 +1,7 @@
 module.exports = function (sequelize: any, DataTypes: any) {
   const Deployment = sequelize.define('Deployment', {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.STRING(12),
       allowNull: false,
       primaryKey: true
     },
@@ -23,7 +22,7 @@ module.exports = function (sequelize: any, DataTypes: any) {
       allowNull: true
     },
     deployment_key: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: false
     },
     device: {
@@ -49,7 +48,7 @@ module.exports = function (sequelize: any, DataTypes: any) {
 
   Deployment.associate = function(models: any) {
     Deployment.belongsTo(models.User, { as: 'created_by', foreignKey: 'created_by_id' })
-    Deployment.belongsTo(models.Stream, { as: 'srream', foreignKey: 'stream_id' })
+    Deployment.belongsTo(models.Stream, { as: 'stream', foreignKey: 'stream_id' })
   }
  
   Deployment.attributes = {
