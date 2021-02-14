@@ -16,7 +16,7 @@ export interface Stream {
   latitude: number
   longitude: number
   altitude: number
-  project?: Project
+  project?: Project | null
 }
 
 export interface Project {

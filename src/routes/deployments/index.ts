@@ -1,31 +1,33 @@
 import express from 'express'
+import { any } from 'sequelize/types/lib/operators'
 import { deploymentsService } from '../../services'
 import { Deployment, Stream, Project } from '../../types'
-import { api } from '../../utils'
-import { jwtCheck } from '../../utils/auth'
-import { getUserUid } from '../../utils/misc/user'
+import { api, authUtils, userUtils, deploymentUtils } from '../../utils'
 
 const router = express.Router()
 
-router.get('/', jwtCheck, (req: any, res: any) => {
-  const uid = getUserUid(req.user.sub)
+router.get('/', authUtils.jwtCheck, async (req: any, res: any) => {
+  const uid = userUtils.getUserUid(req.user.sub)
   const option = {
     isActive: req.query.is_active ?? true,
     limit: req.query.limit ?? 100,
     offset: req.query.offset ?? 0
   }
-  deploymentsService.getDeployments(uid, option).then(data => {
-    res.send(data)
-  }).catch(error => {
+  try {
+    const streams = await api.getStreamsFromCore(req.headers.authorization)
+    const deployments = await deploymentsService.getDeployments(uid, option)
+    const deploymentsForCompanion = await deploymentUtils.mapStreamsAndDeployments(streams.data, deployments)
+    res.send(deploymentsForCompanion)
+  } catch(error) {
     res.status(400).send(error.message ?? error)
-  })
+  }
 })
 
-router.post('/', jwtCheck, async (req: any, res: any) => {
+router.post('/', authUtils.jwtCheck, async (req: any, res: any) => {
   const deployment = req.body as Deployment
   const stream = deployment.stream
   const project = stream.project as Project ?? null
-  const uid = getUserUid(req.user.sub)
+  const uid = userUtils.getUserUid(req.user.sub)
   let projectId = project?.id ?? null
   let streamId = stream?.id ?? null
   try {
@@ -53,7 +55,7 @@ router.post('/', jwtCheck, async (req: any, res: any) => {
   }
 })
 
-router.patch('/:id', jwtCheck, async (req: any, res: any) => {
+router.patch('/:id', authUtils.jwtCheck, async (req: any, res: any) => {
   const stream = req.body.stream as Stream ?? null
   const project = req.body.project as Project ?? null
   if (project != null) {
@@ -75,8 +77,8 @@ router.patch('/:id', jwtCheck, async (req: any, res: any) => {
   return res.send('Update Success')
 })
 
-router.delete('/:id', jwtCheck, (req: any, res: any) => {
-  const uid = getUserUid(req.user.sub)
+router.delete('/:id', authUtils.jwtCheck, (req: any, res: any) => {
+  const uid = userUtils.getUserUid(req.user.sub)
   deploymentsService.deleteDeployment(uid, req.params.id).then(data => {
     res.send(data)
   }).catch(error => {

@@ -4,7 +4,7 @@ import { randomString } from '../../utils/misc/hash'
 import { Transaction } from 'sequelize'
 const models = require('../../../models')
 
-export const getDeployments = async (uid: string, opt: { isActive: boolean, limit: number, offset: number }): Promise<any> => {
+export const getDeployments = async (uid: string, opt: { isActive: boolean, limit: number, offset: number }): Promise<any[]> => {
   try {
     const result = await models.Deployment.findAll({
       where: {
@@ -32,7 +32,7 @@ export const createDeployments = async (uid: string, deployment: Deployment): Pr
   try {
     return models.sequelize.transaction(async (t: Transaction) => {
       // set active existing deployment that same stream to false
-      await setActiveStatusToFalse(uid, deployment.stream.id, t)
+      await setActiveStatusToFalse(uid, deployment.stream.id ?? '', t)
       const deploymentData = {
         id: randomString(12),
         created_at: deployment.createdAt,
