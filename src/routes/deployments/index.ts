@@ -1,5 +1,4 @@
 import express from 'express'
-import { any } from 'sequelize/types/lib/operators'
 import { deploymentsService } from '../../services'
 import { Deployment, Stream, Project } from '../../types'
 import { api, authUtils, userUtils, deploymentUtils } from '../../utils'
@@ -18,7 +17,7 @@ router.get('/', authUtils.jwtCheck, async (req: any, res: any) => {
     const deployments = await deploymentsService.getDeployments(uid, option)
     const deploymentsForCompanion = await deploymentUtils.mapStreamsAndDeployments(streams.data, deployments)
     res.send(deploymentsForCompanion)
-  } catch(error) {
+  } catch (error) {
     res.status(400).send(error.message ?? error)
   }
 })

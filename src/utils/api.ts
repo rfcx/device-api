@@ -96,9 +96,11 @@ export const getStreamsFromCore = async (token: string): Promise<AxiosResponse<a
   const params = {
     created_by: 'me'
   }
-  return await instance.get(`/streams`,
-    { headers: { Authorization: token },
-      params: params })
+  return await instance.get('/streams',
+    {
+      headers: { Authorization: token },
+      params: params
+    })
     .then(response => {
       return response
     }).catch(async error => {
