@@ -45,19 +45,10 @@ module.exports = function (sequelize: any, DataTypes: any) {
   {
     timestamps: false
   })
-
-  Deployment.associate = function(models: any) {
-    Deployment.belongsTo(models.User, { as: 'created_by', foreignKey: 'created_by_id' })
-    Deployment.belongsTo(models.Stream, { as: 'stream', foreignKey: 'stream_id' })
-  }
  
   Deployment.attributes = {
     full: ['id', 'created_at', 'deployed_at', 'updated_at', 'deleted_at', 'deployment_key', 'device', 'is_active', 'created_by_id', 'stream_id'],
     lite: ['deployment_key', 'device', 'is_active']
-  }
-
-  Deployment.include = function (as = 'deployment', attributes = Deployment.attributes.lite, required = true) {
-    return { model: Deployment, as, attributes, required }
   }
 
   return Deployment

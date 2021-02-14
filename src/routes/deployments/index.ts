@@ -1,5 +1,5 @@
 import express from 'express'
-import { deploymentsService, projectsService, streamsService } from '../../services'
+import { deploymentsService } from '../../services'
 import { Deployment, Stream, Project } from '../../types'
 import { api } from '../../utils'
 import { jwtCheck } from '../../utils/auth'
@@ -37,16 +37,13 @@ router.post('/', jwtCheck, async (req: any, res: any) => {
             if (project && !projectId) {
                 projectId = await api.createProjectToCore(req.headers.authorization, project)
                 project.id = projectId
-                await projectsService.createProject(uid, project)
         
                 streamId = await api.createStreamToCore(req.headers.authorization, stream, projectId)
                 stream.id = streamId
-                await streamsService.createStream(uid, stream, projectId)
             // exist project
             } else {
                 streamId = await api.createStreamToCore(req.headers.authorization, stream, projectId)
                 stream.id = streamId
-                await streamsService.createStream(uid, stream, projectId)
             }
         }
         deployment.stream = stream
@@ -59,14 +56,11 @@ router.post('/', jwtCheck, async (req: any, res: any) => {
 })
 
 router.patch('/:id', jwtCheck, async (req: any, res: any) => {
-    const fullUid = req.user.sub
-    const uid = fullUid.substring(fullUid.lastIndexOf('|') + 1, fullUid.length)
     const stream = req.body.stream as Stream || null
     const project = req.body.project as Project || null
     if(project) {
         try {
             await api.updateProjectToCore(req.headers.authorization, project)
-            await projectsService.updateProject(uid, project)
         } catch (error) {
             return res.status(400).send(error.message || error)
         }
@@ -75,7 +69,6 @@ router.patch('/:id', jwtCheck, async (req: any, res: any) => {
     if(stream) {
         try {
             await api.updateStreamToCore(req.headers.authorization, stream)
-            await streamsService.updateStream(uid, stream)
         } catch (error) {
             return res.status(400).send(error.message || error)
         }

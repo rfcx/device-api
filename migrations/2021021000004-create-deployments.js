@@ -37,23 +37,11 @@ module.exports = {
       },
       created_by_id: {
         type: Sequelize.STRING,
-        allowNull: false,
-        references: {
-          model: {
-            tableName: 'users'
-          },
-          key: 'id'
-        }
+        allowNull: false
       },
       stream_id: {
         type: Sequelize.STRING,
-        allowNull: false,
-        references: {
-          model: {
-            tableName: 'streams'
-          },
-          key: 'id'
-        }
+        allowNull: false
       }
     })
   },

@@ -35,9 +35,6 @@ const sequelize = new Sequelize(config.POSTGRES_DB, config.POSTGRES_USER, config
 sequelize.authenticate() // check connection
 
 const models = {
-  User: require('./users/user')(sequelize, Sequelize),
-  Project: require('./projects/project')(sequelize, Sequelize),
-  Stream: require('./streams/stream')(sequelize, Sequelize),
   Deployment: require('./deployments/deployment')(sequelize, Sequelize)
 }
 
