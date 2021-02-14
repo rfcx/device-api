@@ -1,6 +1,6 @@
 import config from '../config'
 import { Project, Stream } from '../types'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
 // set up global axios instance
 
@@ -11,82 +11,82 @@ const instance = axios.create({
 })
 instance.interceptors.request.use(function (conf) {
   return conf
-}, function (error) {
-  return Promise.reject(error)
+}, async function (error) {
+  return await Promise.reject(error)
 })
 
 instance.interceptors.response.use(function (response) {
   return response
-}, function (error) {
-  return Promise.reject(error)
+}, async function (error) {
+  return await Promise.reject(error)
 })
 
-export const createStreamToCore = async (token: string | null, stream: Stream, projectId: string | null) => {
-  if (!token) { return Promise.reject(new Error('Unauthorized')) }
+export const createStreamToCore = async (token: string | null, stream: Stream, projectId: string | null): Promise<AxiosResponse<any>> => {
+  if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
   const params = {
     name: stream.name,
     latitude: stream.latitude,
     longitude: stream.longitude,
     altitude: stream.altitude,
-    project_id: projectId || null
+    project_id: projectId ?? null
   }
-  return instance.post('/streams',
+  return await instance.post('/streams',
     params,
-    { headers: { 'Authorization': token } })
+    { headers: { Authorization: token } })
     .then(response => {
       return response.data.id
-    }).catch(error => {
+    }).catch(async error => {
       console.log(error)
-      return Promise.reject(error)
+      return await Promise.reject(error)
     })
 }
 
-export const createProjectToCore = async (token: string | null, project: Project) => {
-  if (!token) { return Promise.reject(new Error('Unauthorized')) }
+export const createProjectToCore = async (token: string | null, project: Project): Promise<AxiosResponse<any>> => {
+  if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
   const params = {
     name: project.name
   }
-  return instance.post('/projects',
+  return await instance.post('/projects',
     params,
-    { headers: { 'Authorization': token } })
+    { headers: { Authorization: token } })
     .then(response => {
       return response.data.id
-    }).catch(error => {
+    }).catch(async error => {
       console.log(error)
-      return Promise.reject(error)
+      return await Promise.reject(error)
     })
 }
 
-export const updateStreamToCore = async (token: string | null, stream: Stream) => {
-  if (!token) { return Promise.reject(new Error('Unauthorized')) }
+export const updateStreamToCore = async (token: string | null, stream: Stream): Promise<AxiosResponse<any>> => {
+  if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
   const params = {
     name: stream.name,
     latitude: stream.latitude,
     longitude: stream.longitude,
     altitude: stream.altitude
   }
-  return instance.patch(`/streams/${stream.id}`,
+  return await instance.patch(`/streams/${stream.id ?? ''}`,
     params,
-    { headers: { 'Authorization': token } })
+    { headers: { Authorization: token } })
     .then(response => {
       return response.data
-    }).catch(error => {
+    }).catch(async error => {
       console.log(error)
-      return Promise.reject(error)
+      return await Promise.reject(error)
     })
 }
 
-export const updateProjectToCore = async (token: string | null, project: Project) => {
-  if (!token) { return Promise.reject(new Error('Unauthorized')) }
+export const updateProjectToCore = async (token: string | null, project: Project): Promise<AxiosResponse<any>> => {
+  if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
   const params = {
     name: project.name
   }
-  return instance.patch(`/projects/${project.id}`,
+  return await instance.patch(`/projects/${project.id ?? ''}`,
     params,
-    { headers: { 'Authorization': token } })
+    { headers: { Authorization: token } })
     .then(response => {
       return response.data
-    }).catch(error => {
-      return Promise.reject(error)
+    }).catch(async error => {
+      return await Promise.reject(error)
     })
 }
