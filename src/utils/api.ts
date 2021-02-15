@@ -5,7 +5,7 @@ import axios, { AxiosResponse } from 'axios'
 // set up global axios instance
 
 const instance = axios.create({
-  baseURL: config.INGEST_URL,
+  baseURL: config.CORE_URL,
   timeout: 4000,
   headers: { 'Content-Type': 'application/json' }
 })
@@ -103,6 +103,23 @@ export const getStreamsFromCore = async (token: string): Promise<AxiosResponse<a
     })
     .then(response => {
       return response
+    }).catch(async error => {
+      return await Promise.reject(error)
+    })
+}
+
+export const getProjectsFromCore = async (token: string): Promise<AxiosResponse<any[]>> => {
+  if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
+  const params = {
+    created_by: 'me'
+  }
+  return await instance.get('/projects',
+    {
+      headers: { Authorization: token },
+      params: params
+    })
+    .then(response => {
+      return response.data
     }).catch(async error => {
       return await Promise.reject(error)
     })
