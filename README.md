@@ -16,7 +16,9 @@ Install dependencies:
 Run locally:
 `yarn serve`
 
---
+---
+
+## Testing
 
 Run lint:
 `yarn lint`
@@ -24,3 +26,8 @@ Run lint:
 Run tests:
 `yarn test`
 
+---
+
+## More information
+
+- [Deployment](./build/README.md)
