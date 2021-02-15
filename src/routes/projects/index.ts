@@ -16,7 +16,6 @@ router.get('/', authUtils.jwtCheck, async (req: any, res: any) => {
 router.post('/', authUtils.jwtCheck, async (req: any, res: any) => {
   const project = req.body as Project
   try {
-    if(project.id != null) { return res.status(400).send('Project is already existed') }
     const projectId = await api.createProjectToCore(req.headers.authorization, project)
     res.send(projectId)
   } catch (error) {
