@@ -5,10 +5,10 @@ import config from '../src/config'
 const options = {
   dialect: 'postgres',
   dialectOptions: {
-    ssl: config.POSTGRES_SSL_ENABLED === 'true'
+    ssl: config.DB_SSL_ENABLED === 'true'
   },
-  host: config.POSTGRES_HOSTNAME,
-  port: config.POSTGRES_PORT,
+  host: config.DB_HOSTNAME,
+  port: config.DB_PORT,
   logging: false,
   define: {
     underscored: true,
@@ -16,9 +16,7 @@ const options = {
     dialectOptions: {
       collate: 'utf8_general_ci'
     },
-    timestamps: true,
-    createdAt: 'created_at', // force sequelize to respect snake_case for created_at
-    updatedAt: 'updated_at' // force sequelize to respect snake_case for updated_at
+    timestamps: true
   },
   migrationStorageTableName: 'migrations',
   migrationStorageTableSchema: 'sequelize',
@@ -31,7 +29,7 @@ const options = {
     }
   }
 }
-const sequelize = new Sequelize(config.POSTGRES_DB, config.POSTGRES_USER, config.POSTGRES_PASSWORD, options)
+const sequelize = new Sequelize(config.DB_DBNAME, config.DB_USER, config.DB_PASSWORD, options)
 sequelize.authenticate() // check connection
 
 const models = {
