@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: device-api-service
+  namespace: testing
+  labels:
+    app: device-api
+spec:
+  selector:
+    app: device-api
+  type: ClusterIP
+  ports:
+    - name: node
+      port: 80
+      targetPort: 3000
