@@ -3,7 +3,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('deployments', {
       id: {
-        type: Sequelize.STRING(12),
+        type: Sequelize.STRING(16),
         allowNull: false,
         primaryKey: true
       },
@@ -23,11 +23,7 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: true
       },
-      deployment_key: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      device: {
+      deployment_type: {
         type: Sequelize.STRING,
         allowNull: false
       },

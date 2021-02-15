@@ -1,4 +1,5 @@
 import express from 'express'
+import moment from 'moment'
 import { deploymentsService } from '../../services'
 import { Deployment, Stream, Project } from '../../types'
 import { api, authUtils, userUtils, deploymentUtils } from '../../utils'
@@ -29,6 +30,12 @@ router.post('/', authUtils.jwtCheck, async (req: any, res: any) => {
   const uid = userUtils.getUserUid(req.user.sub)
   let projectId = project?.id ?? null
   let streamId = stream?.id ?? null
+
+  if (!moment(deployment.deployedAt, moment.ISO_8601).isValid()) {
+    res.status(400).send('Invalid format: deployedAt')
+    return
+  }
+
   try {
     // new stream
     if (streamId == null) {
@@ -55,25 +62,23 @@ router.post('/', authUtils.jwtCheck, async (req: any, res: any) => {
 })
 
 router.patch('/:id', authUtils.jwtCheck, async (req: any, res: any) => {
+  const uid = userUtils.getUserUid(req.user.sub)
   const stream = req.body.stream as Stream ?? null
   const project = req.body.project as Project ?? null
-  if (project != null) {
-    try {
+  try {
+    if (project != null) {
       await api.updateProjectToCore(req.headers.authorization, project)
-    } catch (error) {
-      return res.status(400).send(error.message ?? error)
     }
-  }
 
-  if (stream != null) {
-    try {
+    if (stream != null) {
       await api.updateStreamToCore(req.headers.authorization, stream)
-    } catch (error) {
-      return res.status(400).send(error.message ?? error)
     }
-  }
 
-  return res.send('Update Success')
+    await deploymentsService.updateDeployments(uid, req.params.id)
+    res.send('Update Success')
+  } catch (error) {
+    res.status(400).send(error.message ?? error)
+  }
 })
 
 router.delete('/:id', authUtils.jwtCheck, (req: any, res: any) => {

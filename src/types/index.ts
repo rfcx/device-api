@@ -2,12 +2,9 @@
 export interface Deployment {
   isActive: boolean
   deploymentKey: string
-  createdAt: Date
-  deletedAt?: Date
   deployedAt: Date
-  device: string
+  deploymentType: string
   stream: Stream
-  updatedAt: Date
 }
 
 export interface Stream {
