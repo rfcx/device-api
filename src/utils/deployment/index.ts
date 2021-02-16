@@ -6,7 +6,7 @@ export const mapStreamsAndDeployments = async (streams: any[], deployments: any[
   })
   const result = deployments.map(dp => {
     const deployment = dp.dataValues
-    const stream = newStreams.filter(it => { return deployment.stream_id === it.id })[0]
+    const stream = newStreams.filter(it => { return deployment.streamId === it.id })[0]
     const project = stream.project as Project
     deployment.stream = {
       id: stream.id,
@@ -19,7 +19,7 @@ export const mapStreamsAndDeployments = async (streams: any[], deployments: any[
         name: project.name
       }
     }
-    delete deployment.stream_id
+    delete deployment.streamId
     return deployment as Deployment
   })
   return result

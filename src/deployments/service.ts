@@ -13,7 +13,7 @@ export const getDeployments = async (uid: string, opt: { isActive: boolean, limi
       limit: opt.limit,
       offset: opt.offset,
       attributes: {
-        exclude: ['is_active', 'created_by_id']
+        exclude: ['isActive', 'createdById']
       }
     })
 
@@ -29,16 +29,16 @@ export const getDeployments = async (uid: string, opt: { isActive: boolean, limi
 export const createDeployments = async (uid: string, deployment: Deployment): Promise<any> => {
   if (deployment.stream.id == null) { return await Promise.reject(new Error('Failed on create Deployment')) }
   try {
-    return models.sequelize.transaction(async (t: Transaction) => {
+    return await models.sequelize.transaction(async (t: Transaction) => {
       // set active existing deployment that same stream to false
       await setActiveStatusToFalse(uid, deployment.stream.id ?? '', t)
       const deploymentData = {
         id: deployment.deploymentKey,
-        deployed_at: deployment.deployedAt,
-        deployment_type: deployment.deploymentType,
-        is_active: true,
-        created_by_id: uid,
-        stream_id: deployment.stream.id
+        deployedAt: deployment.deployedAt,
+        deploymentType: deployment.deploymentType,
+        isActive: true,
+        createdById: uid,
+        streamId: deployment.stream.id
       }
       const result = await models.Deployment.create(deploymentData, { transaction: t })
       if (result != null) {
@@ -53,7 +53,7 @@ export const createDeployments = async (uid: string, deployment: Deployment): Pr
 
 export const updateDeployments = async (uid: string, deploymentId: string): Promise<any> => {
   try {
-    const result = await models.Deployment.update({ updated_at: new Date() }, { where: { id: deploymentId, created_by_id: uid } })
+    const result = await models.Deployment.update({ updatedAt: new Date() }, { where: { id: deploymentId, createdById: uid } })
     if (result != null) {
       return await Promise.resolve('Update Success')
     }
@@ -65,9 +65,9 @@ export const updateDeployments = async (uid: string, deploymentId: string): Prom
 
 export const deleteDeployment = async (uid: string, deploymentId: string): Promise<any> => {
   try {
-    return models.sequelize.transaction(async (t: Transaction) => {
-      await models.Deployment.update({ is_active: false }, { where: { id: deploymentId, created_by_id: uid } }, { transaction: t })
-      const result = await models.Deployment.destroy({ where: { id: deploymentId, created_by_id: uid } }, { transaction: t })
+    return await models.sequelize.transaction(async (t: Transaction) => {
+      await models.Deployment.update({ isActive: false }, { where: { id: deploymentId, createdById: uid } }, { transaction: t })
+      const result = await models.Deployment.destroy({ where: { id: deploymentId, createdById: uid } }, { transaction: t })
       if (result != null) {
         return await Promise.resolve('Delete Success')
       }
@@ -79,8 +79,8 @@ export const deleteDeployment = async (uid: string, deploymentId: string): Promi
 }
 
 async function setActiveStatusToFalse (uid: string, streamId: string, transaction: any): Promise<void> {
-  const result = await models.Deployment.findAll({ where: { created_by_id: uid, stream_id: streamId } }, { transaction: transaction })
+  const result = await models.Deployment.findAll({ where: { createdById: uid, streamId: streamId } }, { transaction: transaction })
   await Promise.all(result.map(async (dp: any) => {
-    await dp.update({ is_active: false }, { transaction: transaction })
+    await dp.update({ isActive: false }, { transaction: transaction })
   }))
 }

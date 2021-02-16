@@ -1,4 +1,4 @@
-export default function (sequelize: any, DataTypes: any) {
+export default function (sequelize: any, DataTypes: any): any {
   const Deployment = sequelize.define('Deployment', {
     id: {
       type: DataTypes.STRING(16),
