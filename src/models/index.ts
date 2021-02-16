@@ -1,6 +1,6 @@
 import config from '../config'
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript'
-import DeploymentModel from './deployments/deployment'
+import Deployment from './deployments/deployment'
 
 const options: SequelizeOptions = {
   dialect: 'postgres',
@@ -26,10 +26,10 @@ const options: SequelizeOptions = {
   }
 }
 const sequelize = new Sequelize(config.DB_DBNAME, config.DB_USER, config.DB_PASSWORD, options)
-sequelize.addModels([DeploymentModel])
+sequelize.addModels([Deployment])
 
 const models = {
-  Deployment: DeploymentModel
+  Deployment: Deployment
 }
 
 export default { ...models, sequelize, Sequelize, options }

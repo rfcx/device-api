@@ -6,7 +6,7 @@ import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript
   tableName: 'deployments',
   modelName: 'deployment'
 })
-export default class DeploymentModel extends Model {
+export default class Deployment extends Model {
   @PrimaryKey
   @Column(DataType.STRING(16))
   id!: string
