@@ -1,6 +1,7 @@
 import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript'
 
 @Table({
+  underscored: true,
   timestamps: true,
   paranoid: true,
   tableName: 'deployments',
