@@ -1,25 +1,21 @@
 import config from '../config'
-import { Sequelize } from 'sequelize'
+import { Model, Sequelize, SequelizeOptions } from 'sequelize-typescript'
 import Deployment from './deployments/deployment'
 
-const options = {
+const options: SequelizeOptions = {
   dialect: 'postgres',
   dialectOptions: {
     ssl: config.DB_SSL_ENABLED === 'true'
   },
   host: config.DB_HOSTNAME,
-  port: config.DB_PORT,
+  port: 5432,
   logging: false,
   define: {
     underscored: true,
     charset: 'utf8',
-    dialectOptions: {
-      collate: 'utf8_general_ci'
-    },
+    collate: 'utf8_general_ci',
     timestamps: true
   },
-  migrationStorageTableName: 'migrations',
-  migrationStorageTableSchema: 'sequelize',
   hooks: {
     afterConnect: () => {
       console.log('Connected to Postgres')
