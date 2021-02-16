@@ -1,6 +1,6 @@
-const Sequelize = require('sequelize')
-const utils = require('../src/utils/sequelize')
-import config from '../src/config'
+import config from '../config'
+import { Sequelize } from 'sequelize'
+import Deployment from './deployments/deployment'
 
 const options = {
   dialect: 'postgres',
@@ -33,7 +33,7 @@ const sequelize = new Sequelize(config.DB_DBNAME, config.DB_USER, config.DB_PASS
 sequelize.authenticate() // check connection
 
 const models = {
-  Deployment: require('./deployments/deployment')(sequelize, Sequelize)
+  Deployment: Deployment(sequelize, Sequelize)
 }
 
 // Create associations
@@ -43,4 +43,4 @@ Object.keys(models).forEach(function (modelName) {
   }
 })
 
-module.exports = { ...models, sequelize, Sequelize, options, utils }
+module.exports = { ...models, sequelize, Sequelize, options }
