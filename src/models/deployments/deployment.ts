@@ -1,18 +1,15 @@
 import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript'
 
 @Table({
-  underscored: true,
-  timestamps: true,
   paranoid: true,
-  tableName: 'deployments',
-  modelName: 'deployment'
+  tableName: 'deployments'
 })
 export default class Deployment extends Model {
   @PrimaryKey
   @Column(DataType.STRING(16))
   id!: string
 
-  @Column(DataType.STRING)
+  @Column(DataType.STRING(12))
   streamId!: string
 
   @Column(DataType.STRING)
@@ -24,6 +21,6 @@ export default class Deployment extends Model {
   @Column(DataType.BOOLEAN)
   isActive!: Boolean
 
-  @Column(DataType.STRING)
+  @Column(DataType.STRING(36))
   createdById!: String
 }

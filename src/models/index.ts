@@ -8,7 +8,7 @@ const options: SequelizeOptions = {
     ssl: config.DB_SSL_ENABLED === 'true'
   },
   host: config.DB_HOSTNAME,
-  port: +config.DB_PORT,
+  port: parseInt(config.DB_PORT),
   logging: false,
   define: {
     underscored: true,
