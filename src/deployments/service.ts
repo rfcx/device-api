@@ -7,8 +7,8 @@ export const getDeployments = async (uid: string, opt: { isActive: boolean, limi
   try {
     const result = await models.Deployment.findAll({
       where: {
-        created_by_id: uid,
-        is_active: opt.isActive
+        createdById: uid,
+        isActive: opt.isActive
       },
       limit: opt.limit,
       offset: opt.offset,
@@ -66,8 +66,8 @@ export const updateDeployments = async (uid: string, deploymentId: string): Prom
 export const deleteDeployment = async (uid: string, deploymentId: string): Promise<any> => {
   try {
     return await models.sequelize.transaction(async (t: Transaction) => {
-      await models.Deployment.update({ isActive: false }, { where: { id: deploymentId, createdById: uid } }, { transaction: t })
-      const result = await models.Deployment.destroy({ where: { id: deploymentId, createdById: uid } }, { transaction: t })
+      await models.Deployment.update({ isActive: false }, { where: { id: deploymentId, createdById: uid }, transaction: t })
+      const result = await models.Deployment.destroy({ where: { id: deploymentId, createdById: uid }, transaction: t })
       if (result != null) {
         return await Promise.resolve('Delete Success')
       }
@@ -79,7 +79,7 @@ export const deleteDeployment = async (uid: string, deploymentId: string): Promi
 }
 
 async function setActiveStatusToFalse (uid: string, streamId: string, transaction: any): Promise<void> {
-  const result = await models.Deployment.findAll({ where: { createdById: uid, streamId: streamId } }, { transaction: transaction })
+  const result = await models.Deployment.findAll({ where: { createdById: uid, streamId: streamId }, transaction: transaction })
   await Promise.all(result.map(async (dp: any) => {
     await dp.update({ isActive: false }, { transaction: transaction })
   }))

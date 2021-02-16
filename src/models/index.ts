@@ -1,25 +1,21 @@
 import config from '../config'
-import { Sequelize } from 'sequelize'
+import { Sequelize, SequelizeOptions } from 'sequelize-typescript'
 import Deployment from './deployments/deployment'
 
-const options = {
+const options: SequelizeOptions = {
   dialect: 'postgres',
   dialectOptions: {
     ssl: config.DB_SSL_ENABLED === 'true'
   },
   host: config.DB_HOSTNAME,
-  port: config.DB_PORT,
+  port: parseInt(config.DB_PORT),
   logging: false,
   define: {
     underscored: true,
     charset: 'utf8',
-    dialectOptions: {
-      collate: 'utf8_general_ci'
-    },
+    collate: 'utf8_general_ci',
     timestamps: true
   },
-  migrationStorageTableName: 'migrations',
-  migrationStorageTableSchema: 'sequelize',
   hooks: {
     afterConnect: () => {
       console.log('Connected to Postgres')
@@ -30,16 +26,10 @@ const options = {
   }
 }
 const sequelize = new Sequelize(config.DB_DBNAME, config.DB_USER, config.DB_PASSWORD, options)
+sequelize.addModels([Deployment])
 
 const models = {
-  Deployment: Deployment(sequelize, Sequelize)
+  Deployment: Deployment
 }
-
-// Create associations
-Object.keys(models).forEach(function (modelName) {
-  if ('associate' in models[modelName]) {
-    models[modelName].associate(models)
-  }
-})
 
 export default { ...models, sequelize, Sequelize, options }

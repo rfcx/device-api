@@ -1,40 +1,26 @@
-export default function (sequelize: any, DataTypes: any): any {
-  const Deployment = sequelize.define('Deployment', {
-    id: {
-      type: DataTypes.STRING(16),
-      allowNull: false,
-      primaryKey: true
-    },
-    streamId: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    deploymentType: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    deployedAt: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
-    isActive: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false
-    },
-    createdById: {
-      type: DataTypes.STRING,
-      allowNull: false
-    }
-  },
-  {
-    underscored: true,
-    paranoid: true
-  })
+import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript'
 
-  Deployment.attributes = {
-    full: ['id', 'created_at', 'deployed_at', 'updated_at', 'deleted_at', 'deployment_type', 'is_active', 'created_by_id', 'stream_id'],
-    lite: ['id', 'device', 'is_active']
-  }
+@Table({
+  paranoid: true,
+  tableName: 'deployments'
+})
+export default class Deployment extends Model {
+  @PrimaryKey
+  @Column(DataType.STRING(16))
+  id!: string
 
-  return Deployment
+  @Column(DataType.STRING(12))
+  streamId!: string
+
+  @Column(DataType.STRING)
+  deploymentType!: string
+
+  @Column(DataType.DATE)
+  deployedAt!: Date
+
+  @Column(DataType.BOOLEAN)
+  isActive!: Boolean
+
+  @Column(DataType.STRING(36))
+  createdById!: String
 }
