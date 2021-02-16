@@ -1,8 +1,8 @@
 import express from 'express'
 import moment from 'moment'
-import { deploymentsService } from '../../services'
-import { Deployment, Stream, Project } from '../../types'
-import { api, authUtils, userUtils, deploymentUtils } from '../../utils'
+import * as service from './service'
+import { Deployment, Stream, Project } from '../types'
+import { api, authUtils, userUtils, deploymentUtils } from '../utils'
 
 const router = express.Router()
 
@@ -15,7 +15,7 @@ router.get('/', authUtils.jwtCheck, async (req: any, res: any) => {
   }
   try {
     const streams = await api.getStreamsFromCore(req.headers.authorization)
-    const deployments = await deploymentsService.getDeployments(uid, option)
+    const deployments = await service.getDeployments(uid, option)
     const deploymentsForCompanion = await deploymentUtils.mapStreamsAndDeployments(streams.data, deployments)
     res.send(deploymentsForCompanion)
   } catch (error) {
@@ -54,7 +54,7 @@ router.post('/', authUtils.jwtCheck, async (req: any, res: any) => {
     }
     deployment.stream = stream
     deployment.stream.project = project
-    const data = await deploymentsService.createDeployments(uid, deployment)
+    const data = await service.createDeployments(uid, deployment)
     res.send(data.dataValues.id)
   } catch (error) {
     res.status(400).send(error.message ?? error)
@@ -74,24 +74,25 @@ router.patch('/:id', authUtils.jwtCheck, async (req: any, res: any) => {
       await api.updateStreamToCore(req.headers.authorization, stream)
     }
 
-    await deploymentsService.updateDeployments(uid, req.params.id)
+    await service.updateDeployments(uid, req.params.id)
     res.send('Update Success')
   } catch (error) {
     res.status(400).send(error.message ?? error)
   }
 })
 
-router.delete('/:id', authUtils.jwtCheck, (req: any, res: any) => {
+router.delete('/:id', authUtils.jwtCheck, async (req: any, res: any) => {
   const uid = userUtils.getUserUid(req.user.sub)
-  deploymentsService.deleteDeployment(uid, req.params.id).then(data => {
+  try {
+    const data = await service.deleteDeployment(uid, req.params.id)
     res.send(data)
-  }).catch(error => {
+  } catch (error) {
     res.status(400).send(error.message ?? error)
-  })
+  }
 })
 
 router.post('/:id/assets', (req: any, res: any) => {
   console.log('test')
 })
 
-module.exports = router
+export default router

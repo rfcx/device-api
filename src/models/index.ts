@@ -30,7 +30,6 @@ const options = {
   }
 }
 const sequelize = new Sequelize(config.DB_DBNAME, config.DB_USER, config.DB_PASSWORD, options)
-sequelize.authenticate() // check connection
 
 const models = {
   Deployment: Deployment(sequelize, Sequelize)
@@ -43,4 +42,4 @@ Object.keys(models).forEach(function (modelName) {
   }
 })
 
-module.exports = { ...models, sequelize, Sequelize, options }
+export default { ...models, sequelize, Sequelize, options }

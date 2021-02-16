@@ -1,7 +1,7 @@
 /* eslint @typescript-eslint/no-var-requires: "off" */
-import { Deployment } from '../../types'
+import { Deployment } from '../types'
 import { Transaction } from 'sequelize'
-import models from '../../models'
+import models from '../models'
 
 export const getDeployments = async (uid: string, opt: { isActive: boolean, limit: number, offset: number }): Promise<any[]> => {
   try {
