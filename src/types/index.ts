@@ -1,22 +1,21 @@
-/* eslint-disable @typescript-eslint/member-delimiter-style */
-export interface Deployment {
+export interface DeploymentResponse {
   isActive: boolean
   deploymentKey: string
   deployedAt: Date
   deploymentType: string
-  stream: Stream
+  stream: StreamResponse
 }
 
-export interface Stream {
+export interface StreamResponse {
   id?: string | null
   name: string
   latitude: number
   longitude: number
   altitude: number
-  project?: Project | null
+  project?: ProjectResponse | null
 }
 
-export interface Project {
+export interface ProjectResponse {
   id?: string | null
   name: string
   color: String

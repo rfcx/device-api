@@ -1,5 +1,5 @@
-import config from '../config'
-import { Project, Stream } from '../types'
+import config from '../../config'
+import { ProjectResponse, StreamResponse } from '../../types'
 import axios, { AxiosResponse } from 'axios'
 
 // set up global axios instance
@@ -21,7 +21,7 @@ instance.interceptors.response.use(function (response) {
   return await Promise.reject(error)
 })
 
-export const createStreamToCore = async (token: string | null, stream: Stream, projectId: string | null): Promise<string> => {
+export const createStreamToCore = async (token: string | null, stream: StreamResponse, projectId: string | null): Promise<string> => {
   if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
   const params = {
     name: stream.name,
@@ -41,7 +41,7 @@ export const createStreamToCore = async (token: string | null, stream: Stream, p
     })
 }
 
-export const createProjectToCore = async (token: string | null, project: Project): Promise<string> => {
+export const createProjectToCore = async (token: string | null, project: ProjectResponse): Promise<string> => {
   if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
   const params = {
     name: project.name
@@ -57,7 +57,7 @@ export const createProjectToCore = async (token: string | null, project: Project
     })
 }
 
-export const updateStreamToCore = async (token: string | null, stream: Stream): Promise<AxiosResponse<any>> => {
+export const updateStreamToCore = async (token: string | null, stream: StreamResponse): Promise<AxiosResponse<any>> => {
   if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
   const params = {
     name: stream.name,
@@ -76,7 +76,7 @@ export const updateStreamToCore = async (token: string | null, stream: Stream): 
     })
 }
 
-export const updateProjectToCore = async (token: string | null, project: Project): Promise<AxiosResponse<any>> => {
+export const updateProjectToCore = async (token: string | null, project: ProjectResponse): Promise<AxiosResponse<any>> => {
   if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
   const params = {
     name: project.name
@@ -91,7 +91,7 @@ export const updateProjectToCore = async (token: string | null, project: Project
     })
 }
 
-export const getStreamsFromCore = async (token: string): Promise<AxiosResponse<any[]>> => {
+export const getStreams = async (token: string): Promise<AxiosResponse<any[]>> => {
   if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
   const params = {
     created_by: 'me'
@@ -108,7 +108,7 @@ export const getStreamsFromCore = async (token: string): Promise<AxiosResponse<a
     })
 }
 
-export const getProjectsFromCore = async (token: string): Promise<AxiosResponse<any[]>> => {
+export const getProjects = async (token: string): Promise<AxiosResponse<any[]>> => {
   if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
   const params = {
     created_by: 'me'

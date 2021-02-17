@@ -1,6 +1,6 @@
-import config from '../config'
+import config from '../../config'
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript'
-import Deployment from './deployments/deployment'
+import path from 'path'
 
 const options: SequelizeOptions = {
   dialect: 'postgres',
@@ -10,6 +10,7 @@ const options: SequelizeOptions = {
   host: config.DB_HOSTNAME,
   port: parseInt(config.DB_PORT),
   logging: false,
+  models: [path.join(__dirname, '../../**/*.model.ts')],
   define: {
     underscored: true,
     charset: 'utf8',
@@ -25,11 +26,5 @@ const options: SequelizeOptions = {
     }
   }
 }
-const sequelize = new Sequelize(config.DB_DBNAME, config.DB_USER, config.DB_PASSWORD, options)
-sequelize.addModels([Deployment])
 
-const models = {
-  Deployment: Deployment
-}
-
-export default { ...models, sequelize, Sequelize, options }
+export const sequelize = new Sequelize(config.DB_DBNAME, config.DB_USER, config.DB_PASSWORD, options)
