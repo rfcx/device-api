@@ -27,4 +27,6 @@ spec:
               cpu: "2"
           envFrom:
             - secretRef:
-                name: testing-device-api-secrets
+                name: device-api-secrets
+            - configMapRef:
+                name: device-api-config
