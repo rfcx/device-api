@@ -12,6 +12,6 @@ app.use(bodyParser.json())
 
 app.use('/deployments', deployments)
 app.use('/projects', projects)
-app.use('streams', stream)
+app.use('/streams', stream)
 
 export default app
