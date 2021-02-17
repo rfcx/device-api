@@ -45,14 +45,14 @@ router.post('/', jwtCheck, async (req: any, res: any) => {
     if (streamId == null) {
       // new project
       if (project != null && projectId == null) {
-        projectId = await api.createProjectToCore(req.headers.authorization, project)
+        projectId = await api.createProject(req.headers.authorization, project)
         project.id = projectId
 
-        streamId = await api.createStreamToCore(req.headers.authorization, stream, projectId)
+        streamId = await api.createStream(req.headers.authorization, stream, projectId)
         stream.id = streamId
         // exist project
       } else {
-        streamId = await api.createStreamToCore(req.headers.authorization, stream, projectId)
+        streamId = await api.createStream(req.headers.authorization, stream, projectId)
         stream.id = streamId
       }
     }
@@ -71,11 +71,11 @@ router.patch('/:id', jwtCheck, async (req: any, res: any) => {
   const project = req.body.project as ProjectResponse ?? null
   try {
     if (project != null) {
-      await api.updateProjectToCore(req.headers.authorization, project)
+      await api.updateProject(req.headers.authorization, project)
     }
 
     if (stream != null) {
-      await api.updateStreamToCore(req.headers.authorization, stream)
+      await api.updateStream(req.headers.authorization, stream)
     }
 
     await dao.updateDeployment(uid, req.params.id)

@@ -5,10 +5,10 @@ import path from 'path'
 const options: SequelizeOptions = {
   dialect: 'postgres',
   dialectOptions: {
-    ssl: config.DB_SSL_ENABLED === 'true'
+    ssl: config.DB_SSL_ENABLED
   },
   host: config.DB_HOSTNAME,
-  port: parseInt(config.DB_PORT),
+  port: config.DB_PORT,
   logging: false,
   models: [path.join(__dirname, '../../**/*.model.ts')],
   define: {
