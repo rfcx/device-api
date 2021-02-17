@@ -17,7 +17,7 @@ router.get('/', jwtCheck, async (req: any, res: any) => {
 router.post('/', jwtCheck, async (req: any, res: any) => {
   const project = req.body as ProjectResponse
   try {
-    const projectId = await api.createProject(req.headers.authorization, project)
+    const projectId = await api.createProjectToCore(req.headers.authorization, project)
     res.send(projectId)
   } catch (error) {
     res.status(400).send(error.message ?? error)
