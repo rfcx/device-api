@@ -27,6 +27,6 @@ spec:
               cpu: "2"
           envFrom:
             - secretRef:
-                name: staging-device-api-secrets
+                name: device-api-secrets
             - configMapRef:
-                name: staging-device-api-config
+                name: device-api-config
