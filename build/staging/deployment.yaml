@@ -28,3 +28,5 @@ spec:
           envFrom:
             - secretRef:
                 name: staging-device-api-secrets
+            - configMapRef:
+                name: staging-device-api-config

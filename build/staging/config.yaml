@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: staging-device-api-config
+  namespace: staging
+data:
+  CORE_URL: https://staging-api.rfcx.org
