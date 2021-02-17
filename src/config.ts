@@ -6,5 +6,9 @@ export default {
   DB_SSL_ENABLED: process.env.DB_SSL_ENABLED ?? 'false',
   DB_DBNAME: process.env.DB_DBNAME ?? 'postgres',
   DB_USER: process.env.DB_USER ?? 'postgres',
-  DB_PASSWORD: process.env.DB_PASSWORD ?? 'test'
+  DB_PASSWORD: process.env.DB_PASSWORD ?? 'test',
+  AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY ?? 'AKIA45B7YWBXTKC253TT',
+  AWS_SECRET_KEY: process.env.AWS_SECRET_KEY ?? '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',
+  AWS_REGION_ID: process.env.AWS_REGION_ID ?? 'eu-west-1',
+  AWS_ACCOUNT_ID: process.env.AWS_ACCOUNT_ID ?? '887044485231'
 }
