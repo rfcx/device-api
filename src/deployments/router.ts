@@ -34,6 +34,8 @@ router.post('/', jwtCheck, async (req: any, res: any) => {
   let projectId = project?.id ?? null
   let streamId = stream?.id ?? null
 
+  // TODO needs validation on all fields (especially deploymentKey)
+
   if (!moment(deployment.deployedAt, moment.ISO_8601).isValid()) {
     res.status(400).send('Invalid format: deployedAt')
     return
@@ -59,7 +61,7 @@ router.post('/', jwtCheck, async (req: any, res: any) => {
     deployment.stream = stream
     deployment.stream.project = project
     const data = await dao.createDeployment(uid, deployment)
-    res.send(data.id)
+    res.location(`/deployments/${data.id}`).sendStatus(201)
   } catch (error) {
     res.status(400).send(error.message ?? error)
   }
@@ -79,7 +81,7 @@ router.patch('/:id', jwtCheck, async (req: any, res: any) => {
     }
 
     await dao.updateDeployment(uid, req.params.id)
-    res.send('Update Success')
+    res.send('Success')
   } catch (error) {
     res.status(400).send(error.message ?? error)
   }
@@ -88,8 +90,8 @@ router.patch('/:id', jwtCheck, async (req: any, res: any) => {
 router.delete('/:id', jwtCheck, async (req: any, res: any) => {
   const uid = getUserUid(req.user.sub)
   try {
-    const data = await dao.deleteDeployment(uid, req.params.id)
-    res.send(data)
+    await dao.deleteDeployment(uid, req.params.id)
+    res.send('Success')
   } catch (error) {
     res.status(400).send(error.message ?? error)
   }
