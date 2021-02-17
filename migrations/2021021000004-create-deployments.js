@@ -7,24 +7,16 @@ module.exports = {
         allowNull: false,
         primaryKey: true
       },
-      created_at: {
-        type: Sequelize.DATE,
+      stream_id: {
+        type: Sequelize.STRING(12),
         allowNull: false
       },
       deployed_at: {
         type: Sequelize.DATE,
         allowNull: false
       },
-      updated_at: {
-        type: Sequelize.DATE,
-        allowNull: false
-      },
-      deleted_at: {
-        type: Sequelize.DATE,
-        allowNull: true
-      },
       deployment_type: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(16),
         allowNull: false
       },
       is_active: {
@@ -35,9 +27,17 @@ module.exports = {
         type: Sequelize.STRING(36),
         allowNull: false
       },
-      stream_id: {
-        type: Sequelize.STRING(12),
+      created_at: {
+        type: Sequelize.DATE,
         allowNull: false
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false
+      },
+      deleted_at: {
+        type: Sequelize.DATE,
+        allowNull: true
       }
     })
   },
