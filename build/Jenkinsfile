@@ -78,6 +78,24 @@ spec:
                 }
             }
         }
+        stage('Migrate database') {
+            agent {
+                label 'slave'
+            }
+            options {
+                skipDefaultCheckout true
+            }
+            steps {
+                catchError {
+                    sh """kubectl run -i --tty --rm ${APP}-migration --image=${ECR_HOST}/${ECR_REPO}:$BUILD_NUMBER --namespace ${K8S_NAMESPACE} --restart=Never --overrides='
+                    { "spec": { "containers": [ { "name": "${APP}-migration", "image": "${ECR_HOST}/${ECR_REPO}:$BUILD_NUMBER\",
+                    "envFrom": [ { "configMapRef": { "name": "${APP}-config" } }, { "secretRef": { "name": "${APP}-config" } } ] } ] } }
+                    ' -- yarn migrate
+                    """
+                    slackSend (channel: "#${env.SLACK_CHANNEL}", color: '#4CAF50', message: "*Device API*: Migrations completed <${env.BUILD_URL}|#${env.BUILD_NUMBER}> branch ${env.BRANCH_NAME}")
+                }
+            }
+        }
     }
 }
 
