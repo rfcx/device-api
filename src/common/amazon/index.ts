@@ -3,7 +3,7 @@ import config from '../../config'
 import { PromiseResult } from 'aws-sdk/lib/request'
 
 const credentials = {
-  accessKeyId: config.AWS_ACCESS_KEY,
+  accessKeyId: config.AWS_ACCESS_KEY_ID,
   secretAccessKey: config.AWS_SECRET_KEY,
   region: config.AWS_REGION_ID
 }
@@ -15,7 +15,7 @@ const s3Client = new AWS.S3({
 
 export const uploadFile = async (remotePath: string, buffer: Buffer, opt?: { ContentEncoding: string }): Promise<PromiseResult<AWS.S3.PutObjectOutput, AWS.AWSError>> => {
   let params: AWS.S3.PutObjectRequest = {
-    Bucket: 'rfcx-device-assets-staging',
+    Bucket: config.AWS_S3_BUCKET,
     Key: remotePath,
     Body: buffer
   }
