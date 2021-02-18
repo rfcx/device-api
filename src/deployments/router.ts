@@ -7,13 +7,12 @@ import * as api from '../common/core-api'
 import { getUserUid } from '../common/user'
 import { mapStreamsAndDeployments } from './serializer'
 import multer from 'multer'
-import { uploadFile } from '../common/amazon'
-import { getFileTypeFromBase64 } from '../common/mime'
+import { uploadFileAndSaveToDb } from './service'
 
 const router = Router()
 
 const storage = multer.memoryStorage()
-const upload = multer({storage: storage})
+const upload = multer({ storage: storage })
 
 router.get('/', jwtCheck, async (req: any, res: any) => {
   const uid = getUserUid(req.user.sub)
@@ -103,32 +102,19 @@ router.delete('/:id', jwtCheck, async (req: any, res: any) => {
   }
 })
 
-router.post('/:id/assets', upload.single('file'), async (req: any, res: any) => {
-  const imageBin = req.body.image
-  const now = new Date().getMilliseconds()
+router.post('/:id/assets', jwtCheck, upload.single('file'), async (req: any, res: any) => {
+  const uid = getUserUid(req.user.sub)
+  const deploymentId = req.params.id
+  const imageBase64 = req.body.image ?? null
+  const file = req.file ?? null
   try {
-    if(imageBin != null) {
-      const stripedImageBin = imageBin.replace(/^data:image\/\w+;base64,/, '')
-      const type = await getFileTypeFromBase64(stripedImageBin)
-      if (type?.ext != null && ['jpg', 'png'].includes(type?.ext)) {
-        const buf = Buffer.from(stripedImageBin, 'base64')
-        const opt = {ContentEncoding: 'base64'}
-        const remotePath = `${req.params.id}-${now}.${type.ext}`
-        await uploadFile(remotePath, buf, opt)
-      }
-    } else {
-      const buf = req.file.buffer
-      const fileName = req.file.originalname
-      const remotePath = `${req.params.id}-${now}-${fileName}`
-      console.log(remotePath)
-      await uploadFile(remotePath, buf)
-    }
-    res.send("Upload Asset Success")
+    const streamId = await dao.getStreamIdById(uid, deploymentId)
+    await uploadFileAndSaveToDb(streamId, deploymentId, imageBase64, file)
+    res.send('Upload Asset Success')
   } catch (error) {
     console.log(error)
     res.status(400).send(error.message ?? error)
   }
 })
-
 
 export default router
