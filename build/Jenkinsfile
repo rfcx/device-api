@@ -38,9 +38,9 @@ spec:
                 slackSend (channel: "#${env.SLACK_CHANNEL}", color: '#FF9800', message: "*Device API*: Build started <${env.BUILD_URL}|#${env.BUILD_NUMBER}> commit ${env.GIT_COMMIT[0..6]} branch ${env.BRANCH_NAME}")
                 catchError {
                     container(name: 'kaniko') {
-                        sh '''
-                        /kaniko/executor --snapshotMode=redo --use-new-run=true --cache=true --cache-repo=${ECR_HOST}/${ECR_REPO} --dockerfile `pwd`/build/Dockerfile --context `pwd` --destination=${ECR_HOST}/${ECR_REPO}:latest --destination=${ECR_HOST}/${ECR_REPO}:${BUILD_NUMBER}
-                        '''
+                        sh """
+                        /kaniko/executor --snapshotMode=redo --use-new-run=true --cache=true --cache-repo=${ECR_HOST}/${ECR_REPO} --dockerfile `pwd`/build/Dockerfile --context `pwd` --destination=${ECR_HOST}/${ECR_REPO}:latest --destination=${ECR_HOST}/${ECR_REPO}:$BUILD_NUMBER
+                        """
                     }
                 }
             }
@@ -88,10 +88,10 @@ spec:
             steps {
                 catchError {
                     sh """kubectl run -i --rm ${APP}-migration --image=${ECR_HOST}/${ECR_REPO}:$BUILD_NUMBER --namespace=${K8S_NAMESPACE} --overrides='
-                    { "spec": { "containers": [ { "name": "${APP}-migration", "image": "${ECR_HOST}/${ECR_REPO}:$BUILD_NUMBER\",
-                    "args": [ "yarn", "migrate" ],
+                    { "spec": { "containers": [ { "name": "${APP}-migration", "image": "${ECR_HOST}/${ECR_REPO}:${BUILD_NUMBER}\",
+                    "imagePullPolicy": "IfNotPresent", "restartPolicy": "Never", "args": [ "yarn", "migrate" ],
                     "envFrom": [ { "configMapRef": { "name": "${APP}-config" } }, { "secretRef": { "name": "${APP}-secrets" } } ] } ] } }
-                    ' --image-pull-policy=Always --restart=Never"""
+                    '"""
                     slackSend (channel: "#${env.SLACK_CHANNEL}", color: '#4CAF50', message: "*Device API*: Migrations completed <${env.BUILD_URL}|#${env.BUILD_NUMBER}> branch ${env.BRANCH_NAME}")
                 }
             }
