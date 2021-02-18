@@ -21,7 +21,7 @@ instance.interceptors.response.use(function (response) {
   return await Promise.reject(error)
 })
 
-export const createStreamToCore = async (token: string | null, stream: StreamResponse, projectId: string | null): Promise<string> => {
+export const createStream = async (token: string | null, stream: StreamResponse, projectId: string | null): Promise<string> => {
   if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
   const params = {
     name: stream.name,
@@ -41,7 +41,7 @@ export const createStreamToCore = async (token: string | null, stream: StreamRes
     })
 }
 
-export const createProjectToCore = async (token: string | null, project: ProjectResponse): Promise<string> => {
+export const createProject = async (token: string | null, project: ProjectResponse): Promise<string> => {
   if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
   const params = {
     name: project.name
@@ -57,7 +57,7 @@ export const createProjectToCore = async (token: string | null, project: Project
     })
 }
 
-export const updateStreamToCore = async (token: string | null, stream: StreamResponse): Promise<AxiosResponse<any>> => {
+export const updateStream = async (token: string | null, stream: StreamResponse): Promise<AxiosResponse<any>> => {
   if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
   const params = {
     name: stream.name,
@@ -76,7 +76,7 @@ export const updateStreamToCore = async (token: string | null, stream: StreamRes
     })
 }
 
-export const updateProjectToCore = async (token: string | null, project: ProjectResponse): Promise<AxiosResponse<any>> => {
+export const updateProject = async (token: string | null, project: ProjectResponse): Promise<AxiosResponse<any>> => {
   if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
   const params = {
     name: project.name

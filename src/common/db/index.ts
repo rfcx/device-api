@@ -5,12 +5,15 @@ import path from 'path'
 const options: SequelizeOptions = {
   dialect: 'postgres',
   dialectOptions: {
-    ssl: config.DB_SSL_ENABLED === 'true'
+    ssl: {
+      require: config.DB_SSL_ENABLED,
+      rejectUnauthorized: false // Ref.: https://github.com/brianc/node-postgres/issues/2009
+    }
   },
   host: config.DB_HOSTNAME,
-  port: parseInt(config.DB_PORT),
+  port: config.DB_PORT,
   logging: false,
-  models: [path.join(__dirname, '../../**/*.model.ts')],
+  models: [path.join(__dirname, '../../**/*.model.*')],
   define: {
     underscored: true,
     charset: 'utf8',
