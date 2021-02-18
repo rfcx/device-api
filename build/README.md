@@ -47,8 +47,7 @@ Second, reconnect to the new database and create the meta schema (for storing mi
 create schema sequelize;
 ```
 
-// _TODO_
-Migrations will run automatically on deployment.
+Migrations will run automatically as a one-off job on deployment (see last step of Jenkinsfile).
 
 ## S3 bucket creation
 
