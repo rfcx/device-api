@@ -10,7 +10,7 @@ const options: SequelizeOptions = {
   host: config.DB_HOSTNAME,
   port: config.DB_PORT,
   logging: false,
-  models: [path.join(__dirname, '../../**/*.model.ts')],
+  models: [path.join(__dirname, '../../**/*.model.*')],
   define: {
     underscored: true,
     charset: 'utf8',
