@@ -2,6 +2,7 @@ import { Transaction } from 'sequelize'
 import { DeploymentResponse } from 'src/types'
 import { sequelize } from '../common/db'
 import Deployment from './deployment.model'
+import Asset from '../assets/asset.model'
 
 export const getDeployments = async (uid: string, opt: { isActive: boolean, limit: number, offset: number }): Promise<Deployment[]> => {
   try {
@@ -20,7 +21,7 @@ export const getDeployments = async (uid: string, opt: { isActive: boolean, limi
     if (result != null) {
       return result
     }
-    return await Promise.reject(new Error('Failed on get stream'))
+    return await Promise.reject(new Error('Failed on get Deployment'))
   } catch (error) {
     return await Promise.reject(error)
   }
@@ -44,7 +45,7 @@ export const createDeployment = async (uid: string, deployment: DeploymentRespon
       if (result != null) {
         return result
       }
-      return await Promise.reject(new Error('Failed on create stream'))
+      return await Promise.reject(new Error('Failed on create Deployment'))
     })
     return result
   } catch (error) {
@@ -58,7 +59,7 @@ export const updateDeployment = async (uid: string, deploymentId: string): Promi
     if (result != null) {
       return await Promise.resolve('Update Success')
     }
-    return await Promise.reject(new Error('Failed on update stream'))
+    return await Promise.reject(new Error('Failed on update Deployment'))
   } catch (error) {
     return await Promise.reject(error)
   }
@@ -72,9 +73,21 @@ export const deleteDeployment = async (uid: string, deploymentId: string): Promi
       if (result != null) {
         return await Promise.resolve('Delete Success')
       }
-      return await Promise.reject(new Error('Failed on delete stream'))
+      return await Promise.reject(new Error('Failed on delete Deployment'))
     })
     return result
+  } catch (error) {
+    return await Promise.reject(error)
+  }
+}
+
+export const getStreamIdById = async (uid: string, deploymentId: string): Promise<string> => {
+  try {
+    const result = await Deployment.findOne({ where: { id: deploymentId, createdById: uid }, attributes: ['streamId'] })
+    if (result != null) {
+      return result.streamId
+    }
+    return await Promise.reject(new Error('Failed on get Deployment'))
   } catch (error) {
     return await Promise.reject(error)
   }
@@ -87,4 +100,16 @@ async function setActiveStatusToFalse (uid: string, streamId: string, transactio
   }))
 }
 
-export default { getDeployments, createDeployment, updateDeployment, deleteDeployment }
+export const createAsset = async (fileName: string, streamId: string): Promise<string> => {
+  try {
+    const result = await Asset.create({ fileName: fileName, streamId: streamId })
+    if (result != null) {
+      return await Promise.resolve('Create Success')
+    }
+    return await Promise.reject(new Error('Failed on create Asset'))
+  } catch (error) {
+    return await Promise.reject(error)
+  }
+}
+
+export default { getDeployments, createDeployment, updateDeployment, deleteDeployment, getStreamIdById, createAsset }

@@ -3,9 +3,11 @@ import moment from 'moment'
 import dao from './dao'
 import { DeploymentResponse, StreamResponse, ProjectResponse } from '../types'
 import { jwtCheck } from '../common/auth'
+import { multerFile } from '../common/multer'
 import * as api from '../common/core-api'
 import { getUserUid } from '../common/user'
 import { mapStreamsAndDeployments } from './serializer'
+import { uploadFileAndSaveToDb } from './service'
 
 const router = Router()
 
@@ -97,8 +99,18 @@ router.delete('/:id', jwtCheck, async (req: any, res: any) => {
   }
 })
 
-router.post('/:id/assets', (req: any, res: any) => {
-  console.log('test')
+router.post('/:id/assets', jwtCheck, multerFile.single('file'), async (req: any, res: any) => {
+  const uid = getUserUid(req.user.sub)
+  const deploymentId = req.params.id
+  const file = req.file ?? null
+  try {
+    const streamId = await dao.getStreamIdById(uid, deploymentId)
+    await uploadFileAndSaveToDb(streamId, deploymentId, file)
+    res.send('Upload Asset Success')
+  } catch (error) {
+    console.log(error)
+    res.status(400).send(error.message ?? error)
+  }
 })
 
 export default router
