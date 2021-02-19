@@ -3,16 +3,13 @@ import moment from 'moment'
 import dao from './dao'
 import { DeploymentResponse, StreamResponse, ProjectResponse } from '../types'
 import { jwtCheck } from '../common/auth'
+import { multerFile } from '../common/multer'
 import * as api from '../common/core-api'
 import { getUserUid } from '../common/user'
 import { mapStreamsAndDeployments } from './serializer'
-import multer from 'multer'
 import { uploadFileAndSaveToDb } from './service'
 
 const router = Router()
-
-const storage = multer.memoryStorage()
-const upload = multer({ storage: storage })
 
 router.get('/', jwtCheck, async (req: any, res: any) => {
   const uid = getUserUid(req.user.sub)
@@ -102,7 +99,7 @@ router.delete('/:id', jwtCheck, async (req: any, res: any) => {
   }
 })
 
-router.post('/:id/assets', jwtCheck, upload.single('file'), async (req: any, res: any) => {
+router.post('/:id/assets', jwtCheck, multerFile.single('file'), async (req: any, res: any) => {
   const uid = getUserUid(req.user.sub)
   const deploymentId = req.params.id
   const file = req.file ?? null
