@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import dao from './dao'
 import { DeploymentResponse, StreamResponse, ProjectResponse } from '../types'
 import { jwtCheck } from '../common/auth'
@@ -7,7 +7,7 @@ import { multerFile } from '../common/multer'
 import * as api from '../common/core-api'
 import { getUserUid } from '../common/user'
 import { mapStreamsAndDeployments } from './serializer'
-import { uploadFileAndSaveToDb } from './service'
+import service from './service'
 
 const router = Router()
 
@@ -30,39 +30,17 @@ router.get('/', jwtCheck, async (req: any, res: any) => {
 
 router.post('/', jwtCheck, async (req: any, res: any) => {
   const deployment = req.body as DeploymentResponse
-  const stream = deployment.stream
-  const project = stream.project as ProjectResponse ?? null
   const uid = getUserUid(req.user.sub)
-  let projectId = project?.id ?? null
-  let streamId = stream?.id ?? null
 
   // TODO needs validation on all fields (especially deploymentKey)
 
-  if (!moment(deployment.deployedAt, moment.ISO_8601).isValid()) {
+  if (!dayjs(deployment.deployedAt, 'YYYY-MM-DDTHH:mm:ss.SSS[Z]').isValid()) {
     res.status(400).send('Invalid format: deployedAt')
     return
   }
 
-  // TODO make this part of the service (keep route code minimal)
   try {
-    // new stream
-    if (streamId == null) {
-      // new project
-      if (project != null && projectId == null) {
-        projectId = await api.createProject(req.headers.authorization, project)
-        project.id = projectId
-
-        streamId = await api.createStream(req.headers.authorization, stream, projectId)
-        stream.id = streamId
-        // exist project
-      } else {
-        streamId = await api.createStream(req.headers.authorization, stream, projectId)
-        stream.id = streamId
-      }
-    }
-    deployment.stream = stream
-    deployment.stream.project = project
-    const data = await dao.createDeployment(uid, deployment)
+    const data = await service.createDeployment(uid, req.headers.authorization, deployment)
     res.location(`/deployments/${data.id}`).sendStatus(201)
   } catch (error) {
     res.status(400).send(error.message ?? error)
@@ -105,7 +83,7 @@ router.post('/:id/assets', jwtCheck, multerFile.single('file'), async (req: any,
   const file = req.file ?? null
   try {
     const streamId = await dao.getStreamIdById(uid, deploymentId)
-    await uploadFileAndSaveToDb(streamId, deploymentId, file)
+    await service.uploadFileAndSaveToDb(streamId, deploymentId, file)
     res.send('Upload Asset Success')
   } catch (error) {
     console.log(error)
