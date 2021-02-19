@@ -112,4 +112,4 @@ export const createAsset = async (fileName: string, streamId: string): Promise<s
   }
 }
 
-export default { getDeployments, createDeployment, updateDeployment, deleteDeployment, getStreamIdById, createAssets }
+export default { getDeployments, createDeployment, updateDeployment, deleteDeployment, getStreamIdById, createAsset }
