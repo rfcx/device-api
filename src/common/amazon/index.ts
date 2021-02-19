@@ -13,15 +13,11 @@ const s3Client = new AWS.S3({
   signatureVersion: 'v4'
 })
 
-export const uploadFile = async (remotePath: string, buffer: Buffer, opt?: { ContentEncoding: string }): Promise<PromiseResult<AWS.S3.PutObjectOutput, AWS.AWSError>> => {
-  let params: AWS.S3.PutObjectRequest = {
+export const uploadFile = async (remotePath: string, buffer: Buffer): Promise<PromiseResult<AWS.S3.PutObjectOutput, AWS.AWSError>> => {
+  const params: AWS.S3.PutObjectRequest = {
     Bucket: config.AWS_S3_BUCKET,
     Key: remotePath,
     Body: buffer
-  }
-
-  if (opt != null) {
-    params = { ...params, ...opt }
   }
 
   return await s3Client.putObject(params).promise()
