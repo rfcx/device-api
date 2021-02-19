@@ -100,7 +100,7 @@ async function setActiveStatusToFalse (uid: string, streamId: string, transactio
   }))
 }
 
-export const createAssets = async (fileName: string, streamId: string): Promise<string> => {
+export const createAsset = async (fileName: string, streamId: string): Promise<string> => {
   try {
     const result = await Asset.create({ fileName: fileName, streamId: streamId })
     if (result != null) {

@@ -105,11 +105,10 @@ router.delete('/:id', jwtCheck, async (req: any, res: any) => {
 router.post('/:id/assets', jwtCheck, upload.single('file'), async (req: any, res: any) => {
   const uid = getUserUid(req.user.sub)
   const deploymentId = req.params.id
-  const imageBase64 = req.body.image ?? null
   const file = req.file ?? null
   try {
     const streamId = await dao.getStreamIdById(uid, deploymentId)
-    await uploadFileAndSaveToDb(streamId, deploymentId, imageBase64, file)
+    await uploadFileAndSaveToDb(streamId, deploymentId, file)
     res.send('Upload Asset Success')
   } catch (error) {
     console.log(error)
