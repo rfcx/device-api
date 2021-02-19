@@ -11,7 +11,7 @@ export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: stri
       const fullFileName = generateFileName(streamId, deploymentId, fileExt)
       const remotePath = fileNameToPath(fullFileName)
       await uploadFile(remotePath, buf)
-      return await dao.createAssets(fullFileName, streamId)
+      return await dao.createAsset(fullFileName, streamId)
     }
     return await Promise.reject(new Error('File should not be null'))
   } catch (error) {
