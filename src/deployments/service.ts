@@ -2,6 +2,15 @@ import dao from './dao'
 import { uploadFile } from '../common/amazon'
 import { getFileTypeFromBase64 } from '../common/mime'
 import { generateFileName, fileNameToPath } from '../common/misc/file'
+import { DeploymentResponse, ProjectResponse } from 'src/types'
+
+export const createDeployment = async (uid: string, deployment: DeploymentResponse) => {
+  const stream = deployment.stream
+  const project = stream.project as ProjectResponse ?? null
+
+  let projectId = project?.id ?? null
+  let streamId = stream?.id ?? null
+}
 
 export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: string, imageBase64?: string, imageFile?: any): Promise<string> => {
   if (imageBase64 != null) {
