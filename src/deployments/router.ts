@@ -34,7 +34,7 @@ router.post('/', jwtCheck, async (req: any, res: any) => {
 
   // TODO needs validation on all fields (especially deploymentKey)
 
-  if (!dayjs(deployment.deployedAt, 'YYYY-MM-DDTHH:mm:ss.SSS[Z]').isValid()) {
+  if (!dayjs(deployment.deployedAt).isValid()) {
     res.status(400).send('Invalid format: deployedAt')
     return
   }
