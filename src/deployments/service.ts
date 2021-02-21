@@ -1,6 +1,39 @@
 import dao from './dao'
 import { uploadFile } from '../common/amazon'
 import { generateFileName, fileNameToPath } from '../common/misc/file'
+import { DeploymentResponse, ProjectResponse } from 'src/types'
+import * as api from '../common/core-api'
+import Deployment from './deployment.model'
+
+export const createDeployment = async (uid: string, token: string, deployment: DeploymentResponse): Promise<Deployment> => {
+  const stream = deployment.stream
+  const project = stream.project as ProjectResponse ?? null
+
+  let projectId = project?.id ?? null
+  let streamId = stream?.id ?? null
+
+  try {
+    if (streamId == null) {
+      // new project
+      if (project != null && projectId == null) {
+        projectId = await api.createProject(token, project)
+        project.id = projectId
+
+        streamId = await api.createStream(token, stream, projectId)
+        stream.id = streamId
+        // exist project
+      } else {
+        streamId = await api.createStream(token, stream, projectId)
+        stream.id = streamId
+      }
+    }
+    deployment.stream = stream
+    deployment.stream.project = project
+    return await dao.createDeployment(uid, deployment)
+  } catch (error) {
+    return await Promise.reject(error.message ?? error)
+  }
+}
 
 export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: string, file?: any): Promise<string> => {
   try {
@@ -18,3 +51,5 @@ export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: stri
     return await Promise.reject(error.message ?? error)
   }
 }
+
+export default { createDeployment, uploadFileAndSaveToDb }
