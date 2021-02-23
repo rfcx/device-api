@@ -5,10 +5,12 @@ import path from 'path'
 const options: SequelizeOptions = {
   dialect: 'postgres',
   dialectOptions: {
-    ssl: {
-      require: config.DB_SSL_ENABLED,
-      rejectUnauthorized: false // Ref.: https://github.com/brianc/node-postgres/issues/2009
-    }
+    ssl: config.DB_SSL_ENABLED
+      ? {
+          require: true,
+          rejectUnauthorized: false // Ref.: https://github.com/brianc/node-postgres/issues/2009
+        }
+      : false
   },
   host: config.DB_HOSTNAME,
   port: config.DB_PORT,
@@ -25,7 +27,7 @@ const options: SequelizeOptions = {
       console.log('Connected to Postgres')
     },
     afterDisconnect: () => {
-      console.log('Disonnected from Postgres')
+      console.log('Disconnected from Postgres')
     }
   }
 }
