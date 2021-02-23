@@ -8,16 +8,20 @@ export const mapStreamsAndDeployments = async (streams: any[], deployments: any[
     const deployment = dp.dataValues
     const stream = newStreams.filter(it => { return deployment.streamId === it.id })[0]
     const project = stream.project as ProjectResponse
+    let projectObj: {} | null = null
+    if (project != null) {
+      projectObj = {
+        id: project.id,
+        name: project.name
+      }
+    }
     deployment.stream = {
       id: stream.id,
       name: stream.name,
       latitude: stream.latitude,
       longitude: stream.longitude,
       altitude: stream.altitude,
-      project: {
-        id: project.id,
-        name: project.name
-      }
+      project: projectObj
     }
     delete deployment.streamId
     return deployment as DeploymentResponse
