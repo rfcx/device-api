@@ -50,25 +50,17 @@ router.post('/', (req: Request, res: Response, next: NextFunction): void => {
   }).catch(next)
 })
 
-router.patch('/:id', async (req: Request, res: Response, _next: NextFunction): void => {
+router.patch('/:id', (req: Request, res: Response, next: NextFunction): void => {
   const userId = getUserUid(req.user.sub)
   const userToken = req.headers.authorization ?? ''
   const stream = req.body.stream as StreamResponse ?? null
-  const project = req.body.project as ProjectResponse ?? null
-  try {
-    if (project != null) {
-      await api.updateProject(userToken, project)
-    }
 
+  dao.updateDeployment(userId, req.params.id).then(async () => {
     if (stream != null) {
       await api.updateStream(userToken, stream)
     }
-
-    await dao.updateDeployment(userId, req.params.id)
     res.send('Success')
-  } catch (error) {
-    res.status(400).send(error.message ?? error)
-  }
+  }).catch(next)
 })
 
 router.delete('/:id', (req: Request, res: Response, next: NextFunction): void => {

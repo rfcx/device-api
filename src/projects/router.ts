@@ -5,23 +5,20 @@ import * as api from '../common/core-api'
 
 const router = Router()
 
-router.get('/', async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
-  try {
-    const projects = await api.getProjects(req.headers.authorization)
+router.get('/', (req: Request, res: Response, next: NextFunction): void => {
+  const userToken = req.headers.authorization ?? ''
+  api.getProjects(userToken).then(projects => {
     res.send(projects)
-  } catch (error) {
-    res.status(400).send(error.message ?? error)
-  }
+  }).catch(next)
 })
 
-router.post('/', async (req: Request, res: Response, _next: NextFunction) => {
+router.post('/', (req: Request, res: Response, next: NextFunction): void => {
+  const userToken = req.headers.authorization ?? ''
   const project = req.body as ProjectResponse
-  try {
-    const projectId = await api.createProject(req.headers.authorization, project)
+  // TODO validation
+  api.createProject(userToken, project).then(projectId => {
     res.send(projectId)
-  } catch (error) {
-    res.status(400).send(error.message ?? error)
-  }
+  }).catch(next)
 })
 
 export default router
