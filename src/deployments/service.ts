@@ -1,10 +1,10 @@
 import dao from './dao'
 import assetDao from '../assets/dao'
-import { uploadFile } from '../common/amazon'
-import { generateFileName, fileNameToPath } from '../common/misc/file'
-import { DeploymentResponse, ProjectResponse } from 'src/types'
+import { uploadFile } from '../common/storage'
+import { DeploymentResponse, NewAsset, ProjectResponse } from '../types'
 import * as api from '../common/core-api'
 import Deployment from './deployment.model'
+import { assetPath, generateFilename } from '../common/storage/paths'
 
 export const createDeployment = async (uid: string, token: string, deployment: DeploymentResponse): Promise<Deployment> => {
   const stream = deployment.stream
@@ -39,12 +39,14 @@ export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: stri
   }
   try {
     const buf = file.buffer
-    const fileName = file.originalname
-    const fileExt = (fileName.match(/\.+[\S]+$/) ?? [])[0].slice(1)
-    const fullFileName = generateFileName(streamId, deploymentId, fileExt)
-    const remotePath = fileNameToPath(fullFileName)
+    const fileName = generateFilename(file.originalname)
+    const mimeType = file.mimetype
+    const newAsset: NewAsset = {
+      fileName, mimeType, streamId, deploymentId
+    }
+    const asset = await assetDao.create(newAsset)
+    const remotePath = assetPath(asset)
     await uploadFile(remotePath, buf)
-    const asset = await assetDao.create(fullFileName, streamId, deploymentId)
     return asset.id
   } catch (error) {
     return await Promise.reject(error.message ?? error) // TODO: use throw

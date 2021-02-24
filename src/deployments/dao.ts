@@ -1,7 +1,11 @@
 import { Transaction } from 'sequelize'
-import { DeploymentResponse } from 'src/types'
+import { DeploymentResponse } from '../types'
 import { sequelize } from '../common/db'
 import Deployment from './deployment.model'
+
+export async function get (id: string): Promise<Deployment | null> {
+  return await Deployment.findByPk(id)
+}
 
 export const getDeployments = async (uid: string, options: { isActive?: boolean, limit?: number, offset?: number }): Promise<Deployment[]> => {
   const where: { createdById: string, isActive?: boolean } = {
@@ -94,4 +98,4 @@ async function setActiveStatusToFalse (uid: string, streamId: string, transactio
   }))
 }
 
-export default { getDeployments, createDeployment, updateDeployment, deleteDeployment, getStreamIdById }
+export default { get, getDeployments, createDeployment, updateDeployment, deleteDeployment, getStreamIdById }

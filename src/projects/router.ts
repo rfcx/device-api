@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express'
 import { Router } from 'express'
-import { ProjectResponse } from 'src/types'
+import { ProjectResponse } from '../types'
 import * as api from '../common/core-api'
 
 const router = Router()

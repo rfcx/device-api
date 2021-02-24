@@ -12,7 +12,7 @@ import service from './service'
 
 const router = Router()
 
-router.get('/', async (req: Request, res: Response, next: NextFunction): void => {
+router.get('/', (req: Request, res: Response, next: NextFunction): void => {
   const userId = getUserUid(req.user.sub)
   const userToken = req.headers.authorization ?? ''
   const options: { isActive?: boolean, limit?: number, offset?: number } = {}

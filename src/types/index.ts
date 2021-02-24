@@ -20,3 +20,10 @@ export interface ProjectResponse {
   name: string
   color: String
 }
+
+export interface NewAsset {
+  fileName: string
+  mimeType: string
+  deploymentId: string
+  streamId: string
+}

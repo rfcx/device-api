@@ -12,6 +12,10 @@ module.exports = {
         type: Sequelize.STRING(255),
         allowNull: false
       },
+      mime_type: {
+        type: Sequelize.STRING(32),
+        allowNull: false
+      },
       stream_id: {
         type: Sequelize.STRING(12),
         allowNull: false

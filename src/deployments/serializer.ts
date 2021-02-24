@@ -1,6 +1,6 @@
-import { DeploymentResponse, StreamResponse, ProjectResponse } from 'src/types'
+import { DeploymentResponse, StreamResponse, ProjectResponse } from '../types'
 
-export const mapStreamsAndDeployments = async (streams: any[], deployments: any[]): Promise<DeploymentResponse[]> => {
+export function mapStreamsAndDeployments (streams: any[], deployments: any[]): DeploymentResponse[] {
   const newStreams = streams.map(st => {
     return st as StreamResponse
   })

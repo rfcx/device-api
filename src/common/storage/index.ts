@@ -1,6 +1,7 @@
 import AWS from 'aws-sdk'
 import config from '../../config'
 import { PromiseResult } from 'aws-sdk/lib/request'
+import { Readable } from 'stream'
 
 const credentials = {
   accessKeyId: config.AWS_ACCESS_KEY_ID,
@@ -21,4 +22,12 @@ export const uploadFile = async (remotePath: string, buffer: Buffer): Promise<Pr
   }
 
   return await s3Client.putObject(params).promise()
+}
+
+export function downloadAsStream (remotePath: string): Readable {
+  const params: AWS.S3.GetObjectRequest = {
+    Bucket: config.AWS_S3_BUCKET,
+    Key: remotePath
+  }
+  return s3Client.getObject(params).createReadStream()
 }

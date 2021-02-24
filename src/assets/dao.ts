@@ -1,9 +1,9 @@
 import Asset from '../assets/asset.model'
 import { validate as uuidValidate } from 'uuid'
+import { NewAsset } from '../types'
 
-export async function create (fileName: string, streamId: string, deploymentId: string): Promise<Asset> {
-  const asset = { fileName, streamId, deploymentId }
-  return await Asset.create(asset)
+export async function create (newAsset: NewAsset): Promise<Asset> {
+  return await Asset.create(newAsset)
 }
 
 export async function get (id: string): Promise<Asset | null> {
