@@ -1,30 +1,28 @@
 import { Transaction } from 'sequelize'
-import { DeploymentResponse } from 'src/types'
+import { DeploymentResponse } from '../types'
 import { sequelize } from '../common/db'
 import Deployment from './deployment.model'
-import Asset from '../assets/asset.model'
 
-export const getDeployments = async (uid: string, opt: { isActive: boolean, limit: number, offset: number }): Promise<Deployment[]> => {
-  try {
-    const result = await Deployment.findAll({
-      where: {
-        createdById: uid,
-        isActive: opt.isActive
-      },
-      limit: opt.limit,
-      offset: opt.offset,
-      attributes: {
-        exclude: ['isActive', 'createdById']
-      }
-    })
+export async function get (id: string): Promise<Deployment | null> {
+  return await Deployment.findByPk(id)
+}
 
-    if (result != null) {
-      return result
-    }
-    return await Promise.reject(new Error('Failed on get Deployment'))
-  } catch (error) {
-    return await Promise.reject(error)
+export const getDeployments = async (uid: string, options: { isActive?: boolean, limit?: number, offset?: number }): Promise<Deployment[]> => {
+  const where: { createdById: string, isActive?: boolean } = {
+    createdById: uid
   }
+  if (options.isActive !== undefined) {
+    where.isActive = options.isActive
+  }
+
+  return await Deployment.findAll({
+    where,
+    limit: options.limit ?? 100,
+    offset: options.offset ?? 0,
+    attributes: {
+      exclude: ['isActive', 'createdById', 'createdAt', 'updatedAt', 'deletedAt']
+    }
+  })
 }
 
 export const createDeployment = async (uid: string, deployment: DeploymentResponse): Promise<Deployment> => {
@@ -100,16 +98,4 @@ async function setActiveStatusToFalse (uid: string, streamId: string, transactio
   }))
 }
 
-export const createAsset = async (fileName: string, streamId: string): Promise<string> => {
-  try {
-    const result = await Asset.create({ fileName: fileName, streamId: streamId })
-    if (result != null) {
-      return await Promise.resolve('Create Success')
-    }
-    return await Promise.reject(new Error('Failed on create Asset'))
-  } catch (error) {
-    return await Promise.reject(error)
-  }
-}
-
-export default { getDeployments, createDeployment, updateDeployment, deleteDeployment, getStreamIdById, createAsset }
+export default { get, getDeployments, createDeployment, updateDeployment, deleteDeployment, getStreamIdById }

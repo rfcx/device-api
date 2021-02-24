@@ -45,6 +45,7 @@ Second, reconnect to the new database and create the meta schema (for storing mi
 
 ```sql
 create schema sequelize;
+grant all privileges on schema sequelize to device;
 ```
 
 Migrations will run automatically as a one-off job on deployment (see last step of Jenkinsfile).

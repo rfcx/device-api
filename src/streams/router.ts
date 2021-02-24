@@ -1,16 +1,22 @@
+import type { Request, Response, NextFunction } from 'express'
 import { Router } from 'express'
-import { jwtCheck } from '../common/auth'
 import * as api from '../common/core-api'
+import assetDao from '../assets/dao'
 
 const router = Router()
 
-router.get('/', jwtCheck, async (req: any, res: any) => {
-  try {
-    const streams = await api.getStreams(req.headers.authorization)
+router.get('/', (req: Request, res: Response, next: NextFunction): void => {
+  const token = req.headers.authorization ?? ''
+  api.getStreams(token).then(streams => {
     res.send(streams.data)
-  } catch (error) {
-    res.status(400).send(error.message ?? error)
-  }
+  }).catch(next)
+})
+
+router.get('/:id/assets', (req: Request, res: Response, next: NextFunction): void => {
+  const streamId = req.params.id
+  assetDao.query({ streamId }).then(results => {
+    res.json(results)
+  }).catch(next)
 })
 
 export default router

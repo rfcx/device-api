@@ -1,8 +1,9 @@
+import type { Request, Response, NextFunction } from 'express'
 import { Router } from 'express'
 import dayjs from 'dayjs'
 import dao from './dao'
+import assetDao from '../assets/dao'
 import { DeploymentResponse, StreamResponse, ProjectResponse } from '../types'
-import { jwtCheck } from '../common/auth'
 import { multerFile } from '../common/multer'
 import * as api from '../common/core-api'
 import { getUserUid } from '../common/user'
@@ -11,26 +12,31 @@ import service from './service'
 
 const router = Router()
 
-router.get('/', jwtCheck, async (req: any, res: any) => {
-  const uid = getUserUid(req.user.sub)
-  const option = {
-    isActive: req.query.is_active ?? true,
-    limit: req.query.limit ?? 100,
-    offset: req.query.offset ?? 0
+router.get('/', (req: Request, res: Response, next: NextFunction): void => {
+  const userId = getUserUid(req.user.sub)
+  const userToken = req.headers.authorization ?? ''
+  const options: { isActive?: boolean, limit?: number, offset?: number } = {}
+  if (req.query.active === 'true' || req.query.active === 'false') {
+    options.isActive = req.query.active === 'true'
   }
-  try {
-    const streams = await api.getStreams(req.headers.authorization)
-    const deployments = await dao.getDeployments(uid, option)
-    const deploymentsForCompanion = await mapStreamsAndDeployments(streams.data, deployments)
+  if (typeof req.query.limit === 'string') {
+    options.limit = parseInt(req.query.limit)
+  }
+  if (typeof req.query.offset === 'string') {
+    options.offset = parseInt(req.query.offset)
+  }
+
+  api.getStreams(userToken).then(async streams => {
+    const deployments = await dao.getDeployments(userId, options)
+    const deploymentsForCompanion = mapStreamsAndDeployments(streams.data, deployments)
     res.send(deploymentsForCompanion)
-  } catch (error) {
-    res.status(400).send(error.message ?? error)
-  }
+  }).catch(next)
 })
 
-router.post('/', jwtCheck, async (req: any, res: any) => {
+router.post('/', (req: Request, res: Response, next: NextFunction): void => {
   const deployment = req.body as DeploymentResponse
-  const uid = getUserUid(req.user.sub)
+  const userId = getUserUid(req.user.sub)
+  const userToken = req.headers.authorization ?? ''
 
   // TODO needs validation on all fields (especially deploymentKey)
 
@@ -39,56 +45,54 @@ router.post('/', jwtCheck, async (req: any, res: any) => {
     return
   }
 
-  try {
-    const data = await service.createDeployment(uid, req.headers.authorization, deployment)
+  service.createDeployment(userId, userToken, deployment).then(data => {
     res.location(`/deployments/${data.id}`).sendStatus(201)
-  } catch (error) {
-    res.status(400).send(error.message ?? error)
-  }
+  }).catch(next)
 })
 
-router.patch('/:id', jwtCheck, async (req: any, res: any) => {
-  const uid = getUserUid(req.user.sub)
+router.patch('/:id', async (req: Request, res: Response, _next: NextFunction): void => {
+  const userId = getUserUid(req.user.sub)
+  const userToken = req.headers.authorization ?? ''
   const stream = req.body.stream as StreamResponse ?? null
   const project = req.body.project as ProjectResponse ?? null
   try {
     if (project != null) {
-      await api.updateProject(req.headers.authorization, project)
+      await api.updateProject(userToken, project)
     }
 
     if (stream != null) {
-      await api.updateStream(req.headers.authorization, stream)
+      await api.updateStream(userToken, stream)
     }
 
-    await dao.updateDeployment(uid, req.params.id)
+    await dao.updateDeployment(userId, req.params.id)
     res.send('Success')
   } catch (error) {
     res.status(400).send(error.message ?? error)
   }
 })
 
-router.delete('/:id', jwtCheck, async (req: any, res: any) => {
-  const uid = getUserUid(req.user.sub)
-  try {
-    await dao.deleteDeployment(uid, req.params.id)
+router.delete('/:id', (req: Request, res: Response, next: NextFunction): void => {
+  const userId = getUserUid(req.user.sub)
+  dao.deleteDeployment(userId, req.params.id).then(() => {
     res.send('Success')
-  } catch (error) {
-    res.status(400).send(error.message ?? error)
-  }
+  }).catch(next)
 })
 
-router.post('/:id/assets', jwtCheck, multerFile.single('file'), async (req: any, res: any) => {
-  const uid = getUserUid(req.user.sub)
+router.get('/:id/assets', (req: Request, res: Response, next: NextFunction): void => {
+  const deploymentId = req.params.id
+  assetDao.query({ deploymentId }).then(results => {
+    res.json(results)
+  }).catch(next)
+})
+
+router.post('/:id/assets', multerFile.single('file'), (req: Request, res: Response, next: NextFunction): void => {
+  const userId = getUserUid(req.user.sub)
   const deploymentId = req.params.id
   const file = req.file ?? null
-  try {
-    const streamId = await dao.getStreamIdById(uid, deploymentId)
-    await service.uploadFileAndSaveToDb(streamId, deploymentId, file)
-    res.send('Upload Asset Success')
-  } catch (error) {
-    console.log(error)
-    res.status(400).send(error.message ?? error)
-  }
+  dao.getStreamIdById(userId, deploymentId).then(async streamId => {
+    const assetId = await service.uploadFileAndSaveToDb(streamId, deploymentId, file)
+    res.location(`/assets/${assetId}`).sendStatus(201)
+  }).catch(next)
 })
 
 export default router

@@ -1,9 +1,10 @@
 import dao from './dao'
-import { uploadFile } from '../common/amazon'
-import { generateFileName, fileNameToPath } from '../common/misc/file'
-import { DeploymentResponse, ProjectResponse } from 'src/types'
+import assetDao from '../assets/dao'
+import { uploadFile } from '../common/storage'
+import { DeploymentResponse, NewAsset, ProjectResponse } from '../types'
 import * as api from '../common/core-api'
 import Deployment from './deployment.model'
+import { assetPath, generateFilename } from '../common/storage/paths'
 
 export const createDeployment = async (uid: string, token: string, deployment: DeploymentResponse): Promise<Deployment> => {
   const stream = deployment.stream
@@ -18,37 +19,37 @@ export const createDeployment = async (uid: string, token: string, deployment: D
       if (project != null && projectId == null) {
         projectId = await api.createProject(token, project)
         project.id = projectId
-
-        streamId = await api.createStream(token, stream, projectId)
-        stream.id = streamId
-        // exist project
-      } else {
-        streamId = await api.createStream(token, stream, projectId)
-        stream.id = streamId
       }
+      streamId = await api.createStream(token, stream, projectId)
+      stream.id = streamId
+    } else {
+      // TODO check the stream exists
     }
     deployment.stream = stream
     deployment.stream.project = project
     return await dao.createDeployment(uid, deployment)
   } catch (error) {
-    return await Promise.reject(error.message ?? error)
+    return await Promise.reject(error.message ?? error) // TODO use throw
   }
 }
 
 export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: string, file?: any): Promise<string> => {
+  if (file === null) {
+    throw new Error('File should not be null')
+  }
   try {
-    if (file != null) {
-      const buf = file.buffer
-      const fileName = file.originalname
-      const fileExt = (fileName.match(/\.+[\S]+$/) ?? [])[0].slice(1)
-      const fullFileName = generateFileName(streamId, deploymentId, fileExt)
-      const remotePath = fileNameToPath(fullFileName)
-      await uploadFile(remotePath, buf)
-      return await dao.createAsset(fullFileName, streamId)
+    const buf = file.buffer
+    const fileName = generateFilename(file.originalname)
+    const mimeType = file.mimetype
+    const newAsset: NewAsset = {
+      fileName, mimeType, streamId, deploymentId
     }
-    return await Promise.reject(new Error('File should not be null'))
+    const asset = await assetDao.create(newAsset)
+    const remotePath = assetPath(asset)
+    await uploadFile(remotePath, buf)
+    return asset.id
   } catch (error) {
-    return await Promise.reject(error.message ?? error)
+    return await Promise.reject(error.message ?? error) // TODO: use throw
   }
 }
 
