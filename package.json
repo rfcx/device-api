@@ -2,6 +2,8 @@
   "name": "device-api",
   "version": "0.0.1",
   "description": "Device API",
+  "author": "Rainforest Connection",
+  "license": "UNLICENSED",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest --detectOpenHandles --colors",
@@ -11,7 +13,6 @@
     "serve": "ts-node-dev --respawn --transpile-only src/index.ts",
     "start": "node dist/index.js"
   },
-  "author": "Rainforest Connection",
   "dependencies": {
     "@types/cors": "^2.8.9",
     "@types/uuid": "^8.3.0",
