@@ -1,13 +1,22 @@
-import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript'
+import { Table, Column, Model, DataType } from 'sequelize-typescript'
 
 @Table({
   tableName: 'assets'
 })
 export default class Asset extends Model {
-  @PrimaryKey
-  @Column(DataType.STRING)
+  @Column({
+    type: DataType.UUID,
+    primaryKey: true,
+    defaultValue: DataType.UUIDV4
+  })
+  id!: string
+
+  @Column(DataType.STRING(255))
   fileName!: string
 
   @Column(DataType.STRING(12))
   streamId!: string
+
+  @Column(DataType.STRING(16))
+  deploymentId!: string
 }

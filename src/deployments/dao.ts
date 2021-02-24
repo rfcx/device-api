@@ -2,7 +2,6 @@ import { Transaction } from 'sequelize'
 import { DeploymentResponse } from 'src/types'
 import { sequelize } from '../common/db'
 import Deployment from './deployment.model'
-import Asset from '../assets/asset.model'
 
 export const getDeployments = async (uid: string, options: { isActive?: boolean, limit?: number, offset?: number }): Promise<Deployment[]> => {
   const where: { createdById: string, isActive?: boolean } = {
@@ -95,16 +94,4 @@ async function setActiveStatusToFalse (uid: string, streamId: string, transactio
   }))
 }
 
-export const createAsset = async (fileName: string, streamId: string): Promise<string> => {
-  try {
-    const result = await Asset.create({ fileName: fileName, streamId: streamId })
-    if (result != null) {
-      return await Promise.resolve('Create Success')
-    }
-    return await Promise.reject(new Error('Failed on create Asset'))
-  } catch (error) {
-    return await Promise.reject(error)
-  }
-}
-
-export default { getDeployments, createDeployment, updateDeployment, deleteDeployment, getStreamIdById, createAsset }
+export default { getDeployments, createDeployment, updateDeployment, deleteDeployment, getStreamIdById }

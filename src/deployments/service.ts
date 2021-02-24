@@ -1,4 +1,5 @@
 import dao from './dao'
+import assetDao from '../assets/dao'
 import { uploadFile } from '../common/amazon'
 import { generateFileName, fileNameToPath } from '../common/misc/file'
 import { DeploymentResponse, ProjectResponse } from 'src/types'
@@ -33,7 +34,7 @@ export const createDeployment = async (uid: string, token: string, deployment: D
 }
 
 export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: string, file?: any): Promise<string> => {
-  if (file == null) {
+  if (file === null) {
     throw new Error('File should not be null')
   }
   try {
@@ -43,8 +44,8 @@ export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: stri
     const fullFileName = generateFileName(streamId, deploymentId, fileExt)
     const remotePath = fileNameToPath(fullFileName)
     await uploadFile(remotePath, buf)
-    const assetId = await dao.createAsset(fullFileName, streamId)
-    return assetId
+    const asset = await assetDao.create(fullFileName, streamId, deploymentId)
+    return asset.id
   } catch (error) {
     return await Promise.reject(error.message ?? error) // TODO: use throw
   }

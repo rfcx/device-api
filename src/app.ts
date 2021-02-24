@@ -1,6 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
+import assets from './assets/router'
 import deployments from './deployments/router'
 import streams from './streams/router'
 import projects from './projects/router'
@@ -13,6 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(jwtCheck)
 
+app.use('/assets', assets)
 app.use('/deployments', deployments)
 app.use('/streams', streams)
 app.use('/projects', projects)
