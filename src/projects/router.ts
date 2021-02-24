@@ -1,10 +1,11 @@
+import type { Request, Response, NextFunction } from 'express'
 import { Router } from 'express'
 import { ProjectResponse } from 'src/types'
 import * as api from '../common/core-api'
 
 const router = Router()
 
-router.get('/', async (req: any, res: any) => {
+router.get('/', async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
   try {
     const projects = await api.getProjects(req.headers.authorization)
     res.send(projects)
@@ -13,7 +14,7 @@ router.get('/', async (req: any, res: any) => {
   }
 })
 
-router.post('/', async (req: any, res: any) => {
+router.post('/', async (req: Request, res: Response, _next: NextFunction) => {
   const project = req.body as ProjectResponse
   try {
     const projectId = await api.createProject(req.headers.authorization, project)

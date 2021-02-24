@@ -18,37 +18,35 @@ export const createDeployment = async (uid: string, token: string, deployment: D
       if (project != null && projectId == null) {
         projectId = await api.createProject(token, project)
         project.id = projectId
-
-        streamId = await api.createStream(token, stream, projectId)
-        stream.id = streamId
-        // exist project
-      } else {
-        streamId = await api.createStream(token, stream, projectId)
-        stream.id = streamId
       }
+      streamId = await api.createStream(token, stream, projectId)
+      stream.id = streamId
+    } else {
+      // TODO check the stream exists
     }
     deployment.stream = stream
     deployment.stream.project = project
     return await dao.createDeployment(uid, deployment)
   } catch (error) {
-    return await Promise.reject(error.message ?? error)
+    return await Promise.reject(error.message ?? error) // TODO use throw
   }
 }
 
 export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: string, file?: any): Promise<string> => {
+  if (file == null) {
+    throw new Error('File should not be null')
+  }
   try {
-    if (file != null) {
-      const buf = file.buffer
-      const fileName = file.originalname
-      const fileExt = (fileName.match(/\.+[\S]+$/) ?? [])[0].slice(1)
-      const fullFileName = generateFileName(streamId, deploymentId, fileExt)
-      const remotePath = fileNameToPath(fullFileName)
-      await uploadFile(remotePath, buf)
-      return await dao.createAsset(fullFileName, streamId)
-    }
-    return await Promise.reject(new Error('File should not be null'))
+    const buf = file.buffer
+    const fileName = file.originalname
+    const fileExt = (fileName.match(/\.+[\S]+$/) ?? [])[0].slice(1)
+    const fullFileName = generateFileName(streamId, deploymentId, fileExt)
+    const remotePath = fileNameToPath(fullFileName)
+    await uploadFile(remotePath, buf)
+    const assetId = await dao.createAsset(fullFileName, streamId)
+    return assetId
   } catch (error) {
-    return await Promise.reject(error.message ?? error)
+    return await Promise.reject(error.message ?? error) // TODO: use throw
   }
 }
 

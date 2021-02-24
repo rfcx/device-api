@@ -9,12 +9,35 @@ Providing meta data on devices and deployments. Consumed by Device Management Co
 Requirements:
 - Node
 - yarn
+- Postgres (see below)
 
-Install dependencies:
+### Basics
+
+Install dependencies
+
 `yarn`
 
-Run locally:
+// TODO: Configure environment variables? Shouldn't be needed if using Docker.
+
+Run local dev serve (live reload)
+
 `yarn serve`
+
+### Setup Postgres with Docker
+
+Start Postgres container
+
+`docker run -d --rm --name pg -e POSTGRES_PASSWORD=test -p 5432:5432 postgres`
+
+Create the schema needed
+
+`docker exec -it pg psql -U postgres --command "create schema sequelize;"`
+
+Run the migrations
+
+`yarn migrate`
+
+You are ready to run `yarn serve` and test the endpoints.
 
 ---
 

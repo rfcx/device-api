@@ -4,9 +4,12 @@ export const mapStreamsAndDeployments = async (streams: any[], deployments: any[
   const newStreams = streams.map(st => {
     return st as StreamResponse
   })
-  const result = deployments.map(dp => {
+  const results = deployments.map(dp => {
     const deployment = dp.dataValues
-    const stream = newStreams.filter(it => { return deployment.streamId === it.id })[0]
+    const stream = newStreams.find(it => deployment.streamId === it.id)
+    if (stream === undefined) {
+      return undefined
+    }
     const project = stream.project as ProjectResponse
     let projectObj: {} | null = null
     if (project != null) {
@@ -26,5 +29,5 @@ export const mapStreamsAndDeployments = async (streams: any[], deployments: any[
     delete deployment.streamId
     return deployment as DeploymentResponse
   })
-  return result
+  return results.filter((x): x is DeploymentResponse => x !== undefined)
 }

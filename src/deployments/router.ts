@@ -1,8 +1,8 @@
+import type { Request, Response, NextFunction } from 'express'
 import { Router } from 'express'
 import dayjs from 'dayjs'
 import dao from './dao'
 import { DeploymentResponse, StreamResponse, ProjectResponse } from '../types'
-import { jwtCheck } from '../common/auth'
 import { multerFile } from '../common/multer'
 import * as api from '../common/core-api'
 import { getUserUid } from '../common/user'
@@ -11,24 +11,31 @@ import service from './service'
 
 const router = Router()
 
-router.get('/', jwtCheck, async (req: any, res: any) => {
+router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   const uid = getUserUid(req.user.sub)
-  const option = {
-    isActive: req.query.is_active ?? true,
-    limit: req.query.limit ?? 100,
-    offset: req.query.offset ?? 0
+  const options: { isActive?: boolean, limit?: number, offset?: number } = {}
+  if (req.query.active === 'true' || req.query.active === 'false') {
+    options.isActive = req.query.active === 'true'
   }
+  if (typeof req.query.limit === 'string') {
+    options.limit = parseInt(req.query.limit)
+  }
+  if (typeof req.query.offset === 'string') {
+    options.offset = parseInt(req.query.offset)
+  }
+  const token = req.headers.authorization ?? ''
+
   try {
-    const streams = await api.getStreams(req.headers.authorization)
-    const deployments = await dao.getDeployments(uid, option)
+    const streams = await api.getStreams(token)
+    const deployments = await dao.getDeployments(uid, options)
     const deploymentsForCompanion = await mapStreamsAndDeployments(streams.data, deployments)
     res.send(deploymentsForCompanion)
   } catch (error) {
-    res.status(400).send(error.message ?? error)
+    next(error)
   }
 })
 
-router.post('/', jwtCheck, async (req: any, res: any) => {
+router.post('/', async (req: any, res: any) => {
   const deployment = req.body as DeploymentResponse
   const uid = getUserUid(req.user.sub)
 
@@ -47,7 +54,7 @@ router.post('/', jwtCheck, async (req: any, res: any) => {
   }
 })
 
-router.patch('/:id', jwtCheck, async (req: any, res: any) => {
+router.patch('/:id', async (req: any, res: any) => {
   const uid = getUserUid(req.user.sub)
   const stream = req.body.stream as StreamResponse ?? null
   const project = req.body.project as ProjectResponse ?? null
@@ -67,7 +74,7 @@ router.patch('/:id', jwtCheck, async (req: any, res: any) => {
   }
 })
 
-router.delete('/:id', jwtCheck, async (req: any, res: any) => {
+router.delete('/:id', async (req: any, res: any) => {
   const uid = getUserUid(req.user.sub)
   try {
     await dao.deleteDeployment(uid, req.params.id)
@@ -77,7 +84,7 @@ router.delete('/:id', jwtCheck, async (req: any, res: any) => {
   }
 })
 
-router.post('/:id/assets', jwtCheck, multerFile.single('file'), async (req: any, res: any) => {
+router.post('/:id/assets', multerFile.single('file'), async (req: any, res: any) => {
   const uid = getUserUid(req.user.sub)
   const deploymentId = req.params.id
   const file = req.file ?? null
