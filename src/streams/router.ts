@@ -8,7 +8,7 @@ const router = Router()
 router.get('/', (req: Request, res: Response, next: NextFunction): void => {
   const token = req.headers.authorization ?? ''
   api.getStreams(token).then(streams => {
-    res.send(streams.data)
+    res.send(streams)
   }).catch(next)
 })
 

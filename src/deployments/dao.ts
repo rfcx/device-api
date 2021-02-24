@@ -1,10 +1,14 @@
 import { Transaction } from 'sequelize'
-import { DeploymentResponse } from '../types'
+import { NewDeployment } from '../types'
 import { sequelize } from '../common/db'
 import Deployment from './deployment.model'
 
 export async function get (id: string): Promise<Deployment | null> {
-  return await Deployment.findByPk(id)
+  return await Deployment.findByPk(id, {
+    attributes: {
+      exclude: ['createdById', 'createdAt', 'updatedAt', 'deletedAt']
+    }
+  })
 }
 
 export const getDeployments = async (uid: string, options: { isActive?: boolean, limit?: number, offset?: number }): Promise<Deployment[]> => {
@@ -20,23 +24,22 @@ export const getDeployments = async (uid: string, options: { isActive?: boolean,
     limit: options.limit ?? 100,
     offset: options.offset ?? 0,
     attributes: {
-      exclude: ['isActive', 'createdById', 'createdAt', 'updatedAt', 'deletedAt']
+      exclude: ['createdById', 'createdAt', 'updatedAt', 'deletedAt']
     }
   })
 }
 
-export const createDeployment = async (uid: string, deployment: DeploymentResponse): Promise<Deployment> => {
-  if (deployment.stream.id == null) { return await Promise.reject(new Error('Failed on create Deployment')) }
+export const createDeployment = async (userId: string, deployment: NewDeployment): Promise<Deployment> => {
   try {
     const result = await sequelize.transaction(async (t: Transaction) => {
       // set active existing deployment that same stream to false
-      await setActiveStatusToFalse(uid, deployment.stream.id ?? '', t)
+      await setActiveStatusToFalse(deployment.stream.id, t)
       const deploymentData = {
         id: deployment.deploymentKey,
         deployedAt: deployment.deployedAt,
         deploymentType: deployment.deploymentType,
         isActive: true,
-        createdById: uid,
+        createdById: userId,
         streamId: deployment.stream.id
       }
       const result = await Deployment.create(deploymentData, { transaction: t })
@@ -91,8 +94,8 @@ export const getStreamIdById = async (uid: string, deploymentId: string): Promis
   }
 }
 
-async function setActiveStatusToFalse (uid: string, streamId: string, transaction: any): Promise<void> {
-  const result = await Deployment.findAll({ where: { createdById: uid, streamId: streamId }, transaction: transaction })
+async function setActiveStatusToFalse (streamId: string, transaction: any): Promise<void> {
+  const result = await Deployment.findAll({ where: { streamId: streamId }, transaction: transaction })
   await Promise.all(result.map(async (dp: any) => {
     await dp.update({ isActive: false }, { transaction: transaction })
   }))
