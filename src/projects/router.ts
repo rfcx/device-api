@@ -1,11 +1,10 @@
 import { Router } from 'express'
 import { ProjectResponse } from 'src/types'
 import * as api from '../common/core-api'
-import { jwtCheck } from '../common/auth'
 
 const router = Router()
 
-router.get('/', jwtCheck, async (req: any, res: any) => {
+router.get('/', async (req: any, res: any) => {
   try {
     const projects = await api.getProjects(req.headers.authorization)
     res.send(projects)
@@ -14,7 +13,7 @@ router.get('/', jwtCheck, async (req: any, res: any) => {
   }
 })
 
-router.post('/', jwtCheck, async (req: any, res: any) => {
+router.post('/', async (req: any, res: any) => {
   const project = req.body as ProjectResponse
   try {
     const projectId = await api.createProject(req.headers.authorization, project)

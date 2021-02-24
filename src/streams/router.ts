@@ -1,10 +1,9 @@
 import { Router } from 'express'
-import { jwtCheck } from '../common/auth'
 import * as api from '../common/core-api'
 
 const router = Router()
 
-router.get('/', jwtCheck, async (req: any, res: any) => {
+router.get('/', async (req: any, res: any) => {
   try {
     const streams = await api.getStreams(req.headers.authorization)
     res.send(streams.data)
