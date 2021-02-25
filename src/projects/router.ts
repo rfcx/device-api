@@ -7,7 +7,7 @@ const router = Router()
 
 router.get('/', (req: Request, res: Response, next: NextFunction): void => {
   const userToken = req.headers.authorization ?? ''
-  api.getProjects(userToken).then(projects => {
+  api.getProjects(userToken, req.query).then(projects => {
     res.send(projects)
   }).catch(next)
 })
