@@ -52,10 +52,10 @@ export const updateProject = async (token: string, project: UpdateProjectRequest
   return response.data
 }
 
-export const getStreams = async (token: string): Promise<StreamResponse[]> => {
+export const getStreams = async (token: string, params: unknown = {}): Promise<StreamResponse[]> => {
   const options = {
     headers: { Authorization: token },
-    params: { created_by: 'me' } // TODO not required after CE-183
+    params
   }
   const response = await instance.get('/streams', options)
   return snakeToCamel(response.data)
@@ -77,10 +77,10 @@ export const getStream = async (token: string, id: string): Promise<StreamRespon
   }
 }
 
-export const getProjects = async (token: string): Promise<ProjectResponse[]> => {
+export const getProjects = async (token: string, params: unknown = {}): Promise<ProjectResponse[]> => {
   const options = {
     headers: { Authorization: token },
-    params: { created_by: 'me' } // TODO not required after CE-183
+    params
   }
   const response = await instance.get('/projects', options)
   return snakeToCamel(response.data)
