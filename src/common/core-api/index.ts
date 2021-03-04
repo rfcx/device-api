@@ -5,7 +5,7 @@ import { snakeToCamel } from '../serializers/snake-camel'
 
 const instance = axios.create({
   baseURL: config.CORE_URL,
-  timeout: 4000,
+  timeout: 30000,
   headers: { 'Content-Type': 'application/json' }
 })
 // TODO I think `await Promise.reject(error) === error` so these are not needed
@@ -70,7 +70,7 @@ export const getStream = async (token: string, id: string): Promise<StreamRespon
     const response = await instance.get<StreamResponse>(`/streams/${id}`, options)
     return snakeToCamel(response.data)
   } catch (error) {
-    if (error.status === 404) {
+    if (error.response !== undefined && error.response.status >= 400 && error.response.status <= 499) {
       return undefined
     }
     throw error
