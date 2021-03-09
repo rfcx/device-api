@@ -12,6 +12,9 @@ export default class Deployment extends Model {
   @Column(DataType.STRING(12))
   streamId!: string
 
+  @Column(DataType.INTEGER)
+  configurationId?: number
+
   @Column(DataType.STRING(16))
   deploymentType!: string
 

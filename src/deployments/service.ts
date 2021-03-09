@@ -1,5 +1,6 @@
 import dao from './dao'
 import assetDao from '../assets/dao'
+import configurationDao from '../configurations/dao'
 import { uploadFile } from '../common/storage'
 import { CreateDeploymentRequest, NewAsset, NewDeployment } from '../types'
 import * as api from '../common/core-api'
@@ -27,6 +28,14 @@ export const createDeployment = async (uid: string, token: string, deployment: C
     }
     if ('name' in stream || 'latitude' in stream || 'longitude' in stream || 'altitude' in stream) {
       await api.updateStream(token, stream)
+    }
+  }
+
+  const type = deployment.deploymentType
+  if (type === 'guardian') {
+    const configuration = deployment.configuration
+    if (configuration !== undefined) {
+      configurationDao.create(configuration)
     }
   }
   return await dao.createDeployment(uid, deployment as NewDeployment)

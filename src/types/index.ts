@@ -4,6 +4,7 @@ export interface DeploymentResponse {
   deployedAt: Date
   deploymentType: string
   stream: StreamResponse
+  configuration?: ConfigurationResponse
 }
 
 export interface CreateDeploymentRequest {
@@ -12,6 +13,7 @@ export interface CreateDeploymentRequest {
   deployedAt: Date
   deploymentType: string
   stream: { id: string } | CreateStreamRequest | UpdateStreamRequest
+  configuration?: CreateConfigurationRequest
 }
 
 export type NewDeployment = CreateDeploymentRequest & { stream: { id: string } }
@@ -62,3 +64,13 @@ export interface NewAsset {
   deploymentId: string
   streamId: string
 }
+
+export interface ConfigurationResponse {
+  bitrate: number
+  sampleRate: number
+  duration: number
+  fileFormat: string
+}
+
+export type NewConfiguration = ConfigurationResponse
+export type CreateConfigurationRequest = ConfigurationResponse
