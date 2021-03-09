@@ -1,5 +1,11 @@
-import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript'
+import { Table, Column, Model, DataType, PrimaryKey, BelongsTo, Scopes, ForeignKey } from 'sequelize-typescript'
+import Configuration from '../configurations/configuration.model'
 
+@Scopes(() => ({
+  full: {
+    include: [Configuration]
+  }
+}))
 @Table({
   paranoid: true,
   tableName: 'deployments'
@@ -12,6 +18,8 @@ export default class Deployment extends Model {
   @Column(DataType.STRING(12))
   streamId!: string
 
+  @ForeignKey(() => Configuration)
+  @BelongsTo(() => Configuration, { targetKey: 'id', as: 'configuration' })
   @Column(DataType.INTEGER)
   configurationId?: number
 

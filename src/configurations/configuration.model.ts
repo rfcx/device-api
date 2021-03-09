@@ -1,11 +1,16 @@
-import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript'
+import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, DefaultScope } from 'sequelize-typescript'
 
+@DefaultScope(() => ({
+  attributes: ['id', 'bitrate', 'sampleRate', 'duration', 'fileFormat']
+}))
 @Table({
   paranoid: true,
-  tableName: 'configurations'
+  tableName: 'configurations',
+  initialAutoIncrement: '0'
 })
 export default class Configuration extends Model {
   @PrimaryKey
+  @AutoIncrement
   @Column(DataType.INTEGER)
   id!: number
 
@@ -13,11 +18,11 @@ export default class Configuration extends Model {
   bitrate!: number
 
   @Column(DataType.INTEGER)
-  sample_rate!: number
+  sampleRate!: number
 
   @Column(DataType.INTEGER)
   duration!: number
 
   @Column(DataType.STRING(16))
-  file_format!: string
+  fileFormat!: string
 }

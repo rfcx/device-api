@@ -13,10 +13,10 @@ export interface CreateDeploymentRequest {
   deployedAt: Date
   deploymentType: string
   stream: { id: string } | CreateStreamRequest | UpdateStreamRequest
-  configuration?: CreateConfigurationRequest
+  configuration?: { id: number } | CreateConfigurationRequest
 }
 
-export type NewDeployment = CreateDeploymentRequest & { stream: { id: string } }
+export type NewDeployment = CreateDeploymentRequest & { stream: { id: string } } & { configuration: { id: number} }
 
 export interface StreamResponse {
   id: string

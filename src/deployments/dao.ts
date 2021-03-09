@@ -4,9 +4,9 @@ import { sequelize } from '../common/db'
 import Deployment from './deployment.model'
 
 export async function get (id: string): Promise<Deployment | null> {
-  return await Deployment.findByPk(id, {
+  return await Deployment.scope('full').findByPk(id, {
     attributes: {
-      exclude: ['createdById', 'createdAt', 'updatedAt', 'deletedAt']
+      exclude: ['createdById', 'createdAt', 'updatedAt', 'deletedAt', 'configurationId']
     }
   })
 }
@@ -19,12 +19,12 @@ export const getDeployments = async (uid: string, options: { isActive?: boolean,
     where.isActive = options.isActive
   }
 
-  return await Deployment.findAll({
+  return await Deployment.scope('full').findAll({
     where,
     limit: options.limit ?? 100,
     offset: options.offset ?? 0,
     attributes: {
-      exclude: ['createdById', 'createdAt', 'updatedAt', 'deletedAt']
+      exclude: ['createdById', 'createdAt', 'updatedAt', 'deletedAt', 'configurationId']
     }
   })
 }
@@ -40,7 +40,8 @@ export const createDeployment = async (userId: string, deployment: NewDeployment
         deploymentType: deployment.deploymentType,
         isActive: true,
         createdById: userId,
-        streamId: deployment.stream.id
+        streamId: deployment.stream.id,
+        configurationId: deployment.configuration.id
       }
       const result = await Deployment.create(deploymentData, { transaction: t })
       if (result != null) {
