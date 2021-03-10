@@ -23,6 +23,9 @@ export default class Deployment extends Model {
   @Column(DataType.INTEGER)
   configurationId?: number
 
+  @Column(DataType.STRING(255))
+  wifi?: string
+
   @Column(DataType.STRING(16))
   deploymentType!: string
 

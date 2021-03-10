@@ -5,6 +5,7 @@ export interface DeploymentResponse {
   deploymentType: string
   stream: StreamResponse
   configuration?: ConfigurationResponse
+  wifi?: string
 }
 
 export interface CreateDeploymentRequest {
@@ -14,6 +15,7 @@ export interface CreateDeploymentRequest {
   deploymentType: string
   stream: { id: string } | CreateStreamRequest | UpdateStreamRequest
   configuration?: { id: number } | CreateConfigurationRequest
+  wifi?: string
 }
 
 export type NewDeployment = CreateDeploymentRequest & { stream: { id: string } } & { configuration: { id: number} }

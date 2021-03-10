@@ -38,6 +38,13 @@ export const createDeployment = async (uid: string, token: string, deployment: C
       if (configuration !== undefined) {
         const configurationId = await configurationDao.create(configuration)
         deployment.configuration = { id: configurationId }
+      } else {
+        throw new ValidationError('configuration not found')
+      }
+
+      const wifi = deployment.wifi
+      if (wifi === undefined) {
+        throw new ValidationError('wifi not found')
       }
     }
     return await dao.createDeployment(uid, deployment as NewDeployment)
