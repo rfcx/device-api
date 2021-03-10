@@ -3,7 +3,8 @@ import { Router } from 'express'
 import dayjs from 'dayjs'
 import dao from './dao'
 import assetDao from '../assets/dao'
-import { DeploymentResponse, UpdateStreamRequest } from '../types'
+import configurationDao from '../configurations/dao'
+import { DeploymentResponse, UpdateConfigurationRequest, UpdateStreamRequest } from '../types'
 import { multerFile } from '../common/multer'
 import * as api from '../common/core-api'
 import { getUserUid } from '../common/user'
@@ -76,10 +77,18 @@ router.patch('/:id', (req: Request, res: Response, next: NextFunction): void => 
   const userId = getUserUid(req.user.sub)
   const userToken = req.headers.authorization ?? ''
   const stream: UpdateStreamRequest | undefined | null = req.body.stream
+  const config: UpdateConfigurationRequest | undefined | null = req.body.configuration
 
   dao.updateDeployment(userId, req.params.id).then(async () => {
     if (stream !== undefined && stream !== null) {
       await api.updateStream(userToken, stream)
+    }
+    if (config !== undefined && config !== null) {
+      const configId = await dao.getConfigurationIdById(userId, req.params.id)
+      if (configId !== undefined) {
+        config.id = configId
+        await configurationDao.update(userToken, config)
+      }
     }
     res.send('Success')
   }).catch(next)

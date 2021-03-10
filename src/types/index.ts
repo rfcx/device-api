@@ -76,3 +76,11 @@ export interface ConfigurationResponse {
 
 export type NewConfiguration = ConfigurationResponse
 export type CreateConfigurationRequest = ConfigurationResponse
+
+export interface UpdateConfigurationRequest {
+  id: number
+  bitrate?: number
+  sampleRate?: number
+  duration?: number
+  fileFormat?: string
+}

@@ -90,7 +90,19 @@ export const getStreamIdById = async (uid: string, deploymentId: string): Promis
     if (result != null) {
       return result.streamId
     }
-    return await Promise.reject(new Error('Failed on get Deployment'))
+    return await Promise.reject(new Error('Failed on get StreamId'))
+  } catch (error) {
+    return await Promise.reject(error)
+  }
+}
+
+export const getConfigurationIdById = async (uid: string, deploymentId: string): Promise<number | undefined> => {
+  try {
+    const result = await Deployment.findOne({ where: { id: deploymentId, createdById: uid }, attributes: ['configurationId'] })
+    if (result != null) {
+      return result.configurationId
+    }
+    return await Promise.reject(new Error('Failed on get ConfigurationId'))
   } catch (error) {
     return await Promise.reject(error)
   }
@@ -103,4 +115,4 @@ async function setActiveStatusToFalse (streamId: string, transaction: any): Prom
   }))
 }
 
-export default { get, getDeployments, createDeployment, updateDeployment, deleteDeployment, getStreamIdById }
+export default { get, getDeployments, createDeployment, updateDeployment, deleteDeployment, getStreamIdById, getConfigurationIdById }
