@@ -43,7 +43,7 @@ export const createDeployment = async (uid: string, token: string, deployment: C
       }
 
       const wifi = deployment.wifi
-      if (wifi === undefined) {
+      if (wifi === undefined || wifi === null) {
         throw new ValidationError('wifi not found')
       }
     }
