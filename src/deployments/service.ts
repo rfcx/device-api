@@ -8,6 +8,12 @@ import { assetPath, generateFilename } from '../common/storage/paths'
 import { ValidationError } from 'sequelize'
 
 export const createDeployment = async (uid: string, token: string, deployment: CreateDeploymentRequest): Promise<Deployment> => {
+  // Check if id existed
+  if (await dao.get(deployment.deploymentKey) != null) {
+    console.error('this deploymentKey is already existed')
+    throw new ValidationError('this deploymentKey is already existed')
+  }
+
   const stream = deployment.stream
   // Check for new stream
   if (!('id' in stream)) {

@@ -42,7 +42,14 @@ router.post('/', (req: Request, res: Response, next: NextFunction): void => {
 
   // TODO needs validation on all fields (especially deploymentKey)
 
+  if (!('deploymentKey' in deployment)) {
+    console.error('deploymentKey should not be null')
+    res.status(400).send('deploymentKey should not be null')
+    return
+  }
+
   if (!dayjs(deployment.deployedAt).isValid()) {
+    console.error('Invalid format: deployedAt')
     res.status(400).send('Invalid format: deployedAt')
     return
   }
