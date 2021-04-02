@@ -9,48 +9,52 @@ import { assetPath, generateFilename } from '../common/storage/paths'
 import { ValidationError } from 'sequelize'
 
 export const createDeployment = async (uid: string, token: string, deployment: CreateDeploymentRequest): Promise<Deployment> => {
-  try {
-    const stream = deployment.stream
-    // Check for new stream
-    if (!('id' in stream)) {
-      const project = stream.project
-      // Check for new project
-      if (project !== undefined && !('id' in project)) {
-        const newProjectId = await api.createProject(token, project)
-        stream.project = { id: newProjectId }
-      }
-      const newStreamId = await api.createStream(token, stream)
-      deployment.stream = { id: newStreamId }
-    } else {
-      // Check the stream exists
-      const streamOrUndefined = await api.getStream(token, stream.id)
-      if (streamOrUndefined === undefined) {
-        throw new ValidationError('stream not found')
-      }
-      if ('name' in stream || 'latitude' in stream || 'longitude' in stream || 'altitude' in stream) {
-        await api.updateStream(token, stream)
-      }
-    }
 
-    const type = deployment.deploymentType
-    if (type === 'guardian') {
-      const configuration = deployment.configuration as CreateConfigurationRequest
-      if (configuration !== undefined) {
-        const configurationId = await configurationDao.create(configuration)
-        deployment.configuration = { id: configurationId }
-      } else {
-        throw new ValidationError('configuration not found')
-      }
-
-      const wifi = deployment.wifi
-      if (wifi === undefined || wifi === null) {
-        throw new ValidationError('wifi not found')
-      }
-    }
-    return await dao.createDeployment(uid, deployment as NewDeployment)
-  } catch (error) {
-    return await Promise.reject(error.message ?? error)
+  // Check if id existed
+  if (await dao.get(deployment.deploymentKey) != null) {
+    console.error('this deploymentKey is already existed')
+    throw new ValidationError('this deploymentKey is already existed')
   }
+
+  const stream = deployment.stream
+  // Check for new stream
+  if (!('id' in stream)) {
+    const project = stream.project
+    // Check for new project
+    if (project !== undefined && !('id' in project)) {
+      const newProjectId = await api.createProject(token, project)
+      stream.project = { id: newProjectId }
+    }
+    const newStreamId = await api.createStream(token, stream)
+    deployment.stream = { id: newStreamId }
+  } else {
+    // Check the stream exists
+    const streamOrUndefined = await api.getStream(token, stream.id)
+    if (streamOrUndefined === undefined) {
+      throw new ValidationError('stream not found')
+    }
+    if ('name' in stream || 'latitude' in stream || 'longitude' in stream || 'altitude' in stream) {
+      await api.updateStream(token, stream)
+    }
+  }
+
+  // Check if audiomoth or guardian
+  const type = deployment.deploymentType
+  if (type === 'guardian') {
+    const configuration = deployment.configuration as CreateConfigurationRequest
+    if (configuration !== undefined) {
+      const configurationId = await configurationDao.create(configuration)
+      deployment.configuration = { id: configurationId }
+    } else {
+      throw new ValidationError('configuration not found')
+    }
+
+    const wifi = deployment.wifi
+    if (wifi === undefined || wifi === null) {
+      throw new ValidationError('wifi not found')
+    }
+  }
+  return await dao.createDeployment(uid, deployment as NewDeployment)
 }
 
 export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: string, file?: any): Promise<string> => {
