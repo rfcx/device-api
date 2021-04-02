@@ -73,7 +73,7 @@ export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: stri
     await uploadFile(remotePath, buf)
     return asset.id
   } catch (error) {
-    return await Promise.reject(error.message ?? error) // TODO: use throw
+    throw new Error(error.message ?? error) // TODO: use throw
   }
 }
 
