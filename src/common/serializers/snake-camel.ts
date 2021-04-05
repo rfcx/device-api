@@ -8,7 +8,7 @@
  */
 export const snakeToCamel = function (data: any, depth?: number): any {
   if (Array.isArray(data) || isObject(data)) {
-    return processKeys(data, camelize, depth ?? 4)
+    return processKeys(data, camelize, depth ?? 8)
   } else {
     return camelize(data)
   }
@@ -21,14 +21,14 @@ export const snakeToCamel = function (data: any, depth?: number): any {
  */
 export const camelToSnake = function (data: any, depth?: number): any {
   if (Array.isArray(data) || isObject(data)) {
-    return processKeys(data, snakeize, (depth ?? 1))
+    return processKeys(data, snakeize, depth ?? 8)
   } else {
     return snakeize(data)
   }
 }
 
 // snakelize a string formed in underscore
-export function snakeize (key: string): string {
+function snakeize (key: string): string {
   const separator = '_'
   const split = /(?=[A-Z])/
 
@@ -36,10 +36,11 @@ export function snakeize (key: string): string {
 }
 
 // camelize a string formed in underscore
-export function camelize (key: string | number): string | number {
+function camelize (key: string | number): string | number {
   if (typeof key === 'number') {
     return key
   }
+  // Replace letters following underscores (and dashes?) with uppercase
   key = key.replace(/[-_\s]+(.)?/g, function (match, ch: string | undefined) {
     return typeof ch === 'string' ? ch.toUpperCase() : ''
   })
