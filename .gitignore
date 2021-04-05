@@ -4,3 +4,4 @@ node_modules
 jest_html_reporters.html
 yarn-error.log
 .env
+secrets.yaml
