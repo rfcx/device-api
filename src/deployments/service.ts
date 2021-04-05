@@ -1,36 +1,41 @@
 import dao from './dao'
 import assetDao from '../assets/dao'
 import { uploadFile } from '../common/storage'
-import { DeploymentResponse, NewAsset, ProjectResponse } from '../types'
+import { CreateDeploymentRequest, NewAsset, NewDeployment } from '../types'
 import * as api from '../common/core-api'
 import Deployment from './deployment.model'
 import { assetPath, generateFilename } from '../common/storage/paths'
+import { ValidationError } from 'sequelize'
 
-export const createDeployment = async (uid: string, token: string, deployment: DeploymentResponse): Promise<Deployment> => {
-  const stream = deployment.stream
-  const project = stream.project as ProjectResponse ?? null
-
-  let projectId = project?.id ?? null
-  let streamId = stream?.id ?? null
-
-  try {
-    if (streamId == null) {
-      // new project
-      if (project != null && projectId == null) {
-        projectId = await api.createProject(token, project)
-        project.id = projectId
-      }
-      streamId = await api.createStream(token, stream, projectId)
-      stream.id = streamId
-    } else {
-      // TODO check the stream exists
-    }
-    deployment.stream = stream
-    deployment.stream.project = project
-    return await dao.createDeployment(uid, deployment)
-  } catch (error) {
-    return await Promise.reject(error.message ?? error) // TODO use throw
+export const createDeployment = async (uid: string, token: string, deployment: CreateDeploymentRequest): Promise<Deployment> => {
+  // Check if id existed
+  if (await dao.get(deployment.deploymentKey) != null) {
+    console.error('this deploymentKey is already existed')
+    throw new ValidationError('this deploymentKey is already existed')
   }
+
+  const stream = deployment.stream
+  // Check for new stream
+  if (!('id' in stream)) {
+    const project = stream.project
+    // Check for new project
+    if (project !== undefined && !('id' in project)) {
+      const newProjectId = await api.createProject(token, project)
+      stream.project = { id: newProjectId }
+    }
+    const newStreamId = await api.createStream(token, stream)
+    deployment.stream = { id: newStreamId }
+  } else {
+    // Check the stream exists
+    const streamOrUndefined = await api.getStream(token, stream.id)
+    if (streamOrUndefined === undefined) {
+      throw new ValidationError('stream not found')
+    }
+    if ('name' in stream || 'latitude' in stream || 'longitude' in stream || 'altitude' in stream) {
+      await api.updateStream(token, stream)
+    }
+  }
+  return await dao.createDeployment(uid, deployment as NewDeployment)
 }
 
 export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: string, file?: any): Promise<string> => {

@@ -6,19 +6,54 @@ export interface DeploymentResponse {
   stream: StreamResponse
 }
 
+export interface CreateDeploymentRequest {
+  isActive: boolean
+  deploymentKey: string
+  deployedAt: Date
+  deploymentType: string
+  stream: { id: string } | CreateStreamRequest | UpdateStreamRequest
+}
+
+export type NewDeployment = CreateDeploymentRequest & { stream: { id: string } }
+
 export interface StreamResponse {
-  id?: string | null
+  id: string
   name: string
   latitude: number
   longitude: number
   altitude: number
-  project?: ProjectResponse | null
+  project: ProjectResponse | null
+}
+
+export interface CreateStreamRequest {
+  name: string
+  latitude: number
+  longitude: number
+  altitude: number
+  project?: { id: string } | CreateProjectRequest
+}
+
+export interface UpdateStreamRequest {
+  id: string
+  name?: string
+  latitude?: number
+  longitude?: number
+  altitude?: number
+  project?: { id: string }
 }
 
 export interface ProjectResponse {
-  id?: string | null
+  id: string
   name: string
-  color: String
+}
+
+export interface CreateProjectRequest {
+  name: string
+}
+
+export interface UpdateProjectRequest {
+  id: string
+  name: string
 }
 
 export interface NewAsset {

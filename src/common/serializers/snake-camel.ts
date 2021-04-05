@@ -8,7 +8,7 @@
  */
 export const snakeToCamel = function (data: any, depth?: number): any {
   if (Array.isArray(data) || isObject(data)) {
-    return processKeys(data, camelize, depth ?? 1)
+    return processKeys(data, camelize, depth ?? 4)
   } else {
     return camelize(data)
   }
@@ -40,8 +40,8 @@ export function camelize (key: string | number): string | number {
   if (typeof key === 'number') {
     return key
   }
-  key = key.replace(/[-_\s]+(.)?/g, function (match, ch: string) {
-    return ch ? ch.toUpperCase() : ''
+  key = key.replace(/[-_\s]+(.)?/g, function (match, ch: string | undefined) {
+    return typeof ch === 'string' ? ch.toUpperCase() : ''
   })
   // Ensure 1st char is always lowercase
   return key.substr(0, 1).toLowerCase() + key.substr(1)

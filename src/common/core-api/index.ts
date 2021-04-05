@@ -1,126 +1,87 @@
+import axios from 'axios'
 import config from '../../config'
-import { ProjectResponse, StreamResponse } from '../../types'
-import axios, { AxiosResponse } from 'axios'
-
-// set up global axios instance
+import { ProjectResponse, StreamResponse, CreateStreamRequest, CreateProjectRequest, UpdateProjectRequest, UpdateStreamRequest } from '../../types'
+import { snakeToCamel } from '../serializers/snake-camel'
 
 const instance = axios.create({
   baseURL: config.CORE_URL,
-  timeout: 4000,
+  timeout: 30000,
   headers: { 'Content-Type': 'application/json' }
 })
+// TODO I think `await Promise.reject(error) === error` so these are not needed
 instance.interceptors.request.use(function (conf) {
   return conf
 }, async function (error) {
   return await Promise.reject(error)
 })
-
 instance.interceptors.response.use(function (response) {
   return response
 }, async function (error) {
   return await Promise.reject(error)
 })
 
-export const createStream = async (token: string | null, stream: StreamResponse, projectId: string | null): Promise<string> => {
-  if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
-  const params = {
+export const createStream = async (token: string, stream: CreateStreamRequest): Promise<string> => {
+  const data = {
     name: stream.name,
     latitude: stream.latitude,
     longitude: stream.longitude,
     altitude: stream.altitude,
-    project_id: projectId ?? null
+    project_id: stream.project !== undefined && 'id' in stream.project ? stream.project.id : undefined
   }
-  return await instance.post('/streams',
-    params,
-    { headers: { Authorization: token } })
-    .then(response => {
-      return response.data.id
-    }).catch(async error => {
-      console.log(error)
-      return await Promise.reject(error)
-    })
+  const response = await instance.post('/streams', data, { headers: { Authorization: token } })
+  return response.data.id
 }
 
-export const createProject = async (token: string | null, project: ProjectResponse): Promise<string> => {
-  if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
-  const params = {
-    name: project.name
-  }
-  return await instance.post('/projects',
-    params,
-    { headers: { Authorization: token } })
-    .then(response => {
-      return response.data.id
-    }).catch(async error => {
-      console.log(error)
-      return await Promise.reject(error)
-    })
+export const createProject = async (token: string, project: CreateProjectRequest): Promise<string> => {
+  const options = { headers: { Authorization: token } }
+  const response = await instance.post('/projects', project, options)
+  return response.data.id
 }
 
-export const updateStream = async (token: string | null, stream: StreamResponse): Promise<AxiosResponse<any>> => {
-  if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
-  const params = {
-    name: stream.name,
-    latitude: stream.latitude,
-    longitude: stream.longitude,
-    altitude: stream.altitude
-  }
-  return await instance.patch(`/streams/${stream.id ?? ''}`,
-    params,
-    { headers: { Authorization: token } })
-    .then(response => {
-      return response.data
-    }).catch(async error => {
-      console.log(error)
-      return await Promise.reject(error)
-    })
+export const updateStream = async (token: string, stream: UpdateStreamRequest): Promise<StreamResponse> => {
+  const { id, ...data } = stream
+  const options = { headers: { Authorization: token } }
+  const response = await instance.patch(`/streams/${id}`, data, options)
+  return response.data
 }
 
-export const updateProject = async (token: string | null, project: ProjectResponse): Promise<AxiosResponse<any>> => {
-  if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
-  const params = {
-    name: project.name
-  }
-  return await instance.patch(`/projects/${project.id ?? ''}`,
-    params,
-    { headers: { Authorization: token } })
-    .then(response => {
-      return response.data
-    }).catch(async error => {
-      return await Promise.reject(error)
-    })
+export const updateProject = async (token: string, project: UpdateProjectRequest): Promise<ProjectResponse> => {
+  const { id, ...data } = project
+  const options = { headers: { Authorization: token } }
+  const response = await instance.patch(`/projects/${id}`, data, options)
+  return response.data
 }
 
-export const getStreams = async (token: string): Promise<AxiosResponse<any[]>> => {
-  if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
-  const params = {
-    created_by: 'me'
+export const getStreams = async (token: string, params: unknown = {}): Promise<StreamResponse[]> => {
+  const options = {
+    headers: { Authorization: token },
+    params
   }
-  return await instance.get('/streams',
-    {
-      headers: { Authorization: token },
-      params: params
-    })
-    .then(response => {
-      return response
-    }).catch(async error => {
-      return await Promise.reject(error)
-    })
+  const response = await instance.get('/streams', options)
+  return snakeToCamel(response.data)
 }
 
-export const getProjects = async (token: string): Promise<AxiosResponse<any[]>> => {
-  if (token == null) { return await Promise.reject(new Error('Unauthorized')) }
-  const params = {
-    created_by: 'me'
+export const getStream = async (token: string, id: string): Promise<StreamResponse | undefined> => {
+  const options = {
+    headers: { Authorization: token },
+    params: { fields: ['id', 'name', 'latitude', 'longitude', 'altitude', 'project'] }
   }
-  return await instance.get('/projects',
-    {
-      headers: { Authorization: token },
-      params: params
-    })
-    .then(response => {
-      return response.data
-    }).catch(async error => {
-      return await Promise.reject(error)
-    })
+  try {
+    const response = await instance.get<StreamResponse>(`/streams/${id}`, options)
+    return snakeToCamel(response.data)
+  } catch (error) {
+    if (error.response !== undefined && error.response.status >= 400 && error.response.status <= 499) {
+      return undefined
+    }
+    throw error
+  }
+}
+
+export const getProjects = async (token: string, params: unknown = {}): Promise<ProjectResponse[]> => {
+  const options = {
+    headers: { Authorization: token },
+    params
+  }
+  const response = await instance.get('/projects', options)
+  return snakeToCamel(response.data)
 }

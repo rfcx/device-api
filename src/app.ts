@@ -1,5 +1,4 @@
 import express from 'express'
-import bodyParser from 'body-parser'
 import cors from 'cors'
 import assets from './assets/router'
 import deployments from './deployments/router'
@@ -15,8 +14,8 @@ app.response.json = responseJsonHandler
 
 // Middleware
 app.use(cors())
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json())
 app.use(jwtCheck)
 
 // Routes
