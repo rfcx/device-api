@@ -32,10 +32,8 @@ export const createStream = async (token: string, stream: CreateStreamRequest): 
   const headers: { location?: string } = response.headers
   if (response.status === 201 && headers.location !== undefined) {
     const regexResult = /\/streams\/(?<id>\w+)$/.exec(headers.location)
-    if (regexResult != null) {
-      if (regexResult.groups != null) {
-        return regexResult.groups.id
-      }
+    if (regexResult?.groups != null) {
+      return regexResult.groups.id
     }
     throw new Error(`Unable to parse location header: ${headers.location}`)
   }
@@ -48,10 +46,8 @@ export const createProject = async (token: string, project: CreateProjectRequest
   const headers: { location?: string } = response.headers
   if (response.status === 201 && headers.location !== undefined) {
     const regexResult = /\/projects\/(?<id>\w+)$/.exec(headers.location)
-    if (regexResult != null) {
-      if (regexResult.groups != null) {
-        return regexResult.groups.id
-      }
+    if (regexResult?.groups != null) {
+      return regexResult.groups.id
     }
     throw new Error(`Unable to parse location header: ${headers.location}`)
   }
