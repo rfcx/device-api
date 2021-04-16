@@ -29,13 +29,29 @@ export const createStream = async (token: string, stream: CreateStreamRequest): 
     project_id: stream.project !== undefined && 'id' in stream.project ? stream.project.id : undefined
   }
   const response = await instance.post('/streams', data, { headers: { Authorization: token } })
-  return response.data.id
+  const headers: { location?: string } = response.headers
+  if (response.status === 201 && headers.location !== undefined) {
+    const regexResult = /\/streams\/(?<id>\w+)$/.exec(headers.location)
+    if (regexResult?.groups != null) {
+      return regexResult.groups.id
+    }
+    throw new Error(`Unable to parse location header: ${headers.location}`)
+  }
+  throw new Error(`Unexpected status code or location header: ${response.status} ${headers.location ?? 'undefined'}`)
 }
 
 export const createProject = async (token: string, project: CreateProjectRequest): Promise<string> => {
   const options = { headers: { Authorization: token } }
   const response = await instance.post('/projects', project, options)
-  return response.data.id
+  const headers: { location?: string } = response.headers
+  if (response.status === 201 && headers.location !== undefined) {
+    const regexResult = /\/projects\/(?<id>\w+)$/.exec(headers.location)
+    if (regexResult?.groups != null) {
+      return regexResult.groups.id
+    }
+    throw new Error(`Unable to parse location header: ${headers.location}`)
+  }
+  throw new Error(`Unexpected status code or location header: ${response.status} ${headers.location ?? 'undefined'}`)
 }
 
 export const updateStream = async (token: string, stream: UpdateStreamRequest): Promise<StreamResponse> => {
