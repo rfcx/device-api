@@ -34,7 +34,6 @@ export const createStream = async (token: string, stream: CreateStreamRequest): 
     const regexResult = /\/streams\/(?<id>\w+)$/.exec(headers.location)
     if (regexResult != null) {
       if (regexResult.groups != null) {
-        console.log(regexResult.groups.id)
         return regexResult.groups.id
       }
     }
@@ -51,7 +50,6 @@ export const createProject = async (token: string, project: CreateProjectRequest
     const regexResult = /\/projects\/(?<id>\w+)$/.exec(headers.location)
     if (regexResult != null) {
       if (regexResult.groups != null) {
-        console.log(regexResult.groups.id)
         return regexResult.groups.id
       }
     }
