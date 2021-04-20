@@ -1,5 +1,7 @@
 interface UserPayload {
   sub: string
+  name: string
+  email: string
 }
 
 declare namespace Express {

@@ -1,13 +1,14 @@
 import dao from './dao'
 import assetDao from '../assets/dao'
 import { uploadFile } from '../common/storage'
-import { CreateDeploymentRequest, NewAsset, NewDeployment } from '../types'
+import { CreateDeploymentRequest, NewAsset, NewDeployment, User } from '../types'
 import * as api from '../common/core-api'
 import Deployment from './deployment.model'
 import { assetPath, generateFilename } from '../common/storage/paths'
+import email from '../common/email'
 import { ValidationError } from 'sequelize'
 
-export const createDeployment = async (uid: string, token: string, deployment: CreateDeploymentRequest): Promise<Deployment> => {
+export const createDeployment = async (uid: string, token: string, user: User, deployment: CreateDeploymentRequest): Promise<Deployment> => {
   // Check if id existed
   if (await dao.get(deployment.deploymentKey) != null) {
     console.error('this deploymentKey is already existed')
@@ -35,7 +36,9 @@ export const createDeployment = async (uid: string, token: string, deployment: C
       await api.updateStream(token, stream)
     }
   }
-  return await dao.createDeployment(uid, deployment as NewDeployment)
+  const result = await dao.createDeployment(uid, deployment as NewDeployment)
+  await email.sendNewDeploymentSuccessEmail(deployment as NewDeployment, user)
+  return result
 }
 
 export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: string, file?: any): Promise<string> => {
