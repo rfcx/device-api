@@ -24,4 +24,8 @@ export async function query (filters: { streamId?: string, deploymentId?: string
   })
 }
 
-export default { create, get, query }
+export async function remove (id: string): Promise<number> {
+  return await Asset.destroy({ where: { id: id } })
+}
+
+export default { create, get, query, remove }
