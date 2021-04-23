@@ -1,6 +1,7 @@
 import { Table, Column, Model, DataType, CreatedAt, UpdatedAt } from 'sequelize-typescript'
 
 @Table({
+  paranoid: true,
   tableName: 'assets'
 })
 export default class Asset extends Model {
