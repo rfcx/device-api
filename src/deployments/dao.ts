@@ -2,6 +2,7 @@ import { Transaction } from 'sequelize'
 import { NewDeployment } from '../types'
 import { sequelize } from '../common/db'
 import Deployment from './deployment.model'
+import { Op } from 'sequelize'
 
 export async function get (id: string): Promise<Deployment | null> {
   return await Deployment.findByPk(id, {
@@ -11,9 +12,11 @@ export async function get (id: string): Promise<Deployment | null> {
   })
 }
 
-export const getDeployments = async (uid: string, options: { isActive?: boolean, limit?: number, offset?: number }): Promise<Deployment[]> => {
-  const where: { createdById: string, isActive?: boolean } = {
-    createdById: uid
+export const getDeployments = async (streamIds: string[], options: { isActive?: boolean, limit?: number, offset?: number }): Promise<Deployment[]> => {
+  const where: { isActive?: boolean, streamId: { [Op.in]: string[] } } = {
+    streamId: {
+      [Op.in]: streamIds
+    }
   }
   if (options.isActive !== undefined) {
     where.isActive = options.isActive

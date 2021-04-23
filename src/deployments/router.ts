@@ -29,7 +29,8 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
   }
 
   api.getStreams(userToken, { limit: 2000 }).then(async streams => {
-    const deployments = await dao.getDeployments(userId, options)
+    const streamIds = streams.map( stream => stream.id)
+    const deployments = await dao.getDeployments(streamIds, options)
     const deploymentsForCompanion = mapStreamsAndDeployments(streams, deployments)
     res.send(deploymentsForCompanion)
   }).catch(next)
