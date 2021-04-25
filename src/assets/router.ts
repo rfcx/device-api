@@ -23,7 +23,7 @@ router.delete('/:id', (req: Request, res: Response, next: NextFunction): void =>
     if (row === 0) {
       res.status(404).send('Not found')
     } else {
-      res.status(204)
+      res.status(204).send()
     }
   }).catch(next)
 })
