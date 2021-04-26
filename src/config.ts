@@ -10,5 +10,6 @@ export default {
   DB_SSL_ENABLED: process.env.DB_SSL_ENABLED === 'true',
   DB_DBNAME: process.env.DB_DBNAME ?? 'postgres',
   DB_USER: process.env.DB_USER ?? 'postgres',
-  DB_PASSWORD: process.env.DB_PASSWORD ?? 'test'
+  DB_PASSWORD: process.env.DB_PASSWORD ?? 'test',
+  MANDRILL_KEY: process.env.MANDRILL_KEY ?? ''
 }

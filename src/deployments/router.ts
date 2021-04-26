@@ -3,7 +3,7 @@ import { Router } from 'express'
 import dayjs from 'dayjs'
 import dao from './dao'
 import assetDao from '../assets/dao'
-import { DeploymentResponse, UpdateStreamRequest } from '../types'
+import { DeploymentResponse, UpdateStreamRequest, User } from '../types'
 import { multerFile } from '../common/multer'
 import * as api from '../common/core-api'
 import { getUserUid } from '../common/user'
@@ -37,6 +37,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
 
 router.post('/', (req: Request, res: Response, next: NextFunction): void => {
   const deployment = req.body as DeploymentResponse
+  const user: User = { name: req.user.name, email: req.user.email }
   const userId = getUserUid(req.user.sub)
   const userToken = req.headers.authorization ?? ''
 
@@ -54,7 +55,7 @@ router.post('/', (req: Request, res: Response, next: NextFunction): void => {
     return
   }
 
-  service.createDeployment(userId, userToken, deployment).then(data => {
+  service.createDeployment(userId, userToken, user, deployment).then(data => {
     res.location(`/deployments/${data.id}`).sendStatus(201)
   }).catch(error => {
     if (error instanceof ValidationError) {
