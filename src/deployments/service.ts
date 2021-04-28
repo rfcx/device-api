@@ -37,7 +37,7 @@ export const createDeployment = async (uid: string, token: string, user: User, d
     }
   }
   const result = await dao.createDeployment(uid, deployment as NewDeployment)
-  await email.sendNewDeploymentSuccessEmail(deployment as NewDeployment, user)
+  // await email.sendNewDeploymentSuccessEmail(deployment as NewDeployment, user)
   return result
 }
 
