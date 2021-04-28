@@ -5,7 +5,7 @@ import { CreateDeploymentRequest, NewAsset, NewDeployment, User } from '../types
 import * as api from '../common/core-api'
 import Deployment from './deployment.model'
 import { assetPath, generateFilename } from '../common/storage/paths'
-import email from '../common/email'
+// import email from '../common/email'
 import { ValidationError } from 'sequelize'
 
 export const createDeployment = async (uid: string, token: string, user: User, deployment: CreateDeploymentRequest): Promise<Deployment> => {
