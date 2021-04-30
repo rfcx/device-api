@@ -1,8 +1,7 @@
-import { Transaction } from 'sequelize'
+import { Transaction, Op } from 'sequelize'
 import { NewDeployment } from '../types'
 import { sequelize } from '../common/db'
 import Deployment from './deployment.model'
-import { Op } from 'sequelize'
 
 export async function get (id: string): Promise<Deployment | null> {
   return await Deployment.findByPk(id, {

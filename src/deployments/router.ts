@@ -15,7 +15,6 @@ import { ValidationError } from 'sequelize'
 const router = Router()
 
 router.get('/', (req: Request, res: Response, next: NextFunction): void => {
-  const userId = getUserUid(req.user.sub)
   const userToken = req.headers.authorization ?? ''
   const options: { isActive?: boolean, limit?: number, offset?: number } = {}
   if (req.query.active === 'true' || req.query.active === 'false') {
@@ -29,7 +28,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
   }
 
   api.getStreams(userToken, { limit: 2000 }).then(async streams => {
-    const streamIds = streams.map( stream => stream.id)
+    const streamIds = streams.map(stream => stream.id)
     const deployments = await dao.getDeployments(streamIds, options)
     const deploymentsForCompanion = mapStreamsAndDeployments(streams, deployments)
     res.send(deploymentsForCompanion)
