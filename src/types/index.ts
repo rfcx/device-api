@@ -6,6 +6,8 @@ export interface DeploymentResponse {
   stream: StreamResponse
 }
 
+export type MappedDeploymentInfo = StreamResponse & { deployment?: DeploymentResponse }
+
 export interface CreateDeploymentRequest {
   isActive: boolean
   deploymentKey: string
