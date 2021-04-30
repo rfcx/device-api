@@ -9,13 +9,6 @@ const router = Router()
 
 router.get('/', (req: Request, res: Response, next: NextFunction): void => {
   const token = req.headers.authorization ?? ''
-  api.getStreams(token, req.query).then(streams => {
-    res.send(streams)
-  }).catch(next)
-})
-
-router.get('/deployments', (req: Request, res: Response, next: NextFunction): void => {
-  const token = req.headers.authorization ?? ''
   api.getStreams(token, req.query).then(async (streams) => {
     const deployments = await deploymentDao.getDeployments(streams.map(stream => stream.id))
     const deploymentsInfo = mapStreamsAndDeployments(streams, deployments)
