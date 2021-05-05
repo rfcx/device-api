@@ -1,0 +1,57 @@
+{
+  "Deployment": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "A deployment id",
+        "example": "39D2BBBAAAAAAAAA"
+      },
+      "streamId": {
+        "type": "string",
+        "description": "A deployment stream id",
+        "example": "skhedl36rxb2"
+      },
+      "deploymentType": {
+        "type": "string",
+        "description": "A deployment type (audiomoth | guardian)",
+        "example": "audiomoth"
+      },
+      "deployedAt": {
+        "type": "date",
+        "description": "A deployment deployed date (iso 8601)",
+        "example": "2020-11-16T09:03:24.928Z"
+      },
+      "isActive": {
+        "type": "boolean",
+        "description": "A deployment active status",
+        "example": true
+      }
+    }
+  },
+  "Project": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "A project id in Core API",
+        "example": "skhedl36rxb2"
+      },
+      "name": {
+        "type": "string",
+        "description": "A project name",
+        "example": "Test project"
+      },
+      "isPublic": {
+        "type": "boolean",
+        "description": "A project public status",
+        "example": false
+      },
+      "externalId": {
+        "type": "number",
+        "description": "A project id in Arbimon API",
+        "example": "1717"
+      }
+    }
+  }
+}

@@ -4,6 +4,7 @@ import assets from './assets/router'
 import deployments from './deployments/router'
 import streams from './streams/router'
 import projects from './projects/router'
+import docs from './docs'
 import { jwtCheck } from './common/auth'
 import { errorHandler, notFoundHandler } from './common/error-handlers'
 
@@ -11,6 +12,9 @@ const app = express()
 app.use(cors())
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
+
+app.use('/docs', docs)
+
 app.use(jwtCheck)
 
 app.use('/assets', assets)
