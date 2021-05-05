@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express'
-import { SwaggerOptions, SwaggerUiOptions } from 'swagger-ui-express'
-import swaggerUi from 'swagger-ui-express'
+import swaggerUi, { SwaggerOptions, SwaggerUiOptions } from 'swagger-ui-express'
+
 import swaggerJSDoc from 'swagger-jsdoc'
 import { Router } from 'express'
 import modelSchemas from './modelSchemas.json'
@@ -59,7 +59,7 @@ const options = {
     ]
   },
   apis: [
-    './src/streams/*.ts',
+    './src/streams/*.ts'
   ]
 }
 
@@ -77,9 +77,11 @@ const swaggerUiExpressOptions: SwaggerUiOptions = {
 router.get('/auth-callback', (req: Request, res: Response) => res.sendFile('./src/docs/oauth-redirect.html', { root: '.' }))
 router.use('/', swaggerUi.serve, (req: Request, res: Response, next: NextFunction) => {
   const host = req.get('host')
-  const oauth2RedirectUrl = `${host?.endsWith('.rfcx.org') ? 'https' : 'http'}://${host}/docs/auth-callback`
-  const options = { ...swaggerUiExpressOptions, swaggerOptions: { ...swaggerUiOptions, oauth2RedirectUrl } }
-  swaggerUi.setup(swaggerSpec, options)(req, res, next)
+  if (host != null) {
+    const oauth2RedirectUrl = `${host.endsWith('.rfcx.org') ? 'https' : 'http'}://${host}/docs/auth-callback`
+    const options = { ...swaggerUiExpressOptions, swaggerOptions: { ...swaggerUiOptions, oauth2RedirectUrl } }
+    swaggerUi.setup(swaggerSpec, options)(req, res, next)
+  }
 })
 
 export default router
