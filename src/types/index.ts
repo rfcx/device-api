@@ -64,3 +64,8 @@ export interface NewAsset {
   deploymentId: string
   streamId: string
 }
+
+export interface User {
+  name: string
+  email: string
+}

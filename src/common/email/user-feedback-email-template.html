@@ -1,0 +1,11 @@
+<p>Hi RFCx Support Team!</p>
+<p>We have got a new feedback from {{name}}({{email}}) at {{date}}.</p>
+<blockquote style="color: black">
+  "{{feedback}}"
+</blockquote>
+{{#each images}}
+{{#if @first}}with attachments:{{/if}}
+<a href="{{this}}">attachment_{{@index}}</a>
+{{/each}}
+<p>Regards,</p>
+<p>RFCx Companion Bot</p>

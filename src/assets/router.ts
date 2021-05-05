@@ -18,4 +18,14 @@ router.get('/:id', (req: Request, res: Response, next: NextFunction): void => {
   }).catch(next)
 })
 
+router.delete('/:id', (req: Request, res: Response, next: NextFunction): void => {
+  assetDao.remove(req.params.id).then(row => {
+    if (row === 0) {
+      res.status(404).send('Not found')
+    } else {
+      res.status(204).send()
+    }
+  }).catch(next)
+})
+
 export default router
