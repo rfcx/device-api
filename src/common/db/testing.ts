@@ -1,26 +1,29 @@
 import type { Request, Response, NextFunction } from 'express'
-import { Sequelize, QueryTypes } from 'sequelize'
+import { QueryTypes } from 'sequelize'
+import { Sequelize } from 'sequelize-typescript'
 import * as fs from 'fs'
 import * as path from 'path'
 import express, { Express } from 'express'
-
-import Deployment from 'src/deployments/deployment.model'
+import Deployment from '../../deployments/deployment.model'
+interface Migration {
+  name: string
+}
 
 // Copied from StackOverflow - only to be used for testing
-export async function migrate (sequelize: Sequelize, Sequelize: Sequelize, table = '`SequelizeMeta`'): Promise<void> {
-  const migrations = fs.readdirSync(path.join(__dirname, '../../migrations'))
+export async function migrate (sequelize: Sequelize, table = '`SequelizeMeta`'): Promise<void> {
+  const migrations = fs.readdirSync(path.join(__dirname, '../../../migrations'))
   await sequelize.query(`CREATE TABLE IF NOT EXISTS ${table} (name VARCHAR(255) NOT NULL UNIQUE)`)
-  const completedMigrations = await sequelize.query(`SELECT * FROM ${table}`, { type: QueryTypes.SELECT })
+  const completedMigrations = await sequelize.query<Migration>(`SELECT * FROM ${table}`, { type: QueryTypes.SELECT })
 
-  completedMigrations.forEach(name => {
+  for (const migration of completedMigrations) {
     // eslint-disable-next-line no-prototype-builtins
-    if (completedMigrations.hasOwnProperty(name)) {
-      const index = migrations.indexOf(completedMigrations[name].name)
+    if (completedMigrations.hasOwnProperty(migration.name)) {
+      const index = migrations.indexOf(completedMigrations[migration.name].name)
       if (index !== -1) {
         migrations.splice(index, 1)
       }
     }
-  })
+  }
 
   const query = sequelize.getQueryInterface().sequelize.query
   const regex = /(create_hypertable|INDEX|ADD CONSTRAINT|DROP CONSTRAINT|DELETE FROM .* USING)/ // unsupported by sqlite
@@ -34,9 +37,9 @@ export async function migrate (sequelize: Sequelize, Sequelize: Sequelize, table
 
   for (const filename of migrations) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const migration = require(path.join(__dirname, '../../migrations', filename))
+    const migration = require(path.join(__dirname, '../../../migrations', filename))
     try {
-      await migration.up(sequelize.getQueryInterface(), Sequelize)
+      await migration.up(sequelize.getQueryInterface(), sequelize.Sequelize)
       await sequelize.query(`INSERT INTO ${table} VALUES (:name)`, { type: QueryTypes.INSERT, replacements: { name: filename } })
     } catch (err) {
       console.error('Failed performing migration: ' + filename)
@@ -53,7 +56,7 @@ const primaryEmail = 'John@test.org'
 export const seedValues = { primarySub, primaryName, primaryEmail }
 
 export async function seed (): Promise<void> {
-  await Deployment.create({ id: '0123456789101112', streamId: 'abcdefghijkl', deploymentType: 'audiomoth', deployedAt: '', isActive: true, createdById: '' })
+  await Deployment.create({ id: '0123456789101112', streamId: 'abcdefghijkl', deploymentType: 'audiomoth', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: primarySub })
 }
 
 export async function truncate (): Promise<Number> {
@@ -75,4 +78,4 @@ export function expressApp (): Express {
   return app
 }
 
-export default { seedValues, expressApp }
+export default { migrate, truncate, expressApp, seed, seedValues }

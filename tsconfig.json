@@ -19,7 +19,8 @@
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "suppressImplicitAnyIndexErrors": true,
   },
   "include": ["src/**/*.ts", "src/**/*.json", "src/**/*.html"],
   "exclude": ["node_modules"]

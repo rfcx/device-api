@@ -1,19 +1,21 @@
 import routes from './router'
-import { expressApp } from '../common/db/testing'
+import { migrate, truncate, expressApp, seed } from '../common/db/testing'
 import request from 'supertest'
+import { sequelize } from '../common/db'
 
 const app = expressApp()
 
 app.use('/', routes)
 
+beforeAll(async () => {
+  await migrate(sequelize)
+  await seed()
+})
+beforeEach(async () => {
+  await truncate()
+})
+
 describe('GET /streams', () => {
-  test('no results', async () => {
-    const response = await request(app).get('/')
-
-    expect(response.statusCode).toBe(200)
-    expect(response.body).toEqual([])
-  })
-
   test('success', async () => {
     const response = await request(app).get('/')
 
