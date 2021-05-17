@@ -17,9 +17,8 @@ export const getDeployments = async (streamIds: string[], options: { isActive?: 
       [Op.in]: streamIds
     }
   }
-  if (options.isActive !== undefined) {
-    where.isActive = options.isActive
-  }
+
+  where.isActive = options.isActive ?? true
 
   return await Deployment.findAll({
     where,
