@@ -68,10 +68,10 @@ export const updateProject = async (token: string, project: UpdateProjectRequest
   return response.data
 }
 
-export const getStreams = async (token: string, params: unknown = {}): Promise<StreamResponse[]> => {
+export const getStreams = async (token: string, params: any = {}): Promise<StreamResponse[]> => {
   const options = {
     headers: { Authorization: token },
-    params
+    params: { ...params, fields: ['id', 'name', 'latitude', 'longitude', 'altitude', 'project'] }
   }
   const response = await instance.get('/streams', options)
   return snakeToCamel(response.data)
