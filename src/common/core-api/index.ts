@@ -82,15 +82,8 @@ export const getStream = async (token: string, id: string): Promise<StreamRespon
     headers: { Authorization: token },
     params: { fields: ['id', 'name', 'latitude', 'longitude', 'altitude', 'project'] }
   }
-  try {
-    const response = await instance.get<StreamResponse>(`/streams/${id}`, options)
-    return snakeToCamel(response.data)
-  } catch (error) {
-    if (error.response !== undefined && error.response.status >= 400 && error.response.status <= 499) {
-      throw error
-    }
-    throw error
-  }
+  const response = await instance.get<StreamResponse>(`/streams/${id}`, options)
+  return snakeToCamel(response.data)
 }
 
 export const getProjects = async (token: string, params: unknown = {}): Promise<ProjectResponse[]> => {
