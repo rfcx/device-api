@@ -10,7 +10,7 @@ import dayjs from 'dayjs'
 const mandrillClient = new mandrill.Mandrill(config.MANDRILL_KEY)
 
 export const generateHTML = (deployment: NewDeployment): string => {
-  const filePath = path.join(__dirname, '../../../src/common/email/deploy-success-email-template.html')
+  const filePath = path.join(__dirname, './deploy-success-email-template.html')
   const source = fs.readFileSync(filePath).toString()
   const template = handlebars.compile(source)
   const deployedAt = dayjs(deployment.deployedAt).toDate()
