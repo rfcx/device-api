@@ -55,7 +55,13 @@ router.get('/:id', (req: Request, res: Response, next: NextFunction): void => {
       const result = { ...partialDeployment, stream }
       res.json(result)
     }
-  }).catch(next)
+  }).catch(error => {
+    if (error.response !== undefined && error.response.status >= 400 && error.response.status <= 499) {
+      res.status(error.response.status).send(error.response.statusText)
+    } else {
+      next(error)
+    }
+  })
 })
 
 router.patch('/:id', (req: Request, res: Response, next: NextFunction): void => {
