@@ -8,11 +8,11 @@
   "scripts": {
     "test": "jest --detectOpenHandles --colors",
     "lint": "eslint src/** --fix --cache",
-    "build": "rimraf dist && tsc && yarn copy",
+    "build": "rimraf dist && tsc && yarn build:copy-resources",
+    "build:copy-resources": "copyfiles -u 1 \"./src/**/*.html\" \"dist\"",
     "migrate": "node admin/migrate.js",
     "serve": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "start": "node dist/index.js",
-    "copy": "copyfiles -u 1 \"./src/**/*.html\" \"dist\""
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "aws-sdk": "^2.845.0",
