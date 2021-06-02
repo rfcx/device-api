@@ -24,10 +24,10 @@ const options: SequelizeOptions = {
   },
   hooks: {
     afterConnect: () => {
-      console.log('Connected to Postgres')
+      // console.log('Connected to Postgres')
     },
     afterDisconnect: () => {
-      console.log('Disconnected from Postgres')
+      // console.log('Disconnected from Postgres')
     }
   }
 }

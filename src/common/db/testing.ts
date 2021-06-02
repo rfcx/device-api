@@ -1,12 +1,12 @@
 import type { Request, Response, NextFunction } from 'express'
 import { QueryTypes } from 'sequelize'
-import { Sequelize } from 'sequelize-typescript'
+import { Sequelize, DataType } from 'sequelize-typescript'
 import * as fs from 'fs'
 import * as path from 'path'
 import express, { Express } from 'express'
 import Deployment from '../../deployments/deployment.model'
 import Asset from '../../assets/asset.model'
-import { DataType } from 'sequelize-typescript'
+
 interface Migration {
   name: string
 }
@@ -58,8 +58,6 @@ export const seedValues = { primarySub, primaryName, primaryEmail }
 export async function seed (): Promise<void> {
   await Deployment.create({ id: '0123456789101112', streamId: 'abcdefghijkl', deploymentType: 'audiomoth', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: primarySub })
 }
-
-const truncateOrder = [Asset, Deployment]
 
 export async function truncate (): Promise<Number> {
   await Asset.destroy({ where: {}, force: true })
