@@ -45,4 +45,17 @@ describe('GET /streams', () => {
     expect(response.statusCode).toBe(200)
     expect(response.body[0]).not.toHaveProperty('deployment')
   })
+
+  test('get stream return empty list even has a deployment', async () => {
+    const mockDeployment = { id: '0000000000000000', streamId: 'aaaaaaaaaaaa', deploymentType: 'audiomoth', deployedAt: dayJs('2021-05-12T05:21:21.960Z').toDate(), isActive: true, createdById: seedValues.primarySub }
+    await Deployment.create(mockDeployment)
+
+    const mockAdapter = new MockAdapter(axios)
+    mockAdapter.onGet('/streams')
+      .reply(200, [])
+    const response = await request(app).get('/')
+
+    expect(response.statusCode).toBe(200)
+    expect(response.body).toEqual([])
+  })
 })
