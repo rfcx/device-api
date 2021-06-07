@@ -21,7 +21,7 @@ const endpoint = 'projects'
 describe('GET /projects', () => {
   test('get projects', async () => {
     const mockProject = [
-      { id: 'bbbbbbbbbbbb', name: 'test-project-1', isPublic: true, externalId: null }, 
+      { id: 'bbbbbbbbbbbb', name: 'test-project-1', isPublic: true, externalId: null },
       { id: 'bbbbbbbbbbbc', name: 'test-project-2', isPublic: true, externalId: null }
     ]
 
@@ -34,7 +34,6 @@ describe('GET /projects', () => {
   })
 
   test('get empty projects', async () => {
-
     setupMockAxios(GET, endpoint, 200, [])
     const response = await request(app).get('/')
 
@@ -45,7 +44,7 @@ describe('GET /projects', () => {
 
 describe('POST /projects', () => {
   test('create a project to core', async () => {
-    const headers = { location: '/projects/bbbbbbbbbbbb' }
+    const headers = { location: `/${endpoint}/bbbbbbbbbbbb` }
 
     setupMockAxios(POST, endpoint, 201, null, headers)
     const response = await request(app).post('/')
