@@ -18,7 +18,6 @@ export async function migrate (sequelize: Sequelize, table = 'SequelizeMeta'): P
   const completedMigrations = await sequelize.query<Migration>(`SELECT * FROM ${table}`, { type: QueryTypes.SELECT })
 
   for (const migration of completedMigrations) {
-    // eslint-disable-next-line no-prototype-builtins
     const index = migrations.indexOf(migration.name)
     if (index !== -1) {
       migrations.splice(index, 1)

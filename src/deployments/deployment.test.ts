@@ -4,7 +4,6 @@ import request from 'supertest'
 import { sequelize } from '../common/db'
 import Deployment from 'src/deployments/deployment.model'
 import dayJs from 'dayjs'
-import sinon from 'sinon'
 import service from './service'
 import email from '../common/email'
 import { GET, POST, PATCH, setupMockAxios } from '../common/axios/mock'
@@ -20,6 +19,10 @@ beforeAll(async () => {
 })
 beforeEach(async () => {
   await truncate()
+})
+afterEach(async () => {
+  await jest.clearAllMocks()
+  await jest.restoreAllMocks()
 })
 
 const streamEndpoint = 'streams'
@@ -74,10 +77,11 @@ describe('POST /deployments', () => {
     const mockStream = { id: streamId, name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: projectId, name: 'test-project', isPublic: true, externalId: null }, countryName: 'Thailand' }
     const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'audiomoth', stream: { id: streamId, project: { id: projectId } } }
 
+    const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(GET, `${streamEndpoint}/${streamId}`, 200, mockStream)
-    sinon.stub(email, 'sendNewDeploymentSuccessEmail')
     const response = await request(app).post('/').send(mockDeployment)
 
+    expect(spy).toHaveBeenCalled()
     expect(response.statusCode).toBe(201)
   })
 
@@ -85,9 +89,11 @@ describe('POST /deployments', () => {
     const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
     const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'audiomoth', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } } }
 
+    const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
     const response = await request(app).post('/').send(mockDeployment)
 
+    expect(spy).toHaveBeenCalled()
     expect(response.statusCode).toBe(201)
   })
 
@@ -174,9 +180,10 @@ describe('POST /deployment/:id/assets', () => {
     await Deployment.create(deployment)
     const mockUploadReturn = 'test-asset-id'
 
-    sinon.stub(service, 'uploadFileAndSaveToDb').returns(Promise.resolve(mockUploadReturn))
+    const spy = jest.spyOn(service, 'uploadFileAndSaveToDb').mockReturnValue(Promise.resolve(mockUploadReturn))
     const response = await request(app).post(`/${deploymentId}/assets`).send(mockFile)
 
+    expect(spy).toHaveBeenCalled()
     expect(response.statusCode).toBe(201)
     expect(response.headers.location).toEqual(`/assets/${mockUploadReturn}`)
   })

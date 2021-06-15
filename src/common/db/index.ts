@@ -21,14 +21,6 @@ const options: SequelizeOptions = {
     charset: 'utf8',
     collate: 'utf8_general_ci',
     timestamps: true
-  },
-  hooks: {
-    afterConnect: () => {
-      // console.log('Connected to Postgres')
-    },
-    afterDisconnect: () => {
-      // console.log('Disconnected from Postgres')
-    }
   }
 }
 
