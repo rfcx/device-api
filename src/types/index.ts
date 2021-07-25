@@ -7,8 +7,8 @@ export interface DeploymentResponse {
 }
 
 export interface DeploymentQuery {
-  isActive?: boolean,
-  limit?: number,
+  isActive?: boolean
+  limit?: number
   offset?: number
 }
 
