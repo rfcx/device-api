@@ -6,6 +6,12 @@ export interface DeploymentResponse {
   stream: StreamResponse
 }
 
+export interface DeploymentQuery {
+  isActive?: boolean,
+  limit?: number,
+  offset?: number
+}
+
 export type MappedDeploymentInfo = StreamResponse & { deployment?: DeploymentResponse }
 
 export interface CreateDeploymentRequest {

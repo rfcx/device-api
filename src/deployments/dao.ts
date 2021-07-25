@@ -1,5 +1,5 @@
 import { Transaction, Op } from 'sequelize'
-import { NewDeployment } from '../types'
+import { NewDeployment, DeploymentQuery } from '../types'
 import { sequelize } from '../common/db'
 import Deployment from './deployment.model'
 
@@ -11,7 +11,7 @@ export async function get (id: string): Promise<Deployment | null> {
   })
 }
 
-export const getDeployments = async (streamIds: string[], options: { isActive?: boolean, limit?: number, offset?: number } = {}): Promise<Deployment[]> => {
+export const getDeployments = async (streamIds: string[], options: DeploymentQuery): Promise<Deployment[]> => {
   const where: { isActive?: boolean, streamId: { [Op.in]: string[] } } = {
     streamId: {
       [Op.in]: streamIds
