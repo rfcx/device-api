@@ -33,7 +33,7 @@ const sendEmailWithMessage = async (message: EmailMessage): Promise<string> => {
 
 export default {
   sendNewDeploymentSuccessEmail: async (deployment: NewDeployment, user: User) => {
-    if (user.email === null || user.email === undefined || user.email === 'Email') { return await Promise.reject(new Error('No email')) }
+    if (user.email === null || user.email === undefined || user.email === 'Email') return
     const msg = {
       text: 'Your AudioMoth device was deployed successfully',
       subject: 'Your AudioMoth device was deployed successfully',
