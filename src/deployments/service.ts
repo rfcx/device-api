@@ -1,12 +1,13 @@
 import dao from './dao'
 import assetDao from '../assets/dao'
 import { uploadFile } from '../common/storage'
-import { CreateDeploymentRequest, NewAsset, NewDeployment, User } from '../types'
+import { CreateDeploymentRequest, NewAsset, NewDeployment, UpdateGuardian, User } from '../types'
 import * as api from '../common/core-api'
 import Deployment from './deployment.model'
 import { assetPath, generateFilename } from '../common/storage/paths'
 import email from '../common/email'
 import { ValidationError } from 'sequelize'
+import { CreateStreamRequest } from 'aws-sdk/clients/iot'
 
 export const createDeployment = async (uid: string, token: string, user: User, deployment: CreateDeploymentRequest): Promise<Deployment> => {
   // Check if id existed
@@ -26,6 +27,11 @@ export const createDeployment = async (uid: string, token: string, user: User, d
     }
     const newStreamId = await api.createStream(token, stream)
     deployment.stream = { id: newStreamId }
+
+    // Update Guardian
+    if (deployment.deploymentType === 'guardian' && deployment.guid) {
+      await api.updateGuardian(token, deployment.guid, { streamId: newStreamId, ...stream } as UpdateGuardian)
+    }
   } else {
     // Check the stream exists
     const streamOrUndefined = await api.getStream(token, stream.id)
@@ -34,8 +40,14 @@ export const createDeployment = async (uid: string, token: string, user: User, d
     }
     if ('name' in stream || 'latitude' in stream || 'longitude' in stream || 'altitude' in stream) {
       await api.updateStream(token, stream)
+
+      // Update Guardian
+      if (deployment.deploymentType === 'guardian' && deployment.guid) {
+        await api.updateGuardian(token, deployment.guid, { streamId: stream.id, ...stream } as UpdateGuardian)
+      }
     }
   }
+
   const result = await dao.createDeployment(uid, deployment as NewDeployment)
   await email.sendNewDeploymentSuccessEmail(deployment as NewDeployment, user)
   return result

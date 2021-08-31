@@ -1,5 +1,5 @@
 import axios from '../axios'
-import { ProjectResponse, StreamResponse, CreateStreamRequest, CreateProjectRequest, UpdateProjectRequest, UpdateStreamRequest } from '../../types'
+import { ProjectResponse, StreamResponse, CreateStreamRequest, CreateProjectRequest, UpdateProjectRequest, UpdateStreamRequest, UpdateGuardian, UpdateGuardianResponse } from '../../types'
 import { snakeToCamel } from '../serializers/snake-camel'
 
 export const createStream = async (token: string, stream: CreateStreamRequest): Promise<string> => {
@@ -74,5 +74,11 @@ export const getProjects = async (token: string, params: unknown = {}): Promise<
     params
   }
   const response = await axios.get('/projects', options)
+  return snakeToCamel(response.data)
+}
+
+export const updateGuardian = async (token: string, guid: string, params: UpdateGuardian): Promise<UpdateGuardianResponse> => {
+  const options = { headers: { Authorization: token } }
+  const response = await axios.patch(`/v2/guardians/${guid}`, params, options)
   return snakeToCamel(response.data)
 }

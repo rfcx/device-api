@@ -20,6 +20,7 @@ export interface CreateDeploymentRequest {
   deployedAt: Date
   deploymentType: string
   stream: { id: string } | CreateStreamRequest | UpdateStreamRequest
+  guid?: string
 }
 
 export type NewDeployment = CreateDeploymentRequest & { stream: { id: string } }
@@ -74,4 +75,20 @@ export interface NewAsset {
 export interface User {
   name: string
   email: string
+}
+
+export interface UpdateGuardian {
+  latitude?: number
+  longitude?: number
+  altitude?: number
+  streamId?: string
+}
+
+export interface UpdateGuardianResponse {
+  guid: string
+  shortname: string
+  latitude: number
+  longitude: number
+  altitude: number
+  streamId: string
 }
