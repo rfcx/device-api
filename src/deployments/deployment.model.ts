@@ -23,4 +23,7 @@ export default class Deployment extends Model {
 
   @Column(DataType.STRING(36))
   createdById!: String
+
+  @Column(DataType.STRING(12))
+  guid?: String
 }
