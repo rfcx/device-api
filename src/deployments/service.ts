@@ -36,8 +36,8 @@ export const createDeployment = async (uid: string, token: string, user: User, d
     }
     if ('name' in stream || 'latitude' in stream || 'longitude' in stream || 'altitude' in stream) {
       await api.updateStream(token, stream)
-      guardianUpdate = { streamId: stream.id, ...stream }
     }
+    guardianUpdate = { streamId: stream.id, ...stream }
   }
 
   if (deployment.deploymentType === 'guardian' && deployment.guid !== undefined) {
