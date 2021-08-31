@@ -16,6 +16,7 @@ export const createDeployment = async (uid: string, token: string, user: User, d
   }
 
   const stream = deployment.stream
+  let guardianUpdate: UpdateGuardian = {}
   // Check for new stream
   if (!('id' in stream)) {
     const project = stream.project
@@ -26,11 +27,7 @@ export const createDeployment = async (uid: string, token: string, user: User, d
     }
     const newStreamId = await api.createStream(token, stream)
     deployment.stream = { id: newStreamId }
-
-    // Update Guardian
-    if (deployment.deploymentType === 'guardian' && deployment.guid) {
-      await api.updateGuardian(token, deployment.guid, { streamId: newStreamId, ...stream } as UpdateGuardian)
-    }
+    guardianUpdate = { streamId: newStreamId, ...stream }
   } else {
     // Check the stream exists
     const streamOrUndefined = await api.getStream(token, stream.id)
@@ -39,12 +36,12 @@ export const createDeployment = async (uid: string, token: string, user: User, d
     }
     if ('name' in stream || 'latitude' in stream || 'longitude' in stream || 'altitude' in stream) {
       await api.updateStream(token, stream)
-
-      // Update Guardian
-      if (deployment.deploymentType === 'guardian' && deployment.guid) {
-        await api.updateGuardian(token, deployment.guid, { streamId: stream.id, ...stream } as UpdateGuardian)
-      }
+      guardianUpdate = { streamId: stream.id, ...stream }
     }
+  }
+
+  if (deployment.deploymentType === 'guardian' && deployment.guid !== undefined) {
+    await api.updateGuardian(token, deployment.guid, guardianUpdate)
   }
 
   const result = await dao.createDeployment(uid, deployment as NewDeployment)
