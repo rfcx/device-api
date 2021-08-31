@@ -7,7 +7,6 @@ import Deployment from './deployment.model'
 import { assetPath, generateFilename } from '../common/storage/paths'
 import email from '../common/email'
 import { ValidationError } from 'sequelize'
-import { CreateStreamRequest } from 'aws-sdk/clients/iot'
 
 export const createDeployment = async (uid: string, token: string, user: User, deployment: CreateDeploymentRequest): Promise<Deployment> => {
   // Check if id existed
