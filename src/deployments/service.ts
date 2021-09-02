@@ -40,8 +40,10 @@ export const createDeployment = async (uid: string, token: string, user: User, d
     guardianUpdate = { streamId: stream.id, ...stream }
   }
 
-  if (deployment.deploymentType === 'guardian' && deployment.guid !== undefined) {
-    await api.updateGuardian(token, deployment.guid, guardianUpdate)
+  const deploymentParameters = deployment.deploymentParameters
+  const jsonParameters = JSON.parse(deploymentParameters ?? '')
+  if (deployment.deploymentType === 'guardian' && ('guid' in jsonParameters) && jsonParameters.guid !== null) {
+    await api.updateGuardian(token, jsonParameters.guid, guardianUpdate)
   }
 
   const result = await dao.createDeployment(uid, deployment as NewDeployment)
