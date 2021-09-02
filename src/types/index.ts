@@ -4,7 +4,7 @@ export interface DeploymentResponse {
   deployedAt: Date
   deploymentType: string
   stream: StreamResponse
-  deploymentParameters: string
+  deploymentParameters: any
 }
 
 export interface DeploymentQuery {
@@ -21,7 +21,7 @@ export interface CreateDeploymentRequest {
   deployedAt: Date
   deploymentType: string
   stream: { id: string } | CreateStreamRequest | UpdateStreamRequest
-  deploymentParameters?: string
+  deploymentParameters?: any
 }
 
 export type NewDeployment = CreateDeploymentRequest & { stream: { id: string } }

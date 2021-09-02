@@ -41,9 +41,11 @@ export const createDeployment = async (uid: string, token: string, user: User, d
   }
 
   const deploymentParameters = deployment.deploymentParameters
-  const jsonParameters = JSON.parse(deploymentParameters ?? '')
-  if (deployment.deploymentType === 'guardian' && ('guid' in jsonParameters) && jsonParameters.guid !== null) {
-    await api.updateGuardian(token, jsonParameters.guid, guardianUpdate)
+  if (deployment.deploymentType === 'guardian') {
+    if (!('guid' in deploymentParameters) && deploymentParameters.guid == null) {
+      throw new ValidationError('deploymentParameters: guid cannot be null or undefined')
+    }
+    await api.updateGuardian(token, deploymentParameters.guid, guardianUpdate)
   }
 
   const result = await dao.createDeployment(uid, deployment as NewDeployment)
