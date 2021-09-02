@@ -45,6 +45,9 @@ export const createDeployment = async (uid: string, token: string, user: User, d
     if (!('guid' in deploymentParameters) && deploymentParameters.guid == null) {
       throw new ValidationError('deploymentParameters: guid cannot be null or undefined')
     }
+    if (deploymentParameters.guid.length > 12) {
+      throw new ValidationError('deploymentParameters: guid length cannot more than 12')
+    }
     await api.updateGuardian(token, deploymentParameters.guid, guardianUpdate)
   }
 
