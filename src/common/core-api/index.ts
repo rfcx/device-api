@@ -77,8 +77,28 @@ export const getProjects = async (token: string, params: unknown = {}): Promise<
   return snakeToCamel(response.data)
 }
 
+export const getProject = async (token: string, id: string): Promise<StreamResponse> => {
+  const options = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.get<StreamResponse>(`/projects/${id}`, options)
+  return snakeToCamel(response.data)
+}
+
 export const updateGuardian = async (token: string, guid: string, params: UpdateGuardian): Promise<UpdateGuardianResponse> => {
   const options = { headers: { Authorization: token } }
   const response = await axios.patch(`/v2/guardians/${guid}`, params, options)
+  return snakeToCamel(response.data)
+}
+
+export const registerGuardian = async (token: string, guid: string) => {
+  const options = { headers: { Authorization: token } }
+  const response = await axios.post(`/v2/guardians/${guid}`, { guid: guid }, options)
+  return snakeToCamel(response.data)
+}
+
+export const userTouch = async (token: string) => {
+  const options = { headers: { Authorization: token } }
+  const response = await axios.get(`/v1/users/touchapi`, options)
   return snakeToCamel(response.data)
 }
