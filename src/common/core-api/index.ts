@@ -1,5 +1,5 @@
 import axios from '../axios'
-import { ProjectResponse, StreamResponse, CreateStreamRequest, CreateProjectRequest, UpdateProjectRequest, UpdateStreamRequest, UpdateGuardian, UpdateGuardianResponse } from '../../types'
+import { ProjectResponse, StreamResponse, CreateStreamRequest, CreateProjectRequest, UpdateProjectRequest, UpdateStreamRequest, UpdateGuardian, UpdateGuardianResponse, ProjectByIdResponse, RegisterGuardianResponse, UserTouchResponse } from '../../types'
 import { snakeToCamel } from '../serializers/snake-camel'
 
 export const createStream = async (token: string, stream: CreateStreamRequest): Promise<string> => {
@@ -77,7 +77,7 @@ export const getProjects = async (token: string, params: unknown = {}): Promise<
   return snakeToCamel(response.data)
 }
 
-export const getProject = async (token: string, id: string): Promise<StreamResponse> => {
+export const getProject = async (token: string, id: string): Promise<ProjectByIdResponse> => {
   const options = {
     headers: { Authorization: token }
   }
@@ -91,13 +91,13 @@ export const updateGuardian = async (token: string, guid: string, params: Update
   return snakeToCamel(response.data)
 }
 
-export const registerGuardian = async (token: string, guid: string) => {
+export const registerGuardian = async (token: string, guid: string): Promise<RegisterGuardianResponse> => {
   const options = { headers: { Authorization: token } }
   const response = await axios.post(`/v2/guardians/${guid}`, { guid: guid }, options)
   return snakeToCamel(response.data)
 }
 
-export const userTouch = async (token: string) => {
+export const userTouch = async (token: string): Promise<UserTouchResponse> => {
   const options = { headers: { Authorization: token } }
   const response = await axios.get(`/v1/users/touchapi`, options)
   return snakeToCamel(response.data)
