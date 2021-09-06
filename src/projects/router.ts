@@ -14,7 +14,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
 
 router.get('/:id', (req: Request, res: Response, next: NextFunction): void => {
   const userToken = req.headers.authorization ?? ''
-  api.getProjects(userToken, req.query).then(projects => {
+  api.getProject(userToken, req.params.id).then(projects => {
     res.send(projects)
   }).catch(next)
 })

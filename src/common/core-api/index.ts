@@ -93,12 +93,12 @@ export const updateGuardian = async (token: string, guid: string, params: Update
 
 export const registerGuardian = async (token: string, guid: string): Promise<RegisterGuardianResponse> => {
   const options = { headers: { Authorization: token } }
-  const response = await axios.post(`/v2/guardians/${guid}`, { guid: guid }, options)
+  const response = await axios.post('/v2/guardians/register', { guid: guid }, options)
   return snakeToCamel(response.data)
 }
 
 export const userTouch = async (token: string): Promise<UserTouchResponse> => {
   const options = { headers: { Authorization: token } }
-  const response = await axios.get(`/v1/users/touchapi`, options)
+  const response = await axios.get('/v1/users/touchapi', options)
   return snakeToCamel(response.data)
 }
