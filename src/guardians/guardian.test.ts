@@ -14,11 +14,7 @@ describe('POST /guardians', () => {
     const mockResponse = {
       name: 'RFCx Guardian (TESTGU)',
       guid: 'testguardian',
-      token: 'qojpdg30xdai32lj74ayd6b2x2shbg6qqdqizwyh',
-      pinCode: 'znti',
-      apiMqttHost: 'staging-api-mqtt.rfcx.org',
-      apiSmsAddress: '+14154803657',
-      keystorePassphrase: 'L2Cevkmc9W5fFCKn'
+      token: 'test-token'
   }
 
     setupMockAxios(POST, endpoint, 200, mockResponse)
