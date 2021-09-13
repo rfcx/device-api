@@ -40,15 +40,15 @@ export const createDeployment = async (uid: string, token: string, user: User, d
     guardianUpdate = { streamId: stream.id, ...stream }
   }
 
-  const deploymentParameters = deployment.deploymentParameters
+  const deviceParameters = deployment.deviceParameters
   if (deployment.deploymentType === 'guardian') {
-    if (!('guid' in deploymentParameters) && deploymentParameters.guid == null) {
-      throw new ValidationError('deploymentParameters: guid cannot be null or undefined')
+    if (!('guid' in deviceParameters) || deviceParameters.guid == null) {
+      throw new ValidationError('deviceParameters: guid cannot be null or undefined')
     }
-    if (deploymentParameters.guid.length > 12) {
-      throw new ValidationError('deploymentParameters: guid length cannot more than 12')
+    if (deviceParameters.guid.length > 12) {
+      throw new ValidationError('deviceParameters: guid length cannot more than 12')
     }
-    await api.updateGuardian(token, deploymentParameters.guid, guardianUpdate)
+    await api.updateGuardian(token, deviceParameters.guid, guardianUpdate)
   }
 
   const result = await dao.createDeployment(uid, deployment as NewDeployment)
@@ -72,7 +72,7 @@ export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: stri
     await uploadFile(remotePath, buf)
     return asset.id
   } catch (error) {
-    return await Promise.reject(error.message ?? error) // TODO: use throw
+    throw new Error(error.message ?? error)
   }
 }
 

@@ -3,7 +3,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addColumn(
       'deployments',
-      'deployment_parameters',
+      'device_parameters',
       {
         type: Sequelize.STRING,
         allowNull: true
@@ -11,6 +11,6 @@ module.exports = {
     )
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.removeColumn('deployments', 'deployment_parameters')
+    return queryInterface.removeColumn('deployments', 'device_parameters')
   }
 }

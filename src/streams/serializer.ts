@@ -6,7 +6,7 @@ export const mapStreamsAndDeployments = (streams: any[], deployments: any[]): Ma
     const deployment = deploymentsData.find(dp => stream.id === dp.streamId)
     const mappedDeploymentInfo: MappedDeploymentInfo = { ...stream }
     if (deployment != null) {
-      mappedDeploymentInfo.deployment = { ...deployment, deploymentParameters: JSON.parse(deployment.deploymentParameters) }
+      mappedDeploymentInfo.deployment = { ...deployment, deviceParameters: JSON.parse(deployment.deviceParameters) }
     }
     return mappedDeploymentInfo
   })

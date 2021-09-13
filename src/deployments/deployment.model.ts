@@ -25,5 +25,5 @@ export default class Deployment extends Model {
   createdById!: String
 
   @Column(DataType.STRING)
-  deploymentParameters?: String
+  deviceParameters?: String
 }
