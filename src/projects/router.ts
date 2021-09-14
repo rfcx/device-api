@@ -12,6 +12,13 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
   }).catch(next)
 })
 
+router.get('/:id', (req: Request, res: Response, next: NextFunction): void => {
+  const userToken = req.headers.authorization ?? ''
+  api.getProject(userToken, req.params.id).then(projects => {
+    res.send(projects)
+  }).catch(next)
+})
+
 router.post('/', (req: Request, res: Response, next: NextFunction): void => {
   const userToken = req.headers.authorization ?? ''
   const project = req.body as ProjectResponse

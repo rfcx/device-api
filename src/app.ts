@@ -4,6 +4,8 @@ import assets from './assets/router'
 import deployments from './deployments/router'
 import streams from './streams/router'
 import projects from './projects/router'
+import guardians from './guardians/router'
+import usertouch from './usertouch/router'
 import docs from './docs'
 import { jwtCheck } from './common/auth'
 import { errorHandler, notFoundHandler } from './common/error-handlers'
@@ -21,6 +23,8 @@ app.use('/assets', assets)
 app.use('/deployments', deployments)
 app.use('/streams', streams)
 app.use('/projects', projects)
+app.use('/guardians', guardians)
+app.use('/usertouch', usertouch)
 
 app.use(errorHandler)
 app.use(notFoundHandler)

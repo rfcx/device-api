@@ -93,3 +93,29 @@ export interface UpdateGuardianResponse {
   altitude: number
   streamId: string
 }
+
+export interface ProjectByIdResponse {
+  id: string
+  name: string
+  minLatitude: number | null
+  maxLatitude: number | null
+  minLongitude: number | null
+  maxLongitude: number | null
+}
+
+export interface RegisterGuardianRequest {
+  guid: string
+}
+
+export interface RegisterGuardianResponse {
+  guid: string
+  token: string
+  keystorePassPhase: string
+  pinCode: string | null
+  apiMqttHost: string | null
+  apiSmsAddress: string | null
+}
+
+export interface UserTouchResponse {
+  success: boolean
+}
