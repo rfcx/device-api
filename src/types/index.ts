@@ -4,6 +4,7 @@ export interface DeploymentResponse {
   deployedAt: Date
   deploymentType: string
   stream: StreamResponse
+  deviceParameters: any
 }
 
 export interface DeploymentQuery {
@@ -20,6 +21,7 @@ export interface CreateDeploymentRequest {
   deployedAt: Date
   deploymentType: string
   stream: { id: string } | CreateStreamRequest | UpdateStreamRequest
+  deviceParameters?: any
 }
 
 export type NewDeployment = CreateDeploymentRequest & { stream: { id: string } }
@@ -74,4 +76,46 @@ export interface NewAsset {
 export interface User {
   name: string
   email: string
+}
+
+export interface UpdateGuardian {
+  latitude?: number
+  longitude?: number
+  altitude?: number
+  streamId?: string
+}
+
+export interface UpdateGuardianResponse {
+  guid: string
+  shortname: string
+  latitude: number
+  longitude: number
+  altitude: number
+  streamId: string
+}
+
+export interface ProjectByIdResponse {
+  id: string
+  name: string
+  minLatitude: number | null
+  maxLatitude: number | null
+  minLongitude: number | null
+  maxLongitude: number | null
+}
+
+export interface RegisterGuardianRequest {
+  guid: string
+}
+
+export interface RegisterGuardianResponse {
+  guid: string
+  token: string
+  keystorePassPhase: string
+  pinCode: string | null
+  apiMqttHost: string | null
+  apiSmsAddress: string | null
+}
+
+export interface UserTouchResponse {
+  success: boolean
 }

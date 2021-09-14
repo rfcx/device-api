@@ -123,6 +123,39 @@ describe('POST /deployments', () => {
 
     expect(response.statusCode).toBe(400)
   })
+
+  test('create guardian deployment failed without guid in deviceParameters', async () => {
+    const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
+    const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { something: 'gggggggggggg' } }
+
+    setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
+    const response = await request(app).post('/').send(mockDeployment)
+
+    expect(response.statusCode).toBe(400)
+    expect(response.text).toBe('deviceParameters: guid cannot be null or undefined')
+  })
+
+  test('create guardian deployment failed with guid is null in deviceParameters', async () => {
+    const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
+    const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { guid: null } }
+
+    setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
+    const response = await request(app).post('/').send(mockDeployment)
+
+    expect(response.statusCode).toBe(400)
+    expect(response.text).toBe('deviceParameters: guid cannot be null or undefined')
+  })
+
+  test('create guardian deployment failed with guid in deviceParameters but wrong format', async () => {
+    const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
+    const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { guid: 'gggggggggggg123' } }
+
+    setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
+    const response = await request(app).post('/').send(mockDeployment)
+
+    expect(response.statusCode).toBe(400)
+    expect(response.text).toBe('deviceParameters: guid length cannot more than 12')
+  })
 })
 
 describe('PATCH /deployments/:id', () => {

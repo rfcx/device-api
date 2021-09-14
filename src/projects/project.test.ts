@@ -42,6 +42,18 @@ describe('GET /projects', () => {
   })
 })
 
+describe('GET /projects/:id', () => {
+  test('get project by id', async () => {
+    const projectId = 'bbbbbbbbbbbb'
+    const mockProject = { id: 'bbbbbbbbbbbb', name: 'test-project-1', isPublic: true, externalId: null }
+
+    setupMockAxios(GET, `${endpoint}/${projectId}`, 200, mockProject)
+    const response = await request(app).get(`/${projectId}`)
+
+    expect(response.statusCode).toBe(200)
+  })
+})
+
 describe('POST /projects', () => {
   test('create a project to core', async () => {
     const headers = { location: `/${endpoint}/bbbbbbbbbbbb` }

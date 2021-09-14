@@ -1,7 +1,7 @@
 import dao from './dao'
 import assetDao from '../assets/dao'
 import { uploadFile } from '../common/storage'
-import { CreateDeploymentRequest, NewAsset, NewDeployment, User } from '../types'
+import { CreateDeploymentRequest, NewAsset, NewDeployment, UpdateGuardian, User } from '../types'
 import * as api from '../common/core-api'
 import Deployment from './deployment.model'
 import { assetPath, generateFilename } from '../common/storage/paths'
@@ -16,6 +16,7 @@ export const createDeployment = async (uid: string, token: string, user: User, d
   }
 
   const stream = deployment.stream
+  let guardianUpdate: UpdateGuardian = {}
   // Check for new stream
   if (!('id' in stream)) {
     const project = stream.project
@@ -26,6 +27,7 @@ export const createDeployment = async (uid: string, token: string, user: User, d
     }
     const newStreamId = await api.createStream(token, stream)
     deployment.stream = { id: newStreamId }
+    guardianUpdate = { streamId: newStreamId, ...stream }
   } else {
     // Check the stream exists
     const streamOrUndefined = await api.getStream(token, stream.id)
@@ -35,7 +37,20 @@ export const createDeployment = async (uid: string, token: string, user: User, d
     if ('name' in stream || 'latitude' in stream || 'longitude' in stream || 'altitude' in stream) {
       await api.updateStream(token, stream)
     }
+    guardianUpdate = { streamId: stream.id, ...stream }
   }
+
+  const deviceParameters = deployment.deviceParameters
+  if (deployment.deploymentType === 'guardian') {
+    if (!('guid' in deviceParameters) || deviceParameters.guid == null) {
+      throw new ValidationError('deviceParameters: guid cannot be null or undefined')
+    }
+    if (deviceParameters.guid.length > 12) {
+      throw new ValidationError('deviceParameters: guid length cannot more than 12')
+    }
+    await api.updateGuardian(token, deviceParameters.guid, guardianUpdate)
+  }
+
   const result = await dao.createDeployment(uid, deployment as NewDeployment)
   await email.sendNewDeploymentSuccessEmail(deployment as NewDeployment, user)
   return result
@@ -57,7 +72,7 @@ export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: stri
     await uploadFile(remotePath, buf)
     return asset.id
   } catch (error) {
-    return await Promise.reject(error.message ?? error) // TODO: use throw
+    throw new Error(error.message ?? error)
   }
 }
 

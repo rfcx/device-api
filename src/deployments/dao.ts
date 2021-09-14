@@ -41,7 +41,8 @@ export const createDeployment = async (userId: string, deployment: NewDeployment
         deploymentType: deployment.deploymentType,
         isActive: true,
         createdById: userId,
-        streamId: deployment.stream.id
+        streamId: deployment.stream.id,
+        deviceParameters: JSON.stringify(deployment.deviceParameters)
       }
       const result = await Deployment.create(deploymentData, { transaction: t })
       if (result != null) {
