@@ -92,10 +92,9 @@ router.get('/:id/assets', (req: Request, res: Response, next: NextFunction): voi
 })
 
 router.post('/:id/assets', multerFile.single('file'), (req: Request, res: Response, next: NextFunction): void => {
-  const userId = getUserUid(req.user.sub)
   const deploymentId = req.params.id
   const file = req.file ?? null
-  dao.getStreamIdById(userId, deploymentId).then(async streamId => {
+  dao.getStreamIdById(deploymentId).then(async streamId => {
     const assetId = await service.uploadFileAndSaveToDb(streamId, deploymentId, file)
     res.location(`/assets/${assetId}`).sendStatus(201)
   }).catch(next)

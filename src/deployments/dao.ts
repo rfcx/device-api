@@ -84,9 +84,9 @@ export const deleteDeployment = async (uid: string, deploymentId: string): Promi
   }
 }
 
-export const getStreamIdById = async (uid: string, deploymentId: string): Promise<string> => {
+export const getStreamIdById = async (deploymentId: string): Promise<string> => {
   try {
-    const result = await Deployment.findOne({ where: { id: deploymentId, createdById: uid }, attributes: ['streamId'] })
+    const result = await Deployment.findOne({ where: { id: deploymentId }, attributes: ['streamId'] })
     if (result != null) {
       return result.streamId
     }
