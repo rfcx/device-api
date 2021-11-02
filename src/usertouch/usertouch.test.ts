@@ -19,4 +19,3 @@ describe('GET /usertouch', () => {
     expect(response.statusCode).toBe(200)
   })
 })
-

@@ -82,7 +82,7 @@ export interface UpdateGuardian {
   latitude?: number
   longitude?: number
   altitude?: number
-  streamId?: string
+  stream_id?: string
 }
 
 export interface UpdateGuardianResponse {
