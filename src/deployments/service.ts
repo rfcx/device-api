@@ -8,7 +8,7 @@ import { assetPath, generateFilename } from '../common/storage/paths'
 import email from '../common/email'
 import { ValidationError } from 'sequelize'
 
-export const createDeployment = async (uid: string, token: string, user: User, deployment: CreateDeploymentRequest): Promise<Deployment> => {
+export const createDeployment = async (appVersion: number | undefined, uid: string, token: string, user: User, deployment: CreateDeploymentRequest): Promise<Deployment> => {
   // Check if id existed
   if (await dao.get(deployment.deploymentKey) != null) {
     console.error('this deploymentKey is already existed')
@@ -48,7 +48,9 @@ export const createDeployment = async (uid: string, token: string, user: User, d
     if (deviceParameters.guid.length > 12) {
       throw new ValidationError('deviceParameters: guid length cannot more than 12')
     }
-    await api.updateGuardian(token, deviceParameters.guid, guardianUpdate)
+    if (appVersion !== undefined && appVersion > 61) {
+      await api.updateGuardian(token, deviceParameters.guid, guardianUpdate)
+    }
   }
 
   const result = await dao.createDeployment(uid, deployment as NewDeployment)

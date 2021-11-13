@@ -119,3 +119,9 @@ export interface RegisterGuardianResponse {
 export interface UserTouchResponse {
   success: boolean
 }
+
+export interface AppInfo {
+  name: string
+  versionName: string
+  versionCode: number
+}
