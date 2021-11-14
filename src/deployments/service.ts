@@ -40,16 +40,10 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
     guardianUpdate = { stream_id: stream.id, ...stream }
   }
 
-  const deviceParameters = deployment.deviceParameters
   if (deployment.deploymentType === 'guardian') {
-    if (!('guid' in deviceParameters) || deviceParameters.guid == null) {
-      throw new ValidationError('deviceParameters: guid cannot be null or undefined')
-    }
-    if (deviceParameters.guid.length > 12) {
-      throw new ValidationError('deviceParameters: guid length cannot more than 12')
-    }
-    if (appVersion !== undefined && appVersion > 61) {
-      await api.updateGuardian(token, deviceParameters.guid, guardianUpdate)
+    const deviceParameters = deployment.deviceParameters
+    if (deviceParameters != null) {
+      await updateGuardian(token, appVersion, deviceParameters, guardianUpdate)
     }
   }
 
@@ -75,6 +69,18 @@ export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: stri
     return asset.id
   } catch (error) {
     throw new Error(error.message ?? error)
+  }
+}
+
+const updateGuardian = async (token: string, appVersion: number | undefined, deviceParameters: any, guardianUpdate: UpdateGuardian): Promise<void> => {
+  if (!('guid' in deviceParameters) || deviceParameters.guid == null) {
+    throw new ValidationError('deviceParameters: guid cannot be null or undefined')
+  }
+  if (deviceParameters.guid.length > 12) {
+    throw new ValidationError('deviceParameters: guid length cannot more than 12')
+  }
+  if (appVersion !== undefined && appVersion > 61) {
+    await api.updateGuardian(token, deviceParameters.guid, guardianUpdate)
   }
 }
 
