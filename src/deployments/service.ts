@@ -42,14 +42,16 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
 
   const deviceParameters = deployment.deviceParameters
   if (deployment.deploymentType === 'guardian') {
-    if (!('guid' in deviceParameters) || deviceParameters.guid == null) {
-      throw new ValidationError('deviceParameters: guid cannot be null or undefined')
-    }
-    if (deviceParameters.guid.length > 12) {
-      throw new ValidationError('deviceParameters: guid length cannot more than 12')
-    }
-    if (appVersion !== undefined && appVersion > 61) {
-      await api.updateGuardian(token, deviceParameters.guid, guardianUpdate)
+    if (deviceParameters != null) {
+      if (!('guid' in deviceParameters) || deviceParameters.guid == null) {
+        throw new ValidationError('deviceParameters: guid cannot be null or undefined')
+      }
+      if (deviceParameters.guid.length > 12) {
+        throw new ValidationError('deviceParameters: guid length cannot more than 12')
+      }
+      if (appVersion !== undefined && appVersion > 61) {
+        await api.updateGuardian(token, deviceParameters.guid, guardianUpdate)
+      }
     }
   }
 
