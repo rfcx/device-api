@@ -8,7 +8,7 @@
   "scripts": {
     "test": "jest --detectOpenHandles --colors",
     "lint": "eslint src/** --fix --cache",
-    "build": "rimraf dist && tsc && yarn build:copy-resources",
+    "build": "rimraf dist && tsc && yarn build:copy-resources && yarn lint",
     "build:copy-resources": "copyfiles -u 1 \"./src/**/*.html\" \"dist\"",
     "migrate": "node admin/migrate.js",
     "serve": "ts-node-dev --respawn --transpile-only src/index.ts",

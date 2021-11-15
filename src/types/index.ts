@@ -82,7 +82,7 @@ export interface UpdateGuardian {
   latitude?: number
   longitude?: number
   altitude?: number
-  streamId?: string
+  stream_id?: string
 }
 
 export interface UpdateGuardianResponse {
@@ -118,4 +118,10 @@ export interface RegisterGuardianResponse {
 
 export interface UserTouchResponse {
   success: boolean
+}
+
+export interface AppInfo {
+  name: string
+  versionName: string
+  versionCode: number
 }
