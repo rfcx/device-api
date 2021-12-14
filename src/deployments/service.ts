@@ -79,7 +79,7 @@ const updateGuardian = async (token: string, appVersion: number | undefined, dev
   if (deviceParameters.guid.length > 12) {
     throw new ValidationError('deviceParameters: guid length cannot more than 12')
   }
-  if (appVersion !== undefined && appVersion > 61) {
+  if (appVersion !== undefined && appVersion > 62) {
     await api.updateGuardian(token, deviceParameters.guid, guardianUpdate)
   }
 }
