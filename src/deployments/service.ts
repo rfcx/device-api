@@ -80,8 +80,20 @@ const updateGuardian = async (token: string, appVersion: number | undefined, dev
     throw new ValidationError('deviceParameters: guid length cannot more than 12')
   }
   if (appVersion !== undefined && appVersion > 62) {
+    if (hasRegistrationProperties(deviceParameters) === true) {
+      await api.registerGuardianFromDeviceParameters(token, deviceParameters)
+    }
     await api.updateGuardian(token, deviceParameters.guid, guardianUpdate)
   }
+}
+
+const hasRegistrationProperties = (deviceParameters: any): Boolean => {
+  if (!('token' in deviceParameters) || deviceParameters.token == null) return false
+  if (!('keystorePassphrase' in deviceParameters) || deviceParameters.keystorePassphrase == null) return false
+  if (!('pinCode' in deviceParameters) || deviceParameters.pinCode == null) return false
+  if (!('apiMqttHost' in deviceParameters) || deviceParameters.apiMqttHost == null) return false
+  if (!('apiSmsAddress' in deviceParameters) || deviceParameters.apiSmsAddress == null) return false
+  return true
 }
 
 export default { createDeployment, uploadFileAndSaveToDb }
