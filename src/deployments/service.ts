@@ -89,7 +89,7 @@ const updateGuardian = async (token: string, appVersion: number | undefined, dev
 
 const hasRegistrationProperties = (deviceParameters: any): Boolean => {
   if (!('token' in deviceParameters) || deviceParameters.token == null) return false
-  if (!('pinCode' in deviceParameters) || deviceParameters.pinCode == null) return false
+  if (!('pin_code' in deviceParameters) || deviceParameters.pin_code == null) return false
   return true
 }
 
