@@ -97,6 +97,12 @@ export const registerGuardian = async (token: string, guid: string): Promise<Reg
   return snakeToCamel(response.data)
 }
 
+export const registerGuardianFromDeviceParameters = async (token: string, parameters: any): Promise<RegisterGuardianResponse> => {
+  const options = { headers: { Authorization: token } }
+  const response = await axios.post('/v2/guardians/register', { guid: parameters.guid, token: parameters.token, pin_code: parameters.pin_code}, options)
+  return snakeToCamel(response.data)
+}
+
 export const userTouch = async (token: string): Promise<UserTouchResponse> => {
   const options = { headers: { Authorization: token } }
   const response = await axios.get('/v1/users/touchapi', options)
