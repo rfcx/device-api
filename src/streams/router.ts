@@ -4,7 +4,6 @@ import * as api from '../common/core-api'
 import assetDao from '../assets/dao'
 import deploymentDao from '../deployments/dao'
 import { mapStreamsAndDeployments } from './serializer'
-import { DeploymentQuery } from 'src/types'
 
 const router = Router()
 
