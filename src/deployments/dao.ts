@@ -11,7 +11,7 @@ export async function get (id: string): Promise<Deployment | null> {
   })
 }
 
-export const getDeployments = async (streamIds: string[], options: DeploymentQuery): Promise<Deployment[]> => {
+export const getDeployments = async (streamIds: string[], options: DeploymentQuery = {}): Promise<Deployment[]> => {
   const where: { isActive?: boolean, streamId: { [Op.in]: string[] } } = {
     streamId: {
       [Op.in]: streamIds
@@ -22,6 +22,8 @@ export const getDeployments = async (streamIds: string[], options: DeploymentQue
 
   return await Deployment.findAll({
     where,
+    limit: options.limit,
+    offset: options.offset,
     attributes: {
       exclude: ['createdById', 'createdAt', 'updatedAt', 'deletedAt']
     }
