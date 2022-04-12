@@ -22,8 +22,6 @@ export const getDeployments = async (streamIds: string[], options: DeploymentQue
 
   return await Deployment.findAll({
     where,
-    limit: options.limit ?? 100,
-    offset: options.offset ?? 0,
     attributes: {
       exclude: ['createdById', 'createdAt', 'updatedAt', 'deletedAt']
     }
