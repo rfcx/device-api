@@ -1,5 +1,3 @@
-import { ClientRequest } from "http";
-
 interface ResponseInError {
   data: RequestData
 }

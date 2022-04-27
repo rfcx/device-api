@@ -7,10 +7,13 @@ export function errorHandler (err: ErrorWithRequest, _req: Request, res: Respons
   }
   if (err.name === 'UnauthorizedError') {
     res.status(401).send('Unauthorized')
-  } else {
+  } else if ('response' in err) {
     const status = err.response.data.error.status
     const message = err.response.data.message
     res.status(status).send(message)
+  } else {
+    console.error('Unexpected error', err)
+    res.sendStatus(500)
   }
 }
 
