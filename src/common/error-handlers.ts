@@ -6,10 +6,8 @@ export function errorHandler (err: Error, _req: Request, res: Response, next: Ne
   }
   if (err.name === 'UnauthorizedError') {
     res.status(401).send('Unauthorized')
-  } else if (err.message.includes('404')) { 
-    res.status(500).send('Unexpected error from external request calling')
   } else {
-    console.error('Unexpected error', err.message)
+    console.error('Unexpected error', err)
     res.sendStatus(500)
   }
 }
