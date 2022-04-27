@@ -7,6 +7,6 @@ interface RequestData {
   error: any
 }
 
-export interface ErrorWithRequest extends Error {
+export interface ErrorWithResponse extends Error {
   response: ResponseInError
 }

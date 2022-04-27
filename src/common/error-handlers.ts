@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express'
-import { ErrorWithRequest } from './types/error'
+import { ErrorWithResponse } from './types/error'
 
-export function errorHandler (err: ErrorWithRequest, _req: Request, res: Response, next: NextFunction): void {
+export function errorHandler (err: ErrorWithResponse, _req: Request, res: Response, next: NextFunction): void {
   if (res.headersSent) {
     return next(err)
   }
