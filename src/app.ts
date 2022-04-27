@@ -8,12 +8,14 @@ import guardians from './guardians/router'
 import usertouch from './usertouch/router'
 import docs from './docs'
 import { jwtCheck } from './common/auth'
+import logging from './common/logging'
 import { errorHandler, notFoundHandler } from './common/error-handlers'
 
 const app = express()
 app.use(cors())
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
+app.use(logging)
 
 app.use('/docs', docs)
 

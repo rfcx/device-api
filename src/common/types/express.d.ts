@@ -8,4 +8,8 @@ declare namespace Express {
   export interface Request {
     user: UserPayload
   }
+
+  export interface Response {
+    responseTime: number
+  }
 }
