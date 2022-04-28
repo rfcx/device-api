@@ -8,13 +8,15 @@
   "scripts": {
     "test": "jest --detectOpenHandles --colors",
     "lint": "eslint src/** --fix --cache",
-    "build": "rimraf dist && tsc && yarn build:copy-resources",
+    "build": "rimraf dist && tsc && yarn build:copy-resources && yarn lint",
     "build:copy-resources": "copyfiles -u 1 \"./src/**/*.html\" \"dist\"",
     "migrate": "node admin/migrate.js",
     "serve": "ts-node-dev --respawn --transpile-only src/index.ts",
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "@types/express-winston": "^4.0.0",
+    "@types/winston": "^2.4.4",
     "aws-sdk": "^2.845.0",
     "axios": "^0.21.1",
     "cors": "^2.8.5",
@@ -22,6 +24,7 @@
     "dayjs": "^1.10.4",
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
+    "express-winston": "^4.2.0",
     "handlebars": "^4.7.7",
     "jwks-rsa": "^1.12.2",
     "mandrill-api": "^1.0.45",
@@ -34,7 +37,8 @@
     "swagger-jsdoc": "^4.0.0",
     "swagger-ui-express": "^4.1.4",
     "umzug": "^2.3.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "winston": "^3.7.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.9",

@@ -8,7 +8,7 @@ import { assetPath, generateFilename } from '../common/storage/paths'
 import email from '../common/email'
 import { ValidationError } from 'sequelize'
 
-export const createDeployment = async (uid: string, token: string, user: User, deployment: CreateDeploymentRequest): Promise<Deployment> => {
+export const createDeployment = async (appVersion: number | undefined, uid: string, token: string, user: User, deployment: CreateDeploymentRequest): Promise<Deployment> => {
   // Check if id existed
   if (await dao.get(deployment.deploymentKey) != null) {
     console.error('this deploymentKey is already existed')
@@ -27,7 +27,7 @@ export const createDeployment = async (uid: string, token: string, user: User, d
     }
     const newStreamId = await api.createStream(token, stream)
     deployment.stream = { id: newStreamId }
-    guardianUpdate = { streamId: newStreamId, ...stream }
+    guardianUpdate = { stream_id: newStreamId, ...stream }
   } else {
     // Check the stream exists
     const streamOrUndefined = await api.getStream(token, stream.id)
@@ -37,18 +37,14 @@ export const createDeployment = async (uid: string, token: string, user: User, d
     if ('name' in stream || 'latitude' in stream || 'longitude' in stream || 'altitude' in stream) {
       await api.updateStream(token, stream)
     }
-    guardianUpdate = { streamId: stream.id, ...stream }
+    guardianUpdate = { stream_id: stream.id, ...stream }
   }
 
-  const deviceParameters = deployment.deviceParameters
   if (deployment.deploymentType === 'guardian') {
-    if (!('guid' in deviceParameters) || deviceParameters.guid == null) {
-      throw new ValidationError('deviceParameters: guid cannot be null or undefined')
+    const deviceParameters = deployment.deviceParameters
+    if (deviceParameters != null) {
+      await updateGuardian(token, appVersion, deviceParameters, guardianUpdate)
     }
-    if (deviceParameters.guid.length > 12) {
-      throw new ValidationError('deviceParameters: guid length cannot more than 12')
-    }
-    await api.updateGuardian(token, deviceParameters.guid, guardianUpdate)
   }
 
   const result = await dao.createDeployment(uid, deployment as NewDeployment)
@@ -74,6 +70,27 @@ export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: stri
   } catch (error) {
     throw new Error(error.message ?? error)
   }
+}
+
+const updateGuardian = async (token: string, appVersion: number | undefined, deviceParameters: any, guardianUpdate: UpdateGuardian): Promise<void> => {
+  if (!('guid' in deviceParameters) || deviceParameters.guid == null) {
+    throw new ValidationError('deviceParameters: guid cannot be null or undefined')
+  }
+  if (deviceParameters.guid.length > 12) {
+    throw new ValidationError('deviceParameters: guid length cannot more than 12')
+  }
+  if (appVersion !== undefined && appVersion > 62) {
+    if (hasRegistrationProperties(deviceParameters) === true) {
+      await api.registerGuardianFromDeviceParameters(token, deviceParameters)
+    }
+    await api.updateGuardian(token, deviceParameters.guid, guardianUpdate)
+  }
+}
+
+const hasRegistrationProperties = (deviceParameters: any): Boolean => {
+  if (!('token' in deviceParameters) || deviceParameters.token == null) return false
+  if (!('pin_code' in deviceParameters) || deviceParameters.pin_code == null) return false
+  return true
 }
 
 export default { createDeployment, uploadFileAndSaveToDb }

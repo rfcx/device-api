@@ -53,7 +53,7 @@ export const updateProject = async (token: string, project: UpdateProjectRequest
 export const getStreams = async (token: string, params: any = {}): Promise<StreamResponse[]> => {
   const options = {
     headers: { Authorization: token },
-    params: { ...params, fields: ['id', 'name', 'latitude', 'longitude', 'altitude', 'project', 'created_at'] }
+    params: { ...params, fields: ['id', 'name', 'latitude', 'longitude', 'altitude', 'project', 'created_at', 'updated_at'] }
   }
   const response = await coreInstance.get('/streams', options)
   return snakeToCamel(response.data)
@@ -94,6 +94,12 @@ export const updateGuardian = async (token: string, guid: string, params: Update
 export const registerGuardian = async (token: string, guid: string): Promise<RegisterGuardianResponse> => {
   const options = { headers: { Authorization: token } }
   const response = await noncoreInstance.post('/v2/guardians/register', { guid: guid }, options)
+  return snakeToCamel(response.data)
+}
+
+export const registerGuardianFromDeviceParameters = async (token: string, parameters: any): Promise<RegisterGuardianResponse> => {
+  const options = { headers: { Authorization: token } }
+  const response = await axios.post('/v2/guardians/register', { guid: parameters.guid, token: parameters.token, pin_code: parameters.pin_code }, options)
   return snakeToCamel(response.data)
 }
 

@@ -10,6 +10,7 @@ import { getUserUid } from '../common/user'
 import service from './service'
 import Deployment from './deployment.model'
 import { ValidationError } from 'sequelize'
+import { userAgentToAppInfo } from '../common/headers'
 
 const router = Router()
 
@@ -18,6 +19,7 @@ router.post('/', (req: Request, res: Response, next: NextFunction): void => {
   const user: User = { name: req.user.name, email: req.user.email }
   const userId = getUserUid(req.user.sub)
   const userToken = req.headers.authorization ?? ''
+  const appVersion = userAgentToAppInfo(req.headers['user-agent'])?.versionCode
 
   // TODO needs validation on all fields (especially deploymentKey)
 
@@ -33,7 +35,7 @@ router.post('/', (req: Request, res: Response, next: NextFunction): void => {
     return
   }
 
-  service.createDeployment(userId, userToken, user, deployment).then(data => {
+  service.createDeployment(appVersion, userId, userToken, user, deployment).then(data => {
     res.location(`/deployments/${data.id}`).sendStatus(201)
   }).catch(error => {
     if (error instanceof ValidationError) {
@@ -92,10 +94,9 @@ router.get('/:id/assets', (req: Request, res: Response, next: NextFunction): voi
 })
 
 router.post('/:id/assets', multerFile.single('file'), (req: Request, res: Response, next: NextFunction): void => {
-  const userId = getUserUid(req.user.sub)
   const deploymentId = req.params.id
   const file = req.file ?? null
-  dao.getStreamIdById(userId, deploymentId).then(async streamId => {
+  dao.getStreamIdById(deploymentId).then(async streamId => {
     const assetId = await service.uploadFileAndSaveToDb(streamId, deploymentId, file)
     res.location(`/assets/${assetId}`).sendStatus(201)
   }).catch(next)
