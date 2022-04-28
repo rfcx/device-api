@@ -2,8 +2,8 @@
 
 Overview:
 - Device API is built and deployed by Jenkins (jenkins.rfcx.org) as defined in [Jenkinsfile](./Jenkinsfile)
-- Deployment is triggered by push to master/staging. All configuration is in the sub-folders `testing`, `staging` and `production` (corresponding to a Kubernetes namespace).
-- Secrets are stored on Kubernetes only in `device-api-secrets`, `staging-device-api-secrets` and `testing-device-api-secrets`.
+- Deployment is triggered by push to master/staging. All configuration is in the sub-folders `staging` and `production` (corresponding to a Kubernetes namespace).
+- Secrets are stored on Kubernetes only in `device-api-secrets`.
 - Deployment notifications are posted on Slack #alerts-deployment
 
 
@@ -16,7 +16,7 @@ Requires Docker.
     docker build -t device-api -f build/Dockerfile .
     ```
 
-2.  Run the app 
+2.  Run the app
     ```
     docker run -it --rm device-api -p 3000:3000
     ```
