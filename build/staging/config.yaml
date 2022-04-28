@@ -4,4 +4,5 @@ metadata:
   name: device-api-config
   namespace: staging
 data:
-  CORE_URL: https://staging-api.rfcx.org
+  CORE_URL: http://core-api-service.staging.svc.cluster.local
+  NONCORE_URL: http://noncore-api-service.staging.svc.cluster.local

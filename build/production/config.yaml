@@ -4,4 +4,5 @@ metadata:
   name: device-api-config
   namespace: production
 data:
-  CORE_URL: https://api.rfcx.org
+  CORE_URL: http://core-api-service.production.svc.cluster.local
+  NONCORE_URL: http://noncore-api-service.production.svc.cluster.local
