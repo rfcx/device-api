@@ -39,6 +39,7 @@ export const createProject = async (token: string, project: Project): Promise<st
 export const updateStream = async (token: string, stream: Stream): Promise<StreamResponse> => {
   const { id, ...data } = stream
   const options = { headers: { Authorization: token } }
+  if (id == null) throw new Error('id should not be null')
   const response = await coreInstance.patch(`/streams/${id}`, data, options)
   return response.data
 }
@@ -46,6 +47,7 @@ export const updateStream = async (token: string, stream: Stream): Promise<Strea
 export const updateProject = async (token: string, project: Project): Promise<ProjectResponse> => {
   const { id, ...data } = project
   const options = { headers: { Authorization: token } }
+  if (id == null) throw new Error('id should not be null')
   const response = await coreInstance.patch(`/projects/${id}`, data, options)
   return response.data
 }

@@ -1,6 +1,6 @@
 import { Transaction, Op } from 'sequelize'
 import { DeploymentQuery, DeploymentRequest } from '../types'
-import { sequelize } from '../common/db'
+import db from '../common/db'
 import Deployment from './deployment.model'
 
 export async function get (id: string): Promise<Deployment | null> {
@@ -32,7 +32,7 @@ export const getDeployments = async (streamIds: string[], options: DeploymentQue
 
 export const createDeployment = async (userId: string, deployment: DeploymentRequest): Promise<Deployment> => {
   try {
-    const result = await sequelize.transaction(async (t: Transaction) => {
+    const result = await db.sequelize.transaction(async (t: Transaction) => {
       // set active existing deployment that same stream to false
       if (deployment.stream.id != null) {
         await setActiveStatusToFalse(deployment.stream.id, t)
@@ -72,7 +72,7 @@ export const updateDeployment = async (uid: string, deploymentId: string): Promi
 
 export const deleteDeployment = async (uid: string, deploymentId: string): Promise<string> => {
   try {
-    const result = await sequelize.transaction(async (t: Transaction) => {
+    const result = await db.sequelize.transaction(async (t: Transaction) => {
       await Deployment.update({ isActive: false }, { where: { id: deploymentId, createdById: uid }, transaction: t })
       const result = await Deployment.destroy({ where: { id: deploymentId, createdById: uid }, transaction: t })
       if (result != null) {

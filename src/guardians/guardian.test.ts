@@ -1,7 +1,7 @@
 import routes from './router'
 import { expressApp } from '../common/db/testing'
 import request from 'supertest'
-import { POST, setupMockAxios } from '../common/axios/mock'
+import { NONCORE, POST, setupMockAxios } from '../common/axios/mock'
 
 const app = expressApp()
 
@@ -17,7 +17,7 @@ describe('POST /guardians', () => {
       token: 'test-token'
     }
 
-    setupMockAxios(POST, endpoint, 200, mockResponse)
+    setupMockAxios(POST, endpoint, 200, mockResponse, null, NONCORE)
     const response = await request(app).post('/').send({ guid: 'testguardian' })
 
     expect(response.statusCode).toBe(200)

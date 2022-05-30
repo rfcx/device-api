@@ -2,7 +2,19 @@ import config from '../../config'
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript'
 import path from 'path'
 
-const options: SequelizeOptions = {
+const baseOptions: SequelizeOptions = {
+  logging: false,
+  define: {
+    underscored: true,
+    charset: 'utf8',
+    collate: 'utf8_general_ci',
+    timestamps: true,
+    paranoid: true
+  },
+  models: [path.join(__dirname, '../../**/*.model.*')]
+}
+
+const dbConfigPostgres: SequelizeOptions = {
   dialect: 'postgres',
   dialectOptions: {
     ssl: config.DB_SSL_ENABLED
@@ -13,15 +25,25 @@ const options: SequelizeOptions = {
       : false
   },
   host: config.DB_HOSTNAME,
-  port: config.DB_PORT,
-  logging: false,
-  models: [path.join(__dirname, '../../**/*.model.*')],
-  define: {
-    underscored: true,
-    charset: 'utf8',
-    collate: 'utf8_general_ci',
-    timestamps: true
-  }
+  port: config.DB_PORT
 }
 
-export const sequelize = new Sequelize(config.DB_DBNAME, config.DB_USER, config.DB_PASSWORD, options)
+const dbConfigSqlite: SequelizeOptions = {
+  dialect: 'sqlite'
+}
+
+const options: SequelizeOptions = {
+  ...baseOptions,
+  ...(config.NODE_ENV === 'test' ? dbConfigSqlite : dbConfigPostgres)
+}
+
+const sequelize = new Sequelize(options)
+
+try {
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+  sequelize.authenticate(options)
+} catch (error) {
+  console.error('Unable to connect to the Core database:', error)
+}
+
+export default { sequelize, Sequelize }

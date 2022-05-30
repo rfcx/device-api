@@ -24,15 +24,15 @@ export const noncoreInstance = axios.create({
   headers: { 'Content-Type': 'application/json' }
 })
 // TODO I think `await Promise.reject(error) === error` so these are not needed
-coreInstance.interceptors.request.use(function (conf) {
+noncoreInstance.interceptors.request.use(function (conf) {
   return conf
 }, async function (error) {
   return await Promise.reject(error)
 })
-coreInstance.interceptors.response.use(function (response) {
+noncoreInstance.interceptors.response.use(function (response) {
   return response
 }, async function (error) {
   return await Promise.reject(error)
 })
 
-export default coreInstance
+export default { coreInstance, noncoreInstance }
