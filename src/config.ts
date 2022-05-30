@@ -12,6 +12,5 @@ export default {
   DB_DBNAME: process.env.DB_DBNAME ?? 'postgres',
   DB_USER: process.env.DB_USER ?? 'postgres',
   DB_PASSWORD: process.env.DB_PASSWORD ?? 'test',
-  MANDRILL_KEY: process.env.MANDRILL_KEY ?? '',
-  NODE_ENV: 'test'
+  MANDRILL_KEY: process.env.MANDRILL_KEY ?? ''
 }
