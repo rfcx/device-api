@@ -34,16 +34,12 @@ const dbConfigSqlite: SequelizeOptions = {
 
 const options: SequelizeOptions = {
   ...baseOptions,
-  ...(config.NODE_ENV === 'test' ? dbConfigSqlite : dbConfigPostgres)
+  ...(process.env.NODE_ENV === 'test' ? dbConfigSqlite : dbConfigPostgres)
 }
 
-const sequelize = new Sequelize(options)
-
-try {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  sequelize.authenticate(options)
-} catch (error) {
-  console.error('Unable to connect to the Core database:', error)
+let sequelize = new Sequelize(config.DB_DBNAME, config.DB_USER, config.DB_PASSWORD, options)
+if (process.env.NODE_ENV === 'test') {
+  sequelize = new Sequelize(options)
 }
 
-export default { sequelize, Sequelize }
+export default { sequelize }

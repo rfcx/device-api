@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript'
+import { Table, Column, Model, DataType, PrimaryKey, CreatedAt, UpdatedAt, DeletedAt } from 'sequelize-typescript'
 
 @Table({
   paranoid: true,
@@ -26,4 +26,13 @@ export default class Deployment extends Model {
 
   @Column(DataType.STRING)
   deviceParameters?: String
+
+  @CreatedAt
+  createdAt!: Date
+
+  @UpdatedAt
+  updatedAt!: Date
+
+  @DeletedAt
+  deletedAt!: Date
 }

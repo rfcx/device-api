@@ -23,4 +23,13 @@ export default class Asset extends Model {
 
   @Column(DataType.STRING(16))
   deploymentId!: string
+
+  @CreatedAt
+  createdAt!: Date
+
+  @UpdatedAt
+  updatedAt!: Date
+
+  @DeletedAt
+  deletedAt!: Date
 }
