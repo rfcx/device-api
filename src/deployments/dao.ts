@@ -1,5 +1,5 @@
 import { Transaction, Op } from 'sequelize'
-import { NewDeployment, DeploymentQuery } from '../types'
+import { DeploymentQuery, DeploymentRequest } from '../types'
 import { sequelize } from '../common/db'
 import Deployment from './deployment.model'
 
@@ -30,11 +30,13 @@ export const getDeployments = async (streamIds: string[], options: DeploymentQue
   })
 }
 
-export const createDeployment = async (userId: string, deployment: NewDeployment): Promise<Deployment> => {
+export const createDeployment = async (userId: string, deployment: DeploymentRequest): Promise<Deployment> => {
   try {
     const result = await sequelize.transaction(async (t: Transaction) => {
       // set active existing deployment that same stream to false
-      await setActiveStatusToFalse(deployment.stream.id, t)
+      if (deployment.stream.id != null) {
+        await setActiveStatusToFalse(deployment.stream.id, t)
+      }
       const deploymentData = {
         id: deployment.deploymentKey,
         deployedAt: deployment.deployedAt,

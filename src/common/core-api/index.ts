@@ -1,8 +1,8 @@
 import { coreInstance, noncoreInstance } from '../axios'
-import { ProjectResponse, StreamResponse, CreateStreamRequest, CreateProjectRequest, UpdateProjectRequest, UpdateStreamRequest, UpdateGuardian, UpdateGuardianResponse, ProjectByIdResponse, RegisterGuardianResponse, UserTouchResponse } from '../../types'
+import { ProjectResponse, StreamResponse, UpdateGuardian, UpdateGuardianResponse, ProjectByIdResponse, RegisterGuardianResponse, UserTouchResponse, Project, Stream } from '../../types'
 import { snakeToCamel } from '../serializers/snake-camel'
 
-export const createStream = async (token: string, stream: CreateStreamRequest): Promise<string> => {
+export const createStream = async (token: string, stream: Stream): Promise<string> => {
   const data = {
     name: stream.name,
     latitude: stream.latitude,
@@ -22,7 +22,7 @@ export const createStream = async (token: string, stream: CreateStreamRequest): 
   throw new Error(`Unexpected status code or location header: ${response.status} ${headers.location ?? 'undefined'}`)
 }
 
-export const createProject = async (token: string, project: CreateProjectRequest): Promise<string> => {
+export const createProject = async (token: string, project: Project): Promise<string> => {
   const options = { headers: { Authorization: token } }
   const response = await coreInstance.post('/projects', project, options)
   const headers: { location?: string } = response.headers
@@ -36,14 +36,14 @@ export const createProject = async (token: string, project: CreateProjectRequest
   throw new Error(`Unexpected status code or location header: ${response.status} ${headers.location ?? 'undefined'}`)
 }
 
-export const updateStream = async (token: string, stream: UpdateStreamRequest): Promise<StreamResponse> => {
+export const updateStream = async (token: string, stream: Stream): Promise<StreamResponse> => {
   const { id, ...data } = stream
   const options = { headers: { Authorization: token } }
   const response = await coreInstance.patch(`/streams/${id}`, data, options)
   return response.data
 }
 
-export const updateProject = async (token: string, project: UpdateProjectRequest): Promise<ProjectResponse> => {
+export const updateProject = async (token: string, project: Project): Promise<ProjectResponse> => {
   const { id, ...data } = project
   const options = { headers: { Authorization: token } }
   const response = await coreInstance.patch(`/projects/${id}`, data, options)
