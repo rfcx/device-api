@@ -1,7 +1,7 @@
 import routes from './router'
 import { expressApp } from '../common/db/testing'
 import request from 'supertest'
-import { GET, setupMockAxios } from '../common/axios/mock'
+import { NONCORE, GET, setupMockAxios } from '../common/axios/mock'
 
 const app = expressApp()
 
@@ -13,7 +13,7 @@ describe('GET /usertouch', () => {
   test('get user touch api response', async () => {
     const mockResponse = { success: true }
 
-    setupMockAxios(GET, endpoint, 200, mockResponse)
+    setupMockAxios(GET, endpoint, 200, mockResponse, null, NONCORE)
     const response = await request(app).get('/')
 
     expect(response.statusCode).toBe(200)

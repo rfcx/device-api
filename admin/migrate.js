@@ -1,5 +1,5 @@
 const Umzug = require('umzug')
-const { sequelize } = require('../dist/common/db')
+const db = require('../dist/common/db')
 const path = require('path')
 const { Sequelize } = require('sequelize')
 
@@ -8,13 +8,13 @@ const umzug = new Umzug({
     path: path.join(__dirname, '../migrations'),
     pattern: /\.js$/,
     params: [
-      sequelize.getQueryInterface(),
+      db.default.sequelize.getQueryInterface(),
       Sequelize
     ]
   },
   storage: 'sequelize',
   storageOptions: {
-    sequelize: sequelize,
+    sequelize: db.default.sequelize,
     tableName: 'migrations',
     schema: 'sequelize'
   }

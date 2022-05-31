@@ -1,7 +1,7 @@
 import routes from './router'
 import { migrate, truncate, expressApp, seed } from '../common/db/testing'
 import request from 'supertest'
-import { sequelize } from '../common/db'
+import db from '../common/db'
 import { GET, POST, setupMockAxios } from '../common/axios/mock'
 
 const app = expressApp()
@@ -9,7 +9,7 @@ const app = expressApp()
 app.use('/', routes)
 
 beforeAll(async () => {
-  await migrate(sequelize)
+  await migrate(db.sequelize)
   await seed()
 })
 beforeEach(async () => {

@@ -15,16 +15,14 @@ export interface DeploymentQuery {
 
 export type MappedDeploymentInfo = StreamResponse & { deployment?: DeploymentResponse }
 
-export interface CreateDeploymentRequest {
+export interface DeploymentRequest {
   isActive: boolean
   deploymentKey: string
   deployedAt: Date
   deploymentType: string
-  stream: { id: string } | CreateStreamRequest | UpdateStreamRequest
+  stream: Stream
   deviceParameters?: any
 }
-
-export type NewDeployment = CreateDeploymentRequest & { stream: { id: string } }
 
 export interface StreamResponse {
   id: string
@@ -35,33 +33,21 @@ export interface StreamResponse {
   project: ProjectResponse | null
 }
 
-export interface CreateStreamRequest {
-  name: string
-  latitude: number
-  longitude: number
-  altitude: number
-  project?: { id: string } | CreateProjectRequest
-}
-
-export interface UpdateStreamRequest {
-  id: string
+export interface Stream {
+  id?: string
   name?: string
   latitude?: number
   longitude?: number
   altitude?: number
-  project?: { id: string }
+  project?: Project
+}
+
+export interface Project {
+  id?: string
+  name?: string
 }
 
 export interface ProjectResponse {
-  id: string
-  name: string
-}
-
-export interface CreateProjectRequest {
-  name: string
-}
-
-export interface UpdateProjectRequest {
   id: string
   name: string
 }
@@ -83,6 +69,7 @@ export interface UpdateGuardian {
   longitude?: number
   altitude?: number
   stream_id?: string
+  project_id?: string
 }
 
 export interface UpdateGuardianResponse {
@@ -92,6 +79,7 @@ export interface UpdateGuardianResponse {
   longitude: number
   altitude: number
   streamId: string
+  projectId: string
 }
 
 export interface ProjectByIdResponse {

@@ -3,7 +3,7 @@ import { Router } from 'express'
 import dayjs from 'dayjs'
 import dao from './dao'
 import assetDao from '../assets/dao'
-import { DeploymentResponse, UpdateStreamRequest, User } from '../types'
+import { DeploymentRequest, Stream, User } from '../types'
 import { multerFile } from '../common/multer'
 import * as api from '../common/core-api'
 import { getUserUid } from '../common/user'
@@ -15,7 +15,7 @@ import { userAgentToAppInfo } from '../common/headers'
 const router = Router()
 
 router.post('/', (req: Request, res: Response, next: NextFunction): void => {
-  const deployment = req.body as DeploymentResponse
+  const deployment = req.body as DeploymentRequest
   const user: User = { name: req.user.name, email: req.user.email }
   const userId = getUserUid(req.user.sub)
   const userToken = req.headers.authorization ?? ''
@@ -23,7 +23,7 @@ router.post('/', (req: Request, res: Response, next: NextFunction): void => {
 
   // TODO needs validation on all fields (especially deploymentKey)
 
-  if (!('deploymentKey' in deployment)) {
+  if (deployment.deploymentKey == null) {
     console.error('deploymentKey should not be null')
     res.status(400).send('deploymentKey should not be null')
     return
@@ -69,7 +69,7 @@ router.get('/:id', (req: Request, res: Response, next: NextFunction): void => {
 router.patch('/:id', (req: Request, res: Response, next: NextFunction): void => {
   const userId = getUserUid(req.user.sub)
   const userToken = req.headers.authorization ?? ''
-  const stream: UpdateStreamRequest | undefined | null = req.body.stream
+  const stream: Stream | undefined | null = req.body.stream
 
   dao.updateDeployment(userId, req.params.id).then(async () => {
     if (stream !== undefined && stream !== null) {

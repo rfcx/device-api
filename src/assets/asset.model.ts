@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, CreatedAt, UpdatedAt } from 'sequelize-typescript'
+import { Table, Column, Model, DataType, CreatedAt, UpdatedAt, DeletedAt } from 'sequelize-typescript'
 
 @Table({
   paranoid: true,
@@ -29,4 +29,7 @@ export default class Asset extends Model {
 
   @UpdatedAt
   updatedAt!: Date
+
+  @DeletedAt
+  deletedAt!: Date
 }

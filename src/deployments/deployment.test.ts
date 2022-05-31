@@ -1,7 +1,7 @@
 import routes from './router'
 import { migrate, truncate, expressApp, seed, seedValues } from '../common/db/testing'
 import request from 'supertest'
-import { sequelize } from '../common/db'
+import db from '../common/db'
 import Deployment from 'src/deployments/deployment.model'
 import dayJs from 'dayjs'
 import service from './service'
@@ -14,7 +14,7 @@ const app = expressApp()
 app.use('/', routes)
 
 beforeAll(async () => {
-  await migrate(sequelize)
+  await migrate(db.sequelize)
   await seed()
 })
 beforeEach(async () => {
