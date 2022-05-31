@@ -7,6 +7,7 @@ import Deployment from './deployment.model'
 import { assetPath, generateFilename } from '../common/storage/paths'
 import email from '../common/email'
 import { ValidationError } from 'sequelize'
+import GuardianLog from 'src/guardian-log/guardian-log.model'
 
 export const createDeployment = async (appVersion: number | undefined, uid: string, token: string, user: User, deployment: DeploymentRequest): Promise<Deployment> => {
   // Check if id existed
@@ -43,7 +44,7 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
   if (deployment.deploymentType === 'guardian') {
     const deviceParameters = deployment.deviceParameters
     if (deviceParameters != null) {
-      await updateGuardian(token, appVersion, deviceParameters, guardianUpdate)
+      await createGuardianLog(deviceParameters, guardianUpdate)
     }
   }
 
@@ -72,18 +73,12 @@ export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: stri
   }
 }
 
-const updateGuardian = async (token: string, appVersion: number | undefined, deviceParameters: any, guardianUpdate: UpdateGuardian): Promise<void> => {
-  if (!('guid' in deviceParameters) || deviceParameters.guid == null) {
-    throw new ValidationError('deviceParameters: guid cannot be null or undefined')
-  }
-  if (deviceParameters.guid.length > 12) {
-    throw new ValidationError('deviceParameters: guid length cannot more than 12')
-  }
-  if (appVersion !== undefined && appVersion > 62) {
+const createGuardianLog = async (deviceParameters: any, guardianUpdate: UpdateGuardian): Promise<void> => {
+  if (deviceParameters.guid != null) {
+    await dao.createGuardianLog(deviceParameters.guid, 'update', JSON.stringify(guardianUpdate))
     if (hasRegistrationProperties(deviceParameters) === true) {
-      await api.registerGuardianFromDeviceParameters(token, deviceParameters)
+      await dao.createGuardianLog(deviceParameters.guid, 'register', JSON.stringify(deviceParameters))
     }
-    await api.updateGuardian(token, deviceParameters.guid, guardianUpdate)
   }
 }
 
