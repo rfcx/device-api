@@ -18,7 +18,6 @@ export async function migrate (sequelize: Sequelize, table = 'SequelizeMeta'): P
   const completedMigrations = await sequelize.query<Migration>(`SELECT * FROM ${table}`, { type: QueryTypes.SELECT })
 
   for (const migration of completedMigrations) {
-    console.log(migration)
     const index = migrations.indexOf(migration.name)
     if (index !== -1) {
       migrations.splice(index, 1)
@@ -42,7 +41,6 @@ export async function migrate (sequelize: Sequelize, table = 'SequelizeMeta'): P
       await migration.up(sequelize.getQueryInterface(), DataType)
       await sequelize.query(`INSERT INTO ${table} VALUES (:name)`, { type: QueryTypes.INSERT, replacements: { name: filename } })
     } catch (err) {
-      console.log(err)
       console.error('Failed performing migration: ' + filename)
       break
     }
