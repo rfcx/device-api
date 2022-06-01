@@ -6,6 +6,7 @@ import * as path from 'path'
 import express, { Express } from 'express'
 import Deployment from '../../deployments/deployment.model'
 import Asset from '../../assets/asset.model'
+import GuardianLog from '../../guardian-log/guardian-log.model'
 
 interface Migration {
   name: string
@@ -60,6 +61,7 @@ export async function seed (): Promise<void> {
 
 export async function truncate (): Promise<Number> {
   await Asset.destroy({ where: {}, force: true })
+  await GuardianLog.destroy({ where: {}, force: true })
   return await Deployment.destroy({ where: {}, force: true })
 }
 

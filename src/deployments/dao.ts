@@ -2,7 +2,7 @@ import { Transaction, Op } from 'sequelize'
 import { DeploymentQuery, DeploymentRequest } from '../types'
 import db from '../common/db'
 import Deployment from './deployment.model'
-import GuardianLog from 'src/guardian-log/guardian-log.model'
+import GuardianLog from '../guardian-log/guardian-log.model'
 
 export async function get (id: string): Promise<Deployment | null> {
   return await Deployment.findByPk(id, {

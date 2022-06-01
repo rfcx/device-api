@@ -44,7 +44,11 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
   if (deployment.deploymentType === 'guardian') {
     const deviceParameters = deployment.deviceParameters
     if (deviceParameters != null) {
-      await createGuardianLog(deviceParameters, guardianUpdate)
+      try {
+        await createGuardianLog(deviceParameters, guardianUpdate)
+      } catch (error) {
+        console.warn(error)
+      }
     }
   }
 
