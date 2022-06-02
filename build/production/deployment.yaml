@@ -23,8 +23,8 @@ spec:
               memory: "128Mi"
               cpu: "100m"
             limits:
-              memory: "128Mi"
-              cpu: "100m"
+              memory: "512Mi"
+              cpu: "1000m"
           envFrom:
             - secretRef:
                 name: device-api-secrets

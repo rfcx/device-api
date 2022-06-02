@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, CreatedAt, UpdatedAt } from 'sequelize-typescript'
+import { Table, Column, Model, DataType } from 'sequelize-typescript'
 
 @Table({
   timestamps: false,
@@ -6,9 +6,9 @@ import { Table, Column, Model, DataType, CreatedAt, UpdatedAt } from 'sequelize-
 })
 export default class GuardianLog extends Model {
   @Column({
-      type: DataType.INTEGER,
-      autoIncrement: true,
-      primaryKey: true
+    type: DataType.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
   })
   id!: Number
 

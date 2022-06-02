@@ -109,9 +109,9 @@ async function setActiveStatusToFalse (streamId: string, transaction: any): Prom
 export const createGuardianLog = async (guid: string, type: string, body: string): Promise<GuardianLog> => {
   try {
     const log = {
-        guardianId: guid,
-        type: type,
-        body: body
+      guardianId: guid,
+      type: type,
+      body: body
     }
     const result = await GuardianLog.create(log)
     if (result != null) {

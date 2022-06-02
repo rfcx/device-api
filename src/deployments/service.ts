@@ -7,7 +7,6 @@ import Deployment from './deployment.model'
 import { assetPath, generateFilename } from '../common/storage/paths'
 import email from '../common/email'
 import { ValidationError } from 'sequelize'
-import GuardianLog from 'src/guardian-log/guardian-log.model'
 
 export const createDeployment = async (appVersion: number | undefined, uid: string, token: string, user: User, deployment: DeploymentRequest): Promise<Deployment> => {
   // Check if id existed
@@ -28,7 +27,7 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
     }
     const newStreamId = await api.createStream(token, stream)
     deployment.stream = { id: newStreamId }
-    guardianUpdate = { stream_id: newStreamId, project_id: stream.project?.id, ...stream }
+    guardianUpdate = { stream_id: newStreamId, ...stream }
   } else {
     // Check the stream exists
     const streamOrUndefined = await api.getStream(token, stream.id)
@@ -38,17 +37,13 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
     if (stream.name != null || stream.latitude != null || stream.longitude != null || stream.altitude != null) {
       await api.updateStream(token, stream)
     }
-    guardianUpdate = { stream_id: stream.id, project_id: stream.project?.id, ...stream }
+    guardianUpdate = { stream_id: stream.id, ...stream }
   }
 
   if (deployment.deploymentType === 'guardian') {
     const deviceParameters = deployment.deviceParameters
     if (deviceParameters != null) {
-      try {
-        await createGuardianLog(deviceParameters, guardianUpdate)
-      } catch (error) {
-        console.warn(error)
-      }
+      await updateGuardian(token, deviceParameters, guardianUpdate)
     }
   }
 
@@ -77,10 +72,21 @@ export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: stri
   }
 }
 
-const createGuardianLog = async (deviceParameters: any, guardianUpdate: UpdateGuardian): Promise<void> => {
-  if (deviceParameters.guid != null) {
-    await dao.createGuardianLog(deviceParameters.guid, 'update', JSON.stringify(guardianUpdate))
-    if (hasRegistrationProperties(deviceParameters) === true) {
+const updateGuardian = async (token: string, deviceParameters: any, guardianUpdate: UpdateGuardian): Promise<void> => {
+  let logType = 'update'
+  try {
+    if (deviceParameters.guid != null) {
+      if (hasRegistrationProperties(deviceParameters) === true) {
+        logType = 'register'
+        await api.registerGuardianFromDeviceParameters(token, deviceParameters)
+      }
+      await api.updateGuardian(token, deviceParameters.guid, guardianUpdate)
+    }
+  } catch (error) {
+    console.error(`There is an error on ${logType} guardian`)
+    if (logType === 'update') {
+      await dao.createGuardianLog(deviceParameters.guid, 'update', JSON.stringify(guardianUpdate))
+    } else if (logType === 'register') {
       await dao.createGuardianLog(deviceParameters.guid, 'register', JSON.stringify(deviceParameters))
     }
   }

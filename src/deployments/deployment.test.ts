@@ -153,10 +153,10 @@ describe('POST /deployments', () => {
     expect(guardianLog.length).toBe(0)
   })
 
-  test('create guardian deployment success with guid in deviceParameters but wrong format but save in GuardianLog', async () => {
+  test('create guardian deployment success with guid in deviceParameters save in GuardianLog', async () => {
     const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
     const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { guid: 'gggggggggggg123' } }
-    const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', project_id: 'bbbbbbbbbbbb', name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }
+    const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }
 
     const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
@@ -170,28 +170,10 @@ describe('POST /deployments', () => {
     expect(guardianLog?.body).toBe(JSON.stringify(expectedGuardianLogBody))
   })
 
-  test('create guardian deployment success with guid in deviceParameters correct format save in GuardianLog', async () => {
-    const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
-    const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { guid: 'gggggggggggg' } }
-    const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', project_id: 'bbbbbbbbbbbb', name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }
-
-    const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
-    setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
-    const response = await request(app).post('/').send(mockDeployment)
-    const guardianLog = await GuardianLog.findOne({ where: { guardian_id: 'gggggggggggg' } })
-
-    expect(spy).toHaveBeenCalled()
-    expect(response.statusCode).toBe(201)
-    expect(guardianLog?.guardianId).toBe('gggggggggggg')
-    expect(guardianLog?.type).toBe('update')
-    expect(guardianLog?.body).toBe(JSON.stringify(expectedGuardianLogBody))
-  })
-
   test('create guardian deployment success with guid and token for registration in deviceParameters', async () => {
     const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
     const mockDeviceParameters = { guid: 'gggggggggggg', token: 'token', pin_code: 'pinCode' }
     const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: mockDeviceParameters }
-    const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', project_id: 'bbbbbbbbbbbb', name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }
 
     const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
@@ -200,13 +182,10 @@ describe('POST /deployments', () => {
 
     expect(spy).toHaveBeenCalled()
     expect(response.statusCode).toBe(201)
-    expect(guardianLog?.length).toBe(2)
+    expect(guardianLog?.length).toBe(1)
     expect(guardianLog[0]?.guardianId).toBe('gggggggggggg')
-    expect(guardianLog[0]?.type).toBe('update')
-    expect(guardianLog[0]?.body).toBe(JSON.stringify(expectedGuardianLogBody))
-    expect(guardianLog[1]?.guardianId).toBe('gggggggggggg')
-    expect(guardianLog[1]?.type).toBe('register')
-    expect(guardianLog[1]?.body).toBe(JSON.stringify(mockDeviceParameters))
+    expect(guardianLog[0]?.type).toBe('register')
+    expect(guardianLog[0]?.body).toBe(JSON.stringify(mockDeviceParameters))
   })
 })
 
