@@ -1,7 +1,7 @@
 import dao from './dao'
 import assetDao from '../assets/dao'
 import { uploadFile } from '../common/storage'
-import { DeploymentRequest, NewAsset, UpdateGuardian, User } from '../types'
+import { DeploymentRequest, NewAsset, Stream, UpdateGuardian, User } from '../types'
 import * as api from '../common/core-api'
 import Deployment from './deployment.model'
 import { assetPath, generateFilename } from '../common/storage/paths'
@@ -27,7 +27,7 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
     }
     const newStreamId = await api.createStream(token, stream)
     deployment.stream = { id: newStreamId }
-    guardianUpdate = { stream_id: newStreamId, shortname: stream.name, ...stream }
+    guardianUpdate = { ...getGuardianUpdate(stream), stream_id: newStreamId }
   } else {
     // Check the stream exists
     const streamOrUndefined = await api.getStream(token, stream.id)
@@ -37,13 +37,13 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
     if (stream.name != null || stream.latitude != null || stream.longitude != null || stream.altitude != null) {
       await api.updateStream(token, stream)
     }
-    guardianUpdate = { stream_id: stream.id, shortname: stream.name, ...stream }
+    guardianUpdate = getGuardianUpdate(stream)
   }
 
   if (deployment.deploymentType === 'guardian') {
     const deviceParameters = deployment.deviceParameters
     if (deviceParameters != null) {
-      await updateGuardian(token, deviceParameters, guardianUpdate)
+      await updateGuardian(uid, token, deviceParameters, guardianUpdate)
     }
   }
 
@@ -72,24 +72,18 @@ export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: stri
   }
 }
 
-const updateGuardian = async (token: string, deviceParameters: any, guardianUpdate: UpdateGuardian): Promise<void> => {
-  let logType = 'update'
-  try {
-    if (deviceParameters.guid != null) {
-      if (hasRegistrationProperties(deviceParameters) === true) {
-        logType = 'register'
-        await api.registerGuardianFromDeviceParameters(token, deviceParameters)
-      }
-      logType = 'update'
-      await api.updateGuardian(token, deviceParameters.guid, guardianUpdate)
+const updateGuardian = async (uid: string, token: string, deviceParameters: any, guardianUpdate: UpdateGuardian): Promise<void> => {
+  if (deviceParameters.guid != null) {
+    if (hasRegistrationProperties(deviceParameters) === true) {
+      await api.registerGuardianFromDeviceParameters(token, deviceParameters).catch(async (e) => {
+        console.error(`error on register: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(deviceParameters)}, auth0_uid:${uid}`)
+        await dao.createGuardianLog(deviceParameters.guid, 'register', JSON.stringify(deviceParameters))
+      })
     }
-  } catch (error) {
-    console.error(`There is an error on ${logType} guardian`)
-    if (logType === 'update') {
-      await dao.createGuardianLog(deviceParameters.guid, logType, JSON.stringify(guardianUpdate))
-    } else if (logType === 'register') {
-      await dao.createGuardianLog(deviceParameters.guid, logType, JSON.stringify(deviceParameters))
-    }
+    await api.updateGuardian(token, deviceParameters.guid, guardianUpdate).catch(async (e) => {
+      console.error(`error on update: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(guardianUpdate)}, auth0_uid:${uid}`)
+      await dao.createGuardianLog(deviceParameters.guid, 'update', JSON.stringify(guardianUpdate))
+    })
   }
 }
 
@@ -97,6 +91,17 @@ const hasRegistrationProperties = (deviceParameters: any): Boolean => {
   if (!('token' in deviceParameters) || deviceParameters.token == null) return false
   if (!('pin_code' in deviceParameters) || deviceParameters.pin_code == null) return false
   return true
+}
+
+const getGuardianUpdate = (stream: Stream): UpdateGuardian => {
+  return {
+    stream_id: stream.id,
+    shortname: stream.name,
+    latitude: stream.latitude,
+    longitude: stream.longitude,
+    altitude: stream.altitude,
+    project_id: stream.project?.id
+  }
 }
 
 export default { createDeployment, uploadFileAndSaveToDb }
