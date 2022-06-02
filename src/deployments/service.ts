@@ -27,7 +27,7 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
     }
     const newStreamId = await api.createStream(token, stream)
     deployment.stream = { id: newStreamId }
-    guardianUpdate = { stream_id: newStreamId, ...stream }
+    guardianUpdate = { stream_id: newStreamId, shortname: stream.name, ...stream }
   } else {
     // Check the stream exists
     const streamOrUndefined = await api.getStream(token, stream.id)
@@ -37,7 +37,7 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
     if (stream.name != null || stream.latitude != null || stream.longitude != null || stream.altitude != null) {
       await api.updateStream(token, stream)
     }
-    guardianUpdate = { stream_id: stream.id, ...stream }
+    guardianUpdate = { stream_id: stream.id, shortname: stream.name, ...stream }
   }
 
   if (deployment.deploymentType === 'guardian') {

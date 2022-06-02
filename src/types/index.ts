@@ -70,6 +70,7 @@ export interface UpdateGuardian {
   altitude?: number
   stream_id?: string
   project_id?: string
+  shortname?: string
 }
 
 export interface UpdateGuardianResponse {

@@ -156,7 +156,7 @@ describe('POST /deployments', () => {
   test('create guardian deployment success with guid in deviceParameters save in GuardianLog', async () => {
     const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
     const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { guid: 'gggggggggggg123' } }
-    const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }
+    const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', shortname: 'test-stream', name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }
 
     const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
