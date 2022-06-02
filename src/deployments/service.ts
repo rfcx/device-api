@@ -80,14 +80,15 @@ const updateGuardian = async (token: string, deviceParameters: any, guardianUpda
         logType = 'register'
         await api.registerGuardianFromDeviceParameters(token, deviceParameters)
       }
+      logType = 'update'
       await api.updateGuardian(token, deviceParameters.guid, guardianUpdate)
     }
   } catch (error) {
     console.error(`There is an error on ${logType} guardian`)
     if (logType === 'update') {
-      await dao.createGuardianLog(deviceParameters.guid, 'update', JSON.stringify(guardianUpdate))
+      await dao.createGuardianLog(deviceParameters.guid, logType, JSON.stringify(guardianUpdate))
     } else if (logType === 'register') {
-      await dao.createGuardianLog(deviceParameters.guid, 'register', JSON.stringify(deviceParameters))
+      await dao.createGuardianLog(deviceParameters.guid, logType, JSON.stringify(deviceParameters))
     }
   }
 }
