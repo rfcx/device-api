@@ -8,6 +8,7 @@ import service from './service'
 import email from '../common/email'
 import { GET, POST, PATCH, setupMockAxios } from '../common/axios/mock'
 import Asset from 'src/assets/asset.model'
+import GuardianLog from 'src/guardian-log/guardian-log.model'
 
 const app = expressApp()
 
@@ -124,37 +125,71 @@ describe('POST /deployments', () => {
     expect(response.statusCode).toBe(400)
   })
 
-  test('create guardian deployment failed without guid in deviceParameters', async () => {
+  test('create guardian deployment success without guid in deviceParameters', async () => {
     const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
     const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { something: 'gggggggggggg' } }
 
+    const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
     const response = await request(app).post('/').send(mockDeployment)
+    const guardianLog = await GuardianLog.findAll()
 
-    expect(response.statusCode).toBe(400)
-    expect(response.text).toBe('deviceParameters: guid cannot be null or undefined')
+    expect(spy).toHaveBeenCalled()
+    expect(response.statusCode).toBe(201)
+    expect(guardianLog.length).toBe(0)
   })
 
-  test('create guardian deployment failed with guid is null in deviceParameters', async () => {
+  test('create guardian deployment success with guid is null in deviceParameters', async () => {
     const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
     const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { guid: null } }
 
+    const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
     const response = await request(app).post('/').send(mockDeployment)
+    const guardianLog = await GuardianLog.findAll()
 
-    expect(response.statusCode).toBe(400)
-    expect(response.text).toBe('deviceParameters: guid cannot be null or undefined')
+    expect(spy).toHaveBeenCalled()
+    expect(response.statusCode).toBe(201)
+    expect(guardianLog.length).toBe(0)
   })
 
-  test('create guardian deployment failed with guid in deviceParameters but wrong format', async () => {
+  test('create guardian deployment success with guid in deviceParameters save in GuardianLog', async () => {
     const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
     const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { guid: 'gggggggggggg123' } }
+    const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', shortname: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project_id: 'bbbbbbbbbbbb' }
 
+    const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
     const response = await request(app).post('/').send(mockDeployment)
+    const guardianLog = await GuardianLog.findOne({ where: { guardian_id: 'gggggggggggg123' } })
 
-    expect(response.statusCode).toBe(400)
-    expect(response.text).toBe('deviceParameters: guid length cannot more than 12')
+    expect(spy).toHaveBeenCalled()
+    expect(response.statusCode).toBe(201)
+    expect(guardianLog?.guardianId).toBe('gggggggggggg123')
+    expect(guardianLog?.type).toBe('update')
+    expect(guardianLog?.body).toBe(JSON.stringify(expectedGuardianLogBody))
+  })
+
+  test('create guardian deployment success with guid and token for registration in deviceParameters', async () => {
+    const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
+    const mockDeviceParameters = { guid: 'gggggggggggg', token: 'token', pin_code: 'pinCode' }
+    const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: mockDeviceParameters }
+    const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', shortname: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project_id: 'bbbbbbbbbbbb' }
+
+    const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
+    setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
+    const response = await request(app).post('/').send(mockDeployment)
+    const guardianLog = await GuardianLog.findAll({ where: { guardian_id: 'gggggggggggg' } })
+
+    expect(spy).toHaveBeenCalled()
+    expect(response.statusCode).toBe(201)
+    expect(guardianLog?.length).toBe(2)
+    expect(guardianLog[0]?.guardianId).toBe('gggggggggggg')
+    expect(guardianLog[0]?.type).toBe('register')
+    expect(guardianLog[0]?.body).toBe(JSON.stringify(mockDeviceParameters))
+    expect(guardianLog[1]?.guardianId).toBe('gggggggggggg')
+    expect(guardianLog[1]?.type).toBe('update')
+    expect(guardianLog[1]?.body).toBe(JSON.stringify(expectedGuardianLogBody))
   })
 })
 

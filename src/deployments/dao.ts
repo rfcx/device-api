@@ -2,6 +2,7 @@ import { Transaction, Op } from 'sequelize'
 import { DeploymentQuery, DeploymentRequest } from '../types'
 import db from '../common/db'
 import Deployment from './deployment.model'
+import GuardianLog from '../guardian-log/guardian-log.model'
 
 export async function get (id: string): Promise<Deployment | null> {
   return await Deployment.findByPk(id, {
@@ -105,4 +106,21 @@ async function setActiveStatusToFalse (streamId: string, transaction: any): Prom
   }))
 }
 
-export default { get, getDeployments, createDeployment, updateDeployment, deleteDeployment, getStreamIdById }
+export const createGuardianLog = async (guid: string, type: string, body: string): Promise<GuardianLog> => {
+  try {
+    const log = {
+      guardianId: guid,
+      type: type,
+      body: body
+    }
+    const result = await GuardianLog.create(log)
+    if (result != null) {
+      return result
+    }
+    return await Promise.reject(new Error(`Failed on create log ${type} guardian`))
+  } catch (error) {
+    return await Promise.reject(error)
+  }
+}
+
+export default { get, getDeployments, createDeployment, updateDeployment, deleteDeployment, getStreamIdById, createGuardianLog }
