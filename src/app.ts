@@ -6,6 +6,7 @@ import streams from './streams/router'
 import projects from './projects/router'
 import guardians from './guardians/router'
 import usertouch from './usertouch/router'
+import classifiers from './classifiers/router'
 import docs from './docs'
 import { jwtCheck } from './common/auth'
 import logging from './common/logging'
@@ -27,6 +28,7 @@ app.use('/streams', streams)
 app.use('/projects', projects)
 app.use('/guardians', guardians)
 app.use('/usertouch', usertouch)
+app.use('/classifiers', classifiers)
 
 app.use(errorHandler)
 app.use(notFoundHandler)
