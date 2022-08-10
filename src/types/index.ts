@@ -94,6 +94,8 @@ export interface ProjectByIdResponse {
 
 export interface RegisterGuardianRequest {
   guid: string
+  token: String
+  pinCode: String
 }
 
 export interface RegisterGuardianResponse {
