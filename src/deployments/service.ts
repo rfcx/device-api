@@ -100,7 +100,8 @@ const getGuardianUpdate = (stream: Stream): UpdateGuardian => {
     latitude: stream.latitude,
     longitude: stream.longitude,
     altitude: stream.altitude,
-    project_id: stream.project?.id
+    project_id: stream.project?.id,
+    is_deployed: true
   }
 }
 
