@@ -1,5 +1,5 @@
 import { coreInstance, noncoreInstance } from '../axios'
-import { ProjectResponse, StreamResponse, UpdateGuardian, UpdateGuardianResponse, ProjectByIdResponse, RegisterGuardianResponse, UserTouchResponse, Project, Stream } from '../../types'
+import { ProjectResponse, StreamResponse, UpdateGuardian, UpdateGuardianResponse, ProjectByIdResponse, RegisterGuardianResponse, UserTouchResponse, Project, Stream, RegisterGuardianRequest } from '../../types'
 import { snakeToCamel } from '../serializers/snake-camel'
 
 export const createStream = async (token: string, stream: Stream): Promise<string> => {
@@ -93,9 +93,9 @@ export const updateGuardian = async (token: string, guid: string, params: Update
   return snakeToCamel(response.data)
 }
 
-export const registerGuardian = async (token: string, guid: string): Promise<RegisterGuardianResponse> => {
+export const registerGuardian = async (token: string, parameters: RegisterGuardianRequest): Promise<RegisterGuardianResponse> => {
   const options = { headers: { Authorization: token } }
-  const response = await noncoreInstance.post('/v2/guardians/register', { guid: guid }, options)
+  const response = await noncoreInstance.post('/v2/guardians/register', { guid: parameters.guid, token: parameters.token, pin_code: parameters.pinCode }, options)
   return snakeToCamel(response.data)
 }
 

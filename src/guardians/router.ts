@@ -8,7 +8,7 @@ const router = Router()
 router.post('/', (req: Request, res: Response, next: NextFunction): void => {
   const userToken = req.headers.authorization ?? ''
   const body = req.body as RegisterGuardianRequest
-  api.registerGuardian(userToken, body.guid).then(data => {
+  api.registerGuardian(userToken, body).then(data => {
     res.send(data)
   }).catch(next)
 })

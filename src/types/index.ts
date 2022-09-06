@@ -71,6 +71,7 @@ export interface UpdateGuardian {
   stream_id?: string
   project_id?: string
   shortname?: string
+  is_deployed?: boolean
 }
 
 export interface UpdateGuardianResponse {
@@ -94,6 +95,8 @@ export interface ProjectByIdResponse {
 
 export interface RegisterGuardianRequest {
   guid: string
+  token: String
+  pinCode: String
 }
 
 export interface RegisterGuardianResponse {
