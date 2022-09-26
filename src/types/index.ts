@@ -50,6 +50,7 @@ export interface Project {
 export interface ProjectResponse {
   id: string
   name: string
+  offTimes: string
 }
 
 export interface NewAsset {
