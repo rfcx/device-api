@@ -50,7 +50,7 @@ export interface Project {
 export interface ProjectResponse {
   id: string
   name: string
-  offTimes: string
+  offTimes: string | null
 }
 
 export interface NewAsset {
@@ -92,6 +92,7 @@ export interface ProjectByIdResponse {
   maxLatitude: number | null
   minLongitude: number | null
   maxLongitude: number | null
+  offTimes: string | null
 }
 
 export interface RegisterGuardianRequest {
