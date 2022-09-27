@@ -21,20 +21,14 @@ const endpoint = 'projects'
 
 describe('GET /projects', () => {
   test('get projects', async () => {
-    const offTimes = '00:00-01:00,03:10-04:30,05:15-05:25,06:40-08:30,09:00-09:15,12:15-13:30,15:10-16:20,18:25-20:20,20:55-21:15'
-    const mockGetFileReturn = {
-      aaaaaaaaaaaa: offTimes
-    }
     const mockProject = [
       { id: 'bbbbbbbbbbbb', name: 'test-project-1', isPublic: true, externalId: null },
       { id: 'bbbbbbbbbbbc', name: 'test-project-2', isPublic: true, externalId: null }
     ]
 
     setupMockAxios(GET, endpoint, 200, mockProject)
-    const spy = jest.spyOn(serializer, 'getOffTimes').mockReturnValue(Promise.resolve(mockGetFileReturn))
     const response = await request(app).get('/')
 
-    expect(spy).toHaveBeenCalled()
     expect(response.statusCode).toBe(200)
     expect(response.body[0]).toEqual(mockProject[0])
     expect(response.body[1]).toEqual(mockProject[1])
@@ -42,30 +36,10 @@ describe('GET /projects', () => {
 
   test('get empty projects', async () => {
     setupMockAxios(GET, endpoint, 200, [])
-    const spy = jest.spyOn(serializer, 'getOffTimes').mockReturnValue(Promise.resolve())
     const response = await request(app).get('/')
 
-    expect(spy).toHaveBeenCalled()
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual([])
-  })
-
-  test('get projects with offtimes', async () => {
-    const offTimes = '00:00-01:00,03:10-04:30,05:15-05:25,06:40-08:30,09:00-09:15,12:15-13:30,15:10-16:20,18:25-20:20,20:55-21:15'
-    const mockGetFileReturn = {
-      bbbbbbbbbbbb: offTimes
-    }
-    const mockProject = [
-      { id: 'bbbbbbbbbbbb', name: 'test-project-1', isPublic: true, externalId: null, offTimes: offTimes }
-    ]
-
-    setupMockAxios(GET, endpoint, 200, mockProject)
-    const spy = jest.spyOn(serializer, 'getOffTimes').mockReturnValue(Promise.resolve(mockGetFileReturn))
-    const response = await request(app).get('/')
-
-    expect(spy).toHaveBeenCalled()
-    expect(response.statusCode).toBe(200)
-    expect(response.body[0]).toEqual(mockProject[0])
   })
 })
 
@@ -79,22 +53,27 @@ describe('GET /projects/:id', () => {
 
     expect(response.statusCode).toBe(200)
   })
+})
 
-  test('get project by id with offtimes', async () => {
+describe('GET /projects/:id/offtimes', () => {
+  test('get project off times success', async () => {
     const offTimes = '00:00-01:00,03:10-04:30,05:15-05:25,06:40-08:30,09:00-09:15,12:15-13:30,15:10-16:20,18:25-20:20,20:55-21:15'
-    const mockGetFileReturn = {
+    const projectId = 'bbbbbbbbbbbb'
+    const mockOffTimesReturn = {
       bbbbbbbbbbbb: offTimes
     }
-    const projectId = 'bbbbbbbbbbbb'
-    const mockProject = { id: 'bbbbbbbbbbbb', name: 'test-project-1', isPublic: true, externalId: null, offTimes: offTimes }
+    const mockResponse = {
+      id: projectId,
+      offTimes: offTimes
+    }
 
-    setupMockAxios(GET, `${endpoint}/${projectId}`, 200, mockProject)
-    const spy = jest.spyOn(serializer, 'getOffTimes').mockReturnValue(Promise.resolve(mockGetFileReturn))
-    const response = await request(app).get(`/${projectId}`)
+    setupMockAxios(GET, `${endpoint}/${projectId}/offtimes`, 200, mockResponse)
+    const spy = jest.spyOn(serializer, 'getOffTimes').mockReturnValue(Promise.resolve(mockOffTimesReturn))
+    const response = await request(app).get(`/${projectId}/offtimes`)
 
     expect(spy).toHaveBeenCalled()
     expect(response.statusCode).toBe(200)
-    expect(response.body).toEqual(mockProject)
+    expect(response.body).toEqual(mockResponse)
   })
 })
 

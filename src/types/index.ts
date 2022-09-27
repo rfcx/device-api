@@ -95,6 +95,11 @@ export interface ProjectByIdResponse {
   offTimes: string | null
 }
 
+export interface ProjectOffTimes {
+  id: string
+  offTimes: string
+}
+
 export interface RegisterGuardianRequest {
   guid: string
   token: String
