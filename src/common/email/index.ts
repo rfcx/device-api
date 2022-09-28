@@ -9,14 +9,8 @@ import dayjs from 'dayjs'
 
 const mandrillClient = new mandrill.Mandrill(config.MANDRILL_KEY)
 
-export const generateHTML = (deployment: DeploymentRequest): string => {
+export const generateHTML = (deployment: DeploymentRequest, type: string): string => {
   const filePath = path.join(__dirname, './deploy-success-email-template.html')
-  let type = 'AudioMoth'
-  if (deployment.deploymentType === 'guardian') {
-    type = 'Guardian'
-  } else if (deployment.deploymentType === 'songmeter') {
-    type = 'Song Meter'
-  }
   const source = fs.readFileSync(filePath).toString()
   const template = handlebars.compile(source)
   handlebars.registerHelper('ifEqual', (arg1, arg2, arg3, options) => {
@@ -43,10 +37,16 @@ const sendEmailWithMessage = async (message: EmailMessage): Promise<string> => {
 export default {
   sendNewDeploymentSuccessEmail: async (deployment: DeploymentRequest, user: User) => {
     if (user.email === null || user.email === undefined || user.email === 'Email') return
+    let type = 'AudioMoth'
+    if (deployment.deploymentType === 'guardian') {
+      type = 'Guardian'
+    } else if (deployment.deploymentType === 'songmeter') {
+      type = 'Song Meter'
+    }
     const msg = {
-      text: 'Your AudioMoth device was deployed successfully',
-      subject: 'Your AudioMoth device was deployed successfully',
-      html: generateHTML(deployment),
+      text: `Your ${type} device was deployed successfully`,
+      subject: `Your ${type} device was deployed successfully`,
+      html: generateHTML(deployment, type),
       from_email: 'contact@rfcx.org',
       from_name: 'Rainforest Connection',
       to: [{
@@ -55,13 +55,6 @@ export default {
         type: 'to'
       }],
       auto_html: true
-    }
-    if (deployment.deploymentType === 'guardian') {
-      msg.text = 'Your Guardian device was deployed successfully'
-      msg.subject = 'Your Guardian device was deployed successfully'
-    } else if (deployment.deploymentType === 'songmeter') {
-      msg.text = 'Your Song Meter device was deployed successfully'
-      msg.subject = 'Your Song Meter device was deployed successfully'
     }
     return await sendEmailWithMessage(msg)
   }
