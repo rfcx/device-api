@@ -11,12 +11,21 @@ const mandrillClient = new mandrill.Mandrill(config.MANDRILL_KEY)
 
 export const generateHTML = (deployment: DeploymentRequest): string => {
   const filePath = path.join(__dirname, './deploy-success-email-template.html')
+  let type = 'AudioMoth'
+  if (deployment.deploymentType === 'guardian') {
+    type = 'Guardian'
+  } else if (deployment.deploymentType === 'songmeter') {
+    type = 'Song Meter'
+  }
   const source = fs.readFileSync(filePath).toString()
   const template = handlebars.compile(source)
+  handlebars.registerHelper('ifEqual', (arg1, arg2, arg3, options) => {
+    return (arg1 === arg2 || arg1 === arg3) ? options.fn(this) : options.inverse(this)
+  })
   const deployedAt = dayjs(deployment.deployedAt).toDate()
   const date = deployedAt.toLocaleDateString()
   const time = deployedAt.toLocaleTimeString()
-  const data = { date: date, time: time }
+  const data = { date: date, time: time, type: type }
   return template(data)
 }
 
@@ -50,6 +59,9 @@ export default {
     if (deployment.deploymentType === 'guardian') {
       msg.text = 'Your Guardian device was deployed successfully'
       msg.subject = 'Your Guardian device was deployed successfully'
+    } else if (deployment.deploymentType === 'songmeter') {
+      msg.text = 'Your Song Meter device was deployed successfully'
+      msg.subject = 'Your Song Meter device was deployed successfully'
     }
     return await sendEmailWithMessage(msg)
   }
