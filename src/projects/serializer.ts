@@ -1,8 +1,8 @@
 import { ProjectOffTimes } from '../types'
-import { getFile } from '../common/storage'
+import { getJsonFile } from '../common/storage'
 
 export const getOffTimes = async (): Promise<any> => {
-  return await getFile('satellite-offtimes.json')
+  return await getJsonFile('satellite-offtimes.json')
 }
 
 export const getOfftimeByProjectId = async (id: string): Promise<ProjectOffTimes | {}> => {

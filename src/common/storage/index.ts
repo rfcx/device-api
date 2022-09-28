@@ -32,7 +32,7 @@ export function downloadAsStream (remotePath: string): Readable {
   return s3Client.getObject(params).createReadStream()
 }
 
-export const getFile = async (remotePath: string): Promise<any> => {
+export const getJsonFile = async (remotePath: string): Promise<any> => {
   const params: AWS.S3.GetObjectRequest = {
     Bucket: config.AWS_S3_BUCKET,
     Key: remotePath
