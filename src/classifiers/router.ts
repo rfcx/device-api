@@ -17,7 +17,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
       input_gain: '1.0',
       window_size: '0.9750',
       step_size: '1',
-      classifications: 'chainsaw,environment,voice',
+      classifications: 'chainsaw,environment',
       classifications_filter_threshold: '0.95,1.00'
     },
     {
