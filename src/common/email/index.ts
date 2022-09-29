@@ -37,11 +37,13 @@ const sendEmailWithMessage = async (message: EmailMessage): Promise<string> => {
 export default {
   sendNewDeploymentSuccessEmail: async (deployment: DeploymentRequest, user: User) => {
     if (user.email === null || user.email === undefined || user.email === 'Email') return
-    let type = 'AudioMoth'
+    let type = 'recording'
     if (deployment.deploymentType === 'guardian') {
       type = 'Guardian'
     } else if (deployment.deploymentType === 'songmeter') {
       type = 'Song Meter'
+    } else if (deployment.deploymentType === 'audiomoth') {
+      type = 'AudioMoth'
     }
     const msg = {
       text: `Your ${type} device was deployed successfully`,
