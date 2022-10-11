@@ -31,3 +31,13 @@ export function downloadAsStream (remotePath: string): Readable {
   }
   return s3Client.getObject(params).createReadStream()
 }
+
+export const getJsonFile = async (remotePath: string): Promise<any> => {
+  const params: AWS.S3.GetObjectRequest = {
+    Bucket: config.AWS_S3_BUCKET,
+    Key: remotePath
+  }
+  const result = await s3Client.getObject(params).promise()
+  const json = JSON.parse(result.Body?.toString('utf8') ?? '{}')
+  return json
+}
