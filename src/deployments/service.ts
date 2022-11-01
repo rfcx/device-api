@@ -44,6 +44,10 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
     const deviceParameters = deployment.deviceParameters
     if (deviceParameters != null) {
       await updateGuardian(uid, token, deviceParameters, guardianUpdate)
+
+      // Remove token and ping - no need to be stored in database *use only for ping guardian
+      const { gToken, ping, ...rest} = deployment.deviceParameters
+      deployment.deviceParameters = rest
     }
   }
 
@@ -80,16 +84,35 @@ const updateGuardian = async (uid: string, token: string, deviceParameters: any,
         await dao.createGuardianLog(deviceParameters.guid, 'register', JSON.stringify(deviceParameters))
       })
     }
-    await api.updateGuardian(token, deviceParameters.guid, guardianUpdate).catch(async (e) => {
-      console.error(`error on update: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(guardianUpdate)}, auth0_uid:${uid}`)
-      await dao.createGuardianLog(deviceParameters.guid, 'update', JSON.stringify(guardianUpdate))
-    })
+    if (hasGuardianProperties(deviceParameters) === true) {
+      await api.updateGuardian(token, deviceParameters.guid, guardianUpdate).catch(async (e) => {
+        console.error(`error on update: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(guardianUpdate)}, auth0_uid:${uid}`)
+        await dao.createGuardianLog(deviceParameters.guid, 'update', JSON.stringify(guardianUpdate))
+      })
+    }
+    if (hasPingProperties(deviceParameters) === true) {
+      await api.pingGuardian(deviceParameters.token, deviceParameters.guid, deviceParameters.ping).catch(async (e) => {
+        console.error(`error on ping: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(deviceParameters)}, auth0_uid:${uid}`)
+      })
+    }
   }
 }
 
 const hasRegistrationProperties = (deviceParameters: any): Boolean => {
   if (!('token' in deviceParameters) || deviceParameters.token == null) return false
   if (!('pin_code' in deviceParameters) || deviceParameters.pin_code == null) return false
+  return true
+}
+
+const hasPingProperties = (deviceParameters: any): Boolean => {
+  if (!('guid' in deviceParameters) || deviceParameters.guid == null) return false
+  if (!('token' in deviceParameters) || deviceParameters.token == null) return false
+  if (!('ping' in deviceParameters) || deviceParameters.ping == null) return false
+  return true
+}
+
+const hasGuardianProperties = (deviceParameters: any): Boolean => {
+  if (!('guid' in deviceParameters) || deviceParameters.guid == null) return false
   return true
 }
 
