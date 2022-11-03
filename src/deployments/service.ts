@@ -45,8 +45,8 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
     if (deviceParameters != null) {
       await updateGuardian(uid, token, deviceParameters, guardianUpdate)
 
-      // Remove token and ping - no need to be stored in database *use only for ping guardian
-      const { gToken, ping, ...rest} = deployment.deviceParameters
+      // Remove guardian token and ping - no need to be stored in database *use only for ping guardian
+      const { guardianToken, ping, ...rest } = deployment.deviceParameters
       deployment.deviceParameters = rest
     }
   }
@@ -77,43 +77,35 @@ export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: stri
 }
 
 const updateGuardian = async (uid: string, token: string, deviceParameters: any, guardianUpdate: UpdateGuardian): Promise<void> => {
-  if (deviceParameters.guid != null) {
-    if (hasRegistrationProperties(deviceParameters) === true) {
-      await api.registerGuardianFromDeviceParameters(token, deviceParameters).catch(async (e) => {
-        console.error(`error on register: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(deviceParameters)}, auth0_uid:${uid}`)
-        await dao.createGuardianLog(deviceParameters.guid, 'register', JSON.stringify(deviceParameters))
-      })
-    }
-    if (hasGuardianProperties(deviceParameters) === true) {
-      await api.updateGuardian(token, deviceParameters.guid, guardianUpdate).catch(async (e) => {
-        console.error(`error on update: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(guardianUpdate)}, auth0_uid:${uid}`)
-        await dao.createGuardianLog(deviceParameters.guid, 'update', JSON.stringify(guardianUpdate))
-      })
-    }
-    if (hasPingProperties(deviceParameters) === true) {
-      await api.pingGuardian(deviceParameters.token, deviceParameters.guid, deviceParameters.ping).catch(async (e) => {
-        console.error(`error on ping: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(deviceParameters)}, auth0_uid:${uid}`)
-      })
-    }
+  if (hasRegistrationProperties(deviceParameters) === true) {
+    await api.registerGuardianFromDeviceParameters(token, deviceParameters).catch(async (e) => {
+      console.error(`error on register: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(deviceParameters)}, auth0_uid:${uid}`)
+      await dao.createGuardianLog(deviceParameters.guid, 'register', JSON.stringify(deviceParameters))
+    })
+  }
+  if (hasGuardianProperties(deviceParameters) === true) {
+    await api.updateGuardian(token, deviceParameters.guid, guardianUpdate).catch(async (e) => {
+      console.error(`error on update: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(guardianUpdate)}, auth0_uid:${uid}`)
+      await dao.createGuardianLog(deviceParameters.guid, 'update', JSON.stringify(guardianUpdate))
+    })
+  }
+  if (hasPingProperties(deviceParameters) === true) {
+    await api.pingGuardian(deviceParameters.guardianToken, deviceParameters.guid, deviceParameters.ping).catch(async (e) => {
+      console.error(`error on ping: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(deviceParameters)}, auth0_uid:${uid}`)
+    })
   }
 }
 
 const hasRegistrationProperties = (deviceParameters: any): Boolean => {
-  if (!('token' in deviceParameters) || deviceParameters.token == null) return false
-  if (!('pin_code' in deviceParameters) || deviceParameters.pin_code == null) return false
-  return true
+  return deviceParameters.guardianToken != null && deviceParameters.pinCode != null
 }
 
 const hasPingProperties = (deviceParameters: any): Boolean => {
-  if (!('guid' in deviceParameters) || deviceParameters.guid == null) return false
-  if (!('token' in deviceParameters) || deviceParameters.token == null) return false
-  if (!('ping' in deviceParameters) || deviceParameters.ping == null) return false
-  return true
+  return deviceParameters.guid != null && deviceParameters.guardianToken != null && deviceParameters.ping != null
 }
 
 const hasGuardianProperties = (deviceParameters: any): Boolean => {
-  if (!('guid' in deviceParameters) || deviceParameters.guid == null) return false
-  return true
+  return deviceParameters.guid != null
 }
 
 const getGuardianUpdate = (stream: Stream): UpdateGuardian => {
