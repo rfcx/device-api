@@ -87,6 +87,12 @@ export const getProject = async (token: string, id: string): Promise<ProjectById
   return snakeToCamel(response.data)
 }
 
+export const pingGuardian = async (guardianToken: string, guid: string, ping: any): Promise<void> => {
+  const options = { headers: { 'x-auth-user': `guardian/${guid}`, 'x-auth-token': guardianToken } }
+  const response = await noncoreInstance.post(`/v2/guardians/${guid}/pings`, { json: ping }, options)
+  return snakeToCamel(response.data)
+}
+
 export const updateGuardian = async (token: string, guid: string, params: UpdateGuardian): Promise<UpdateGuardianResponse> => {
   const options = { headers: { Authorization: token } }
   const response = await noncoreInstance.patch(`/v2/guardians/${guid}`, params, options)
@@ -101,7 +107,7 @@ export const registerGuardian = async (token: string, parameters: RegisterGuardi
 
 export const registerGuardianFromDeviceParameters = async (token: string, parameters: any): Promise<RegisterGuardianResponse> => {
   const options = { headers: { Authorization: token } }
-  const response = await noncoreInstance.post('/v2/guardians/register', { guid: parameters.guid, token: parameters.token, pin_code: parameters.pin_code }, options)
+  const response = await noncoreInstance.post('/v2/guardians/register', { guid: parameters.guid, token: parameters.guardianToken, pin_code: parameters.pin_code }, options)
   return snakeToCamel(response.data)
 }
 

@@ -9,7 +9,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
     {
       id: '1617208867756',
       name: 'chainsaw',
-      version: '1',
+      version: '5',
       path: 'https://rfcx-install.s3.eu-west-1.amazonaws.com/rfcx-guardian/guardian-asset-classifier/1617208867756.tflite.gz',
       type: 'tflite',
       sha1: 'accfb018701e52696835c9d1c02600a67a228db1',
