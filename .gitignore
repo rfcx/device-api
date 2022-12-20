@@ -6,3 +6,4 @@ yarn-error.log
 .env
 secrets.yaml
 .DS_Store
+.env.*

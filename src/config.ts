@@ -1,4 +1,5 @@
 export default {
+  NODE_ENV: process.env.NODE_ENV ?? 'production',
   AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID ?? '',
   AWS_SECRET_KEY: process.env.AWS_SECRET_KEY ?? '',
   AWS_S3_BUCKET: process.env.AWS_S3_BUCKET ?? 'rfcx-device-assets-staging',
@@ -9,7 +10,8 @@ export default {
   DB_HOSTNAME: process.env.DB_HOSTNAME ?? 'localhost',
   DB_PORT: parseInt(process.env.DB_PORT ?? '') ?? 5432,
   DB_SSL_ENABLED: process.env.DB_SSL_ENABLED === 'true',
-  DB_DBNAME: process.env.DB_DBNAME ?? 'postgres',
+  DB_DEVICE_NAME: process.env.DB_DEVICE_NAME ?? 'device',
+  DB_GUARDIAN_NAME: process.env.DB_GUARDIAN_NAME ?? 'guardian',
   DB_USER: process.env.DB_USER ?? 'postgres',
   DB_PASSWORD: process.env.DB_PASSWORD ?? 'test',
   MANDRILL_KEY: process.env.MANDRILL_KEY ?? ''

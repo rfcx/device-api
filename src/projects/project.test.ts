@@ -1,9 +1,10 @@
 import routes from './router'
 import { migrate, truncate, expressApp, seed } from '../common/db/testing'
 import request from 'supertest'
-import db from '../common/db'
+import dbConstructor from '../common/db'
 import { GET, POST, setupMockAxios } from '../common/axios/mock'
 import * as serializer from './serializer'
+const db = dbConstructor('device')
 
 const app = expressApp()
 

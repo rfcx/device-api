@@ -1,7 +1,7 @@
 import routes from './router'
 import { migrate, truncate, expressApp, seed, seedValues } from '../common/db/testing'
 import request from 'supertest'
-import db from '../common/db'
+import dbConstructor from '../common/db'
 import Deployment from 'src/deployments/deployment.model'
 import dayJs from 'dayjs'
 import service from './service'
@@ -9,6 +9,7 @@ import email from '../common/email'
 import { GET, POST, PATCH, setupMockAxios } from '../common/axios/mock'
 import Asset from 'src/assets/asset.model'
 import GuardianLog from 'src/guardian-log/guardian-log.model'
+const db = dbConstructor('device')
 
 const app = expressApp()
 

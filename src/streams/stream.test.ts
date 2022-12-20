@@ -1,11 +1,12 @@
 import routes from './router'
 import { migrate, truncate, expressApp, seed, seedValues } from '../common/db/testing'
 import request from 'supertest'
-import db from '../common/db'
+import dbConstructor from '../common/db'
 import Deployment from 'src/deployments/deployment.model'
 import dayJs from 'dayjs'
 import { GET, setupMockAxios } from '../common/axios/mock'
 import Asset from 'src/assets/asset.model'
+const db = dbConstructor('device')
 
 const app = expressApp()
 
