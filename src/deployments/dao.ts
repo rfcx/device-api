@@ -1,10 +1,8 @@
 import { Transaction, Op } from 'sequelize'
 import { DeploymentQuery, DeploymentRequest } from '../types'
-import dbConstructor from '../common/db'
+import db from '../common/db/device'
 import Deployment from './deployment.model'
 import GuardianLog from '../guardian-log/guardian-log.model'
-
-const db = dbConstructor('device')
 
 export async function get (id: string): Promise<Deployment | null> {
   return await Deployment.findByPk(id, {

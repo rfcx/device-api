@@ -1,10 +1,11 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript'
+import db from '../common/db/device'
 
 @Table({
   timestamps: false,
   tableName: 'guardian_log'
 })
-export default class GuardianLog extends Model {
+class GuardianLog extends Model {
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,
@@ -21,3 +22,6 @@ export default class GuardianLog extends Model {
   @Column(DataType.STRING)
   body!: string
 }
+db.sequelize.addModels([GuardianLog])
+
+export default GuardianLog

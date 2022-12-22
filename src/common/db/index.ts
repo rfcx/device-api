@@ -1,6 +1,5 @@
 import config from '../../config'
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript'
-import path from 'path'
 type SequelizeInstanceType = 'device' | 'guardian'
 interface dbExport {
   sequelize: Sequelize
@@ -29,8 +28,7 @@ function getOptions (type: SequelizeInstanceType): SequelizeOptions {
       paranoid: true,
       createdAt: 'created_at', // force sequelize to respect snake_case for created_at
       updatedAt: 'updated_at' // force sequelize to respect snake_case for updated_at
-    },
-    models: [path.join(__dirname, '../../**/*.model.*')]
+    }
   }
 
   const dbConfigPostgres: SequelizeOptions = {

@@ -1,10 +1,11 @@
 import { Table, Column, Model, DataType, CreatedAt, UpdatedAt, DeletedAt } from 'sequelize-typescript'
+import db from '../common/db/device'
 
 @Table({
   paranoid: true,
   tableName: 'assets'
 })
-export default class Asset extends Model {
+class Asset extends Model {
   @Column({
     type: DataType.UUID,
     primaryKey: true,
@@ -33,3 +34,6 @@ export default class Asset extends Model {
   @DeletedAt
   deletedAt!: Date
 }
+db.sequelize.addModels([Asset])
+
+export default Asset

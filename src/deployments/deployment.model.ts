@@ -1,10 +1,11 @@
 import { Table, Column, Model, DataType, PrimaryKey, CreatedAt, UpdatedAt, DeletedAt } from 'sequelize-typescript'
+import db from '../common/db/device'
 
 @Table({
   paranoid: true,
   tableName: 'deployments'
 })
-export default class Deployment extends Model {
+class Deployment extends Model {
   @PrimaryKey
   @Column(DataType.STRING(16))
   id!: string
@@ -36,3 +37,6 @@ export default class Deployment extends Model {
   @DeletedAt
   deletedAt!: Date
 }
+db.sequelize.addModels([Deployment])
+
+export default Deployment
