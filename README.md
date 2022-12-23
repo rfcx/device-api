@@ -9,45 +9,60 @@ Providing meta data on devices and deployments. Consumed by Device Management Co
 Requirements:
 - Node
 - yarn
-- Postgres (see below)
+- Timescale (see below)
 
-### Basics
+---
+
+## Basics
 
 Install dependencies
 
 `yarn`
 
-// TODO: Configure environment variables? Shouldn't be needed if using Docker.
+---
 
-Run local dev serve (live reload)
+## Setup TimescaleDB locally using Docker
 
-`yarn serve`
+Start TimescaleDB container
 
-### Setup Postgres with Docker
-
-Start Postgres container
-
-`docker run -d --rm --name pg -e POSTGRES_PASSWORD=test -p 5432:5432 postgres`
-
-Create the schema needed
-
-`docker exec -it pg psql -U postgres --command "create schema sequelize;"`
+```sh
+yarn start.timescale
+```
 
 Run the migrations
 
-`yarn migrate`
+On local machine (to apply env vars from `.env` file)
+```sh
+yarn migrate.dev
+```
 
-You are ready to run `yarn serve` and test the endpoints.
+When you want to stop TimescaleDB
+
+```sh
+yarn stop.timescale
+```
+
+---
+
+## Run local dev server (live reload)
+
+```sh
+yarn serve
+```
 
 ---
 
 ## Testing
 
-Run lint:
-`yarn lint`
+### Run lint
+```sh
+yarn lint
+```
 
-Run tests:
-`yarn test`
+### Run tests
+```
+yarn test
+```
 
 ---
 

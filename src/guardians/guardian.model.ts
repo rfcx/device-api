@@ -54,6 +54,10 @@ export default class Guardian extends Model {
   @Column(DataType.DOUBLE)
   longitude!: number
 
+  @IsFloat
+  @Column(DataType.DOUBLE)
+  altitude!: number
+
   @IsDate
   @Default(Sequelize.fn('NOW'))
   @Column(DataType.DATE)
