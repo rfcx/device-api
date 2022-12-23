@@ -1,5 +1,5 @@
 import routes from './router'
-import { migrate, truncate, expressApp, seed, seedValues } from '../common/db/testing'
+import { migrate, truncate, expressApp, seed, seedValues, muteConsole } from '../common/db/testing'
 import request from 'supertest'
 import dbConstructor from '../common/db'
 import Deployment from 'src/deployments/deployment.model'
@@ -16,6 +16,7 @@ const app = expressApp()
 app.use('/', routes)
 
 beforeAll(async () => {
+  muteConsole()
   await migrate(db.sequelize)
   await seed()
 })
