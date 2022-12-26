@@ -1,4 +1,5 @@
-import { AllowNull, Table, Column, Model, DataType, PrimaryKey, CreatedAt, UpdatedAt, Unique, Default, IsFloat, Is, IsDate, Sequelize } from 'sequelize-typescript'
+import { AllowNull, Table, Column, Model, DataType, PrimaryKey, CreatedAt, UpdatedAt, Unique, Default, IsFloat, Is, IsDate, Sequelize, BelongsTo } from 'sequelize-typescript'
+import GuardianSite from '../guardian-sites/guardian-site.model'
 import db from '../common/db/guardian'
 
 @Table({
@@ -21,20 +22,20 @@ export default class Guardian extends Model {
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  is_visible!: boolean
+  isVisible!: boolean
 
   @Column(DataType.STRING)
-  phone_number!: string
+  phoneNumber!: string
 
   @Column(DataType.STRING)
-  carrier_name!: string
+  carrierName!: string
 
   @Column(DataType.STRING)
-  sim_card_id!: string
+  simCardId!: string
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  is_updatable!: boolean
+  isUpdatable!: boolean
 
   @IsFloat
   @Is('latitude', (value: number) => {
@@ -61,38 +62,38 @@ export default class Guardian extends Model {
   @IsDate
   @Default(Sequelize.fn('NOW'))
   @Column(DataType.DATE)
-  last_check_in!: Date
+  lastCheckIn!: Date
 
   @Unique
   @Column(DataType.STRING)
-  auth_token_salt!: string
+  authTokenSalt!: string
 
   @Unique
   @Column(DataType.STRING)
-  auth_token_hash!: string
+  authTokenHash!: string
 
   @IsDate
   @Default(Sequelize.fn('NOW'))
   @Column(DataType.DATE(3))
-  auth_token_updated_at!: Date
+  authTokenUpdatedAt!: Date
 
   @IsDate
   @Default(Sequelize.fn('NOW'))
   @Column(DataType.DATE(3))
-  auth_token_expires_at!: Date
+  authTokenExpiresAt!: Date
 
   @Column(DataType.STRING)
-  auth_pin_code!: string
+  authPinCode!: string
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  is_private!: boolean
+  isPrivate!: boolean
 
   @Column(DataType.STRING(12))
-  stream_id!: string
+  streamId!: string
 
   @Column(DataType.STRING(12))
-  project_id!: string
+  projectId!: string
 
   @Column(DataType.STRING)
   creator!: string
@@ -102,29 +103,32 @@ export default class Guardian extends Model {
 
   @IsDate
   @Column(DataType.DATE(3))
-  last_deployed!: Date
+  lastDeployed!: Date
 
   @IsDate
   @Column(DataType.DATE(3))
-  last_ping!: Date
+  lastPing!: Date
 
   @IsDate
   @Column(DataType.DATE(3))
-  last_audio_sync!: Date
+  lastAudioSync!: Date
 
   @IsDate
   @Column(DataType.DATE(3))
-  last_battery_main!: Date
+  lastBatteryMain!: Date
 
   @IsDate
   @Column(DataType.DATE(3))
-  last_battery_internal!: Date
+  lastBatteryInternal!: Date
 
   @CreatedAt
   createdAt!: Date
 
   @UpdatedAt
   updatedAt!: Date
+
+  @BelongsTo(() => GuardianSite, 'siteId')
+  guardian!: GuardianSite
 }
 
 db.sequelize.addModels([Guardian])

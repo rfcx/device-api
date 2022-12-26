@@ -2,6 +2,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.sequelize.transaction(async transaction => {
+      await queryInterface.removeColumn('GuardianSites', 'is_analyzable', { transaction })
       await queryInterface.removeColumn('Guardians', 'is_certified', { transaction })
       await queryInterface.removeColumn('Guardians', 'cartodb_coverage_id', { transaction })
       await queryInterface.removeColumn('Guardians', 'check_in_count', { transaction })
@@ -24,6 +25,7 @@ module.exports = {
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.sequelize.transaction(async transaction => {
+      await queryInterface.addColumn('GuardianSites', 'is_analyzable', { type: Sequelize.BOOLEAN, defaultValue: true, allowNull: true }, { transaction })
       await queryInterface.addColumn('Guardians', 'is_certified', { type: Sequelize.BOOLEAN, defaultValue: false }, { transaction })
       await queryInterface.addColumn('Guardians', 'cartodb_coverage_id', { type: Sequelize.UUID, unique: false, allowNull: true }, { transaction })
       await queryInterface.addColumn('Guardians', 'check_in_count', { type: Sequelize.INTEGER, defaultValue: 0 }, { transaction })
