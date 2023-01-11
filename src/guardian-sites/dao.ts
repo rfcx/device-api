@@ -1,10 +1,16 @@
+import { Transactionable, Op } from 'sequelize/types'
 import GuardianSite from './guardian-site.model'
 
-export async function get (id: string, field: 'id' | 'guid' = 'id'): Promise<GuardianSite | null> {
+export async function get (id: string, o: Transactionable = {}): Promise<GuardianSite | null> {
+  const transaction = o.transaction
   return await GuardianSite.findOne({
     where: {
-      [field]: id
-    }
+      [Op.or]: {
+        id: id,
+        guid: id
+      }
+    },
+    transaction
   })
 }
 
