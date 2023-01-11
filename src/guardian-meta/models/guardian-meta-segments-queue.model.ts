@@ -9,7 +9,7 @@ import Guardian from '../../guardians/guardian.model'
 export default class GuardianMetaSegmentsQueue extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
-  id!: string
+  id!: number
 
   @Column(DataType.STRING)
   groupGuid!: string

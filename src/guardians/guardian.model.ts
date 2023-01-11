@@ -9,7 +9,7 @@ import db from '../common/db/guardian'
 export default class Guardian extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
-  id!: string
+  id!: number
 
   @Unique
   @AllowNull(false)
@@ -128,7 +128,7 @@ export default class Guardian extends Model {
   updatedAt!: Date
 
   @BelongsTo(() => GuardianSite, 'siteId')
-  guardian!: GuardianSite
+  site!: GuardianSite
 }
 
 db.sequelize.addModels([Guardian])

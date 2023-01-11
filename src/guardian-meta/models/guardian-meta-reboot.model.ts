@@ -9,7 +9,7 @@ import Guardian from '../../guardians/guardian.model'
 export default class GuardianMetaReboot extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
-  id!: string
+  id!: number
 
   @Column(DataType.DATE(3))
   attemptedAt!: Date

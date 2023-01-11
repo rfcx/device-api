@@ -9,7 +9,7 @@ import GuardianMetaSensor from './guardian-meta-sensor.model'
 export default class GuardianMetaSensorComponent extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
-  id!: string
+  id!: number
 
   @AllowNull(false)
   @Column(DataType.STRING)

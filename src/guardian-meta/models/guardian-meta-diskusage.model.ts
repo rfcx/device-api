@@ -9,7 +9,7 @@ import Guardian from '../../guardians/guardian.model'
 export default class GuardianMetaDiskUsage extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
-  id!: string
+  id!: number
 
   @IsDate
   @Column(DataType.DATE(3))

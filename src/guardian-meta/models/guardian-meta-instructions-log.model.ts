@@ -9,7 +9,7 @@ import Guardian from '../../guardians/guardian.model'
 export default class GuardianMetaInstructionsLog extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
-  id!: string
+  id!: number
 
   @IsInt
   @Min(0)

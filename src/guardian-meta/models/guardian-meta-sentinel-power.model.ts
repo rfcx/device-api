@@ -9,7 +9,7 @@ import db from '../../common/db/guardian'
 export default class GuardianMetaSentinelPower extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
-  id!: string
+  id!: number
 
   @Column(DataType.DATE(3))
   measuredAt!: Date

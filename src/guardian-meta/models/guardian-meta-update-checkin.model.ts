@@ -11,7 +11,7 @@ import GuardianSoftwareVersion from '../../guardian-software/models/guardian-sof
 export default class GuardianMetaUpdateCheckIn extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
-  id!: string
+  id!: number
 
   @CreatedAt
   createdAt!: Date
