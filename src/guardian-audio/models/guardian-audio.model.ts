@@ -1,5 +1,5 @@
 import { AllowNull, Table, Column, Model, DataType, PrimaryKey, CreatedAt, UpdatedAt, Default, IsInt, Min, Unique, BelongsTo } from 'sequelize-typescript'
-import GuardianCheckin from '../..//guardian-meta/models/guardian-checkin.model'
+import GuardianCheckin from '../../guardian-checkin/guardian-checkin.model'
 import GuardianSite from '../../guardian-sites/guardian-site.model'
 import Guardian from '../../guardians/guardian.model'
 import db from '../../common/db/guardian'
