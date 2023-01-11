@@ -595,6 +595,13 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@rfcx/http-utils@1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@rfcx/http-utils/-/http-utils-1.0.10.tgz#9d4b59cd1e7d174ed419524a56d0972405174263"
+  integrity sha512-xtPzIiP/InEppVMfHUyrIEIAvt4jfph4tAdBfK4BW4ytldd+mitM43DZJWKjvlHsCCOWnyrrlB/X7OwCfpajuw==
+  dependencies:
+    moment-timezone "0.5.31"
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.2"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.2.tgz#858f5c4b48d80778fde4b9d541f27edc0d56488b"
@@ -683,6 +690,11 @@
   version "2.8.10"
   resolved "https://registry.yarnpkg.com/@types/cors/-/cors-2.8.10.tgz#61cc8469849e5bcdd0c7044122265c39cec10cf4"
   integrity sha512-C7srjHiVG3Ey1nR6d511dtDkCEjxuN9W1HWAEjGq8kpcwmNM6JJkpC0xvabM7BXTG2wDq8Eu33iH9aQKa7IvLQ==
+
+"@types/csprng@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@types/csprng/-/csprng-0.1.2.tgz#26b8f35dae619a64e6335c9e9fe0f8641f37cbf1"
+  integrity sha512-QJdNKn4a5JfDcIQLaVjKcVFhm9Es8U8kMOwPYof3TDO5CjLodooAYdGy+pAShgefOwe0bRextBLO5gC0k3Q3Iw==
 
 "@types/express-jwt@0.0.42":
   version "0.0.42"
@@ -1888,6 +1900,11 @@ cross-spawn@^7.0.0, cross-spawn@^7.0.2:
     path-key "^3.1.0"
     shebang-command "^2.0.0"
     which "^2.0.1"
+
+crypto@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
+  integrity sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==
 
 csprng@^0.1.2:
   version "0.1.2"
@@ -4602,6 +4619,13 @@ mkdirp@^0.5.1:
   integrity sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
   dependencies:
     minimist "^1.2.5"
+
+moment-timezone@0.5.31:
+  version "0.5.31"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.31.tgz#9c40d8c5026f0c7ab46eda3d63e49c155148de05"
+  integrity sha512-+GgHNg8xRhMXfEbv81iDtrVeTcWt0kWmTEY1XQK14dICTXnWJnT0dxdlPspwqF3keKMVPXwayEsk1DI0AA/jdA==
+  dependencies:
+    moment ">= 2.9.0"
 
 moment-timezone@^0.5.31:
   version "0.5.33"
