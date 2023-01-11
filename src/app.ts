@@ -11,6 +11,8 @@ import docs from './docs'
 import { jwtCheck } from './common/auth'
 import logging from './common/logging'
 import { errorHandler, notFoundHandler } from './common/error-handlers'
+import { ensureTmpDirExists } from './common/fs'
+ensureTmpDirExists() // eslint-disable-line @typescript-eslint/no-floating-promises
 
 const app = express()
 app.use(cors())

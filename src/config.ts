@@ -14,5 +14,6 @@ export default {
   DB_GUARDIAN_NAME: process.env.DB_GUARDIAN_NAME ?? 'guardian',
   DB_USER: process.env.DB_USER ?? 'postgres',
   DB_PASSWORD: process.env.DB_PASSWORD ?? 'test',
-  MANDRILL_KEY: process.env.MANDRILL_KEY ?? ''
+  MANDRILL_KEY: process.env.MANDRILL_KEY ?? '',
+  CACHE_DIRECTORY: process.env.CACHE_DIRECTORY ?? './tmp'
 }
