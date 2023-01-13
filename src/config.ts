@@ -15,5 +15,7 @@ export default {
   DB_USER: process.env.DB_USER ?? 'postgres',
   DB_PASSWORD: process.env.DB_PASSWORD ?? 'test',
   MANDRILL_KEY: process.env.MANDRILL_KEY ?? '',
-  CACHE_DIRECTORY: process.env.CACHE_DIRECTORY ?? './tmp'
+  CACHE_DIRECTORY: process.env.CACHE_DIRECTORY ?? './tmp',
+  FFMPEG_PATH: process.env.FFMPEG_PATH ?? '/usr/local/bin/ffmpeg',
+  SOX_PATH: process.env.SOX_PATH ?? '/usr/local/bin/sox'
 }

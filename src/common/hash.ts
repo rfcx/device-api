@@ -1,4 +1,4 @@
-import { readFileAsync } from './fs'
+import { readFile } from 'fs/promises'
 import { createHash } from 'crypto'
 import csprng from 'csprng'
 
@@ -15,6 +15,6 @@ export const sha1 = function (data: any): string {
 }
 
 export const getFileSha1 = async function (filePath: string): Promise<string> {
-  const buf = await readFileAsync(filePath)
+  const buf = await readFile(filePath)
   return sha1(buf)
 }

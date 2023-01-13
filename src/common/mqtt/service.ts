@@ -2,7 +2,7 @@
 import { gunzip } from 'zlib'
 import { promisify } from 'util'
 // import { CheckinPayload, MqttMessageBuffers } from '../../types'
-import { splitBuffer, saveFileBufToDisk } from './utils/buffer'
+import { splitBuffer, saveFileBufToDisk, extractAudioFileMeta } from './utils'
 import { parseMqttStrArr } from './utils/parse-mqtt-str-arr'
 import { ValidationError } from '@rfcx/http-utils'
 import { MqttMessageJson } from './types'
@@ -22,8 +22,7 @@ export const decodeData = async function (buf: Buffer): Promise<object> {
   return json
 }
 
-export const saveFileToDisk = async function (buf: Buffer, metaStr: string): Promise<string | null> {
-  const meta = parseMqttStrArr(metaStr)
+export const saveFileToDisk = async function (buf: Buffer, meta: string[][]): Promise<string> {
   return await saveFileBufToDisk(buf, true, meta[0][2], meta[0][3])
 }
 
@@ -32,15 +31,11 @@ export const parseMessage = async function (data: Buffer): Promise<any> {
   const buffers = splitBuffer(data)
   const json = await decodeData(buffers.json) as MqttMessageJson
   if (buffers.audio !== null) {
-    const audioFilePath = await saveFileToDisk(buffers.audio, json.audio)
-    console.log('\n\naudioFilePath', audioFilePath, '\n\n')
+    const audioMetaArr = parseMqttStrArr(json.audio)
+    const audioFilePath = await saveFileToDisk(buffers.audio, audioMetaArr)
+    const audioMeta = await extractAudioFileMeta(audioMetaArr[0], audioFilePath)
+    console.log('\n\naudio', audioFilePath, audioMeta, '\n\n')
   }
-
-  // if (buffers.audio !== null) {
-  //   const audioMeta = await decodeData(buffers.audio)
-  // }
-  // const audio = await exportFileBuf(buffers.audio)
-
   return json
 }
 

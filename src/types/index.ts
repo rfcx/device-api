@@ -126,4 +126,4 @@ export interface AppInfo {
 export * from '../guardian-checkin/types'
 export * from '../guardian-checkin/utils/message/types'
 export * from '../guardians/types'
-export * from '../common/mqtt/types'
+export * from '../common/types'

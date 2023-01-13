@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-throw-literal */
 import path from 'path'
-import { writeFileAsync } from '../../fs'
+import { writeFile } from 'fs/promises'
 import config from '../../../config'
 import { ValidationError } from '@rfcx/http-utils'
 import { MqttMessageBuffers } from '../../../types'
@@ -36,17 +36,14 @@ export const splitBuffer = function (data: Buffer): MqttMessageBuffers {
   return { json, audio, screenshot, log }
 }
 
-export const saveFileBufToDisk = async function (buf: Buffer, isGZipped: boolean, extension: string, sha1: string): Promise<string | null> {
-  if (buf.length === 0) {
-    return null
-  }
+export const saveFileBufToDisk = async function (buf: Buffer, isGZipped: boolean, extension: string, sha1: string): Promise<string> {
   const filename = `${randomString(36)}.${extension}`
   const tmpPath = path.join(config.CACHE_DIRECTORY, 'uploads', filename)
 
   if (isGZipped) {
     buf = await gunzipAsync(buf)
   }
-  await writeFileAsync(tmpPath, buf, 'binary')
+  await writeFile(tmpPath, buf, 'binary')
   const fileSha1 = await getFileSha1(tmpPath)
   if (sha1 !== fileSha1) {
     throw new ValidationError(`File checksum mismatch: ${sha1} vs ${fileSha1}`)
