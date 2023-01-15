@@ -29,7 +29,8 @@ export interface MqttMessageJson {
     audio: object[]
     classifiers: Classifier[]
   }
-  meta_ids: string[]
+  reboots: string
+  meta_ids?: string[]
   data_transfer: string
   storage: string
   guardian?: {
@@ -41,4 +42,7 @@ export interface MqttMessageJson {
   device?: string
   messages?: string
   detection_ids?: string[]
+  checkins_to_verify?: string[]
 }
+
+export * from './utils/types'
