@@ -41,7 +41,7 @@ jobs:
     uses: rfcx/cicd/.github/workflows/ecr-build-push.yaml@master
     with:
       dockerfile: build/Dockerfile
-      targets: "[\"device-api\"]"
+      targets: "[\"device-api-http\",\"device-api-mqtt\"]"
       tag-environment: ${{ needs.configure.outputs.namespace }}
       tag-latest: ${{ needs.configure.outputs.namespace == 'production' }}
     secrets:
@@ -51,7 +51,7 @@ jobs:
   deploy:
     name: 'Deploy'
     needs: [build, configure]
-    uses: rfcx/cicd/.github/workflows/k8s-deploy.yaml@master
+    uses: ./.github/workflows/reusable-k8s-deploy.yaml
     with:
       tag: ${{ needs.build.outputs.unique-tag }}
       namespace: ${{ needs.configure.outputs.namespace }}

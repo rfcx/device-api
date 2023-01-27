@@ -7,15 +7,15 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
     nginx.ingress.kubernetes.io/backend-protocol: "http"
     nginx.ingress.kubernetes.io/enable-cors: "false"
-  name: device-api-ingress
-  namespace: production
+  name: device-api-http-ingress
+  namespace: staging
   labels:
-    app: device-api
+    app: device-api-http
 spec:
   rules:
-    - host: device-api.rfcx.org
+    - host: staging-device-api.rfcx.org
       http:
         paths:
           - backend:
-              serviceName: device-api-service
+              serviceName: device-api-http-service
               servicePort: 80

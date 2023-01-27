@@ -1,13 +1,13 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: device-api-service
+  name: device-api-http-service
   namespace: staging
   labels:
-    app: device-api
+    app: device-api-http
 spec:
   selector:
-    app: device-api
+    app: device-api-http
   type: ClusterIP
   ports:
     - name: node

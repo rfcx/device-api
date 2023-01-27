@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: device-api-mqtt-config
+  namespace: staging
+data:
+  NEW_RELIC_APP_NAME: "Staging Device MQTT"

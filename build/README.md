@@ -18,7 +18,7 @@ Requires Docker.
 
 2.  Run the app
     ```
-    docker run -it --rm device-api -p 3000:3000
+    docker run -it --rm device-api-http -p 3000:3000
     ```
 
 
