@@ -6,7 +6,6 @@ module.exports = {
         id: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          primaryKey: true,
           autoIncrement: true
         },
         guid: {
@@ -15,7 +14,8 @@ module.exports = {
         },
         captured_at: {
           type: Sequelize.DATE(3),
-          allowNull: true
+          allowNull: true,
+          primaryKey: true
         },
         url: {
           type: Sequelize.STRING,
@@ -50,6 +50,10 @@ module.exports = {
           allowNull: false
         }
       }, { transaction })
+      await queryInterface.sequelize.query("SELECT create_hypertable('\"GuardianMetaLogs\"', 'captured_at')", {
+        type: queryInterface.sequelize.QueryTypes.RAW,
+        transaction
+      })
       await queryInterface.addIndex('GuardianMetaLogs', ['guardian_id'], { transaction })
       await queryInterface.addIndex('GuardianMetaLogs', ['sha1_checksum'], { transaction })
     })

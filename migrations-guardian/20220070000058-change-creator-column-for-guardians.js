@@ -1,12 +1,14 @@
 'use strict'
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.sequelize.transaction(async (transaction) => {
-      await queryInterface.removeConstraint('Guardians', 'Guardians_creator_fkey', { transaction })
-      await queryInterface.changeColumn('Guardians', 'creator', {
-        type: Sequelize.STRING,
-        allowNull: true
-      }, { transaction })
+  up: async (queryInterface, Sequelize) => {
+    try {
+      await queryInterface.removeConstraint('Guardians', 'Guardians_creator_fkey')
+    } catch (e) {
+      console.log('Guardians_creator_fkey does not exist')
+    }
+    await queryInterface.changeColumn('Guardians', 'creator', {
+      type: Sequelize.STRING,
+      allowNull: true
     })
   },
   down: (queryInterface, Sequelize) => {

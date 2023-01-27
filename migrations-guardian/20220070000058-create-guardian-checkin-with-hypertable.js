@@ -7,7 +7,6 @@ module.exports = {
         id: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          primaryKey: true,
           autoIncrement: true
         },
         guid: {
@@ -110,22 +109,26 @@ module.exports = {
 
 async function deleteConstraints (queryInterface, transaction) {
   const type = queryInterface.sequelize.QueryTypes.RAW
-  await queryInterface.sequelize.query('ALTER TABLE "GuardianAudio" DROP CONSTRAINT "GuardianAudio_check_in_id_fkey";', { type, transaction })
-  await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaBattery" DROP CONSTRAINT "GuardianMetaBattery_check_in_id_fkey";', { type, transaction })
-  await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaCPU" DROP CONSTRAINT "GuardianMetaCPU_check_in_id_fkey";', { type, transaction })
-  await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaDataTransfer" DROP CONSTRAINT "GuardianMetaDataTransfer_check_in_id_fkey";', { type, transaction })
-  await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaDateTimeOffsets" DROP CONSTRAINT "GuardianMetaDateTimeOffsets_check_in_id_fkey";', { type, transaction })
-  await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaGeoLocations" DROP CONSTRAINT "GuardianMetaGeoLocations_check_in_id_fkey";', { type, transaction })
-  await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaGeoPositions" DROP CONSTRAINT "GuardianMetaGeoPositions_check_in_id_fkey";', { type, transaction })
-  await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaLightMeter" DROP CONSTRAINT "GuardianMetaLightMeter_check_in_id_fkey";', { type, transaction })
-  await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaMessages" DROP CONSTRAINT "GuardianMetaMessages_check_in_id_fkey";', { type, transaction })
-  await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaMqttBrokerConnections" DROP CONSTRAINT "GuardianMetaMqttBrokerConnections_check_in_id_fkey";', { type, transaction })
-  await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaNetwork" DROP CONSTRAINT "GuardianMetaNetwork_check_in_id_fkey";', { type, transaction })
-  await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaOffline" DROP CONSTRAINT "GuardianMetaOffline_check_in_id_fkey";', { type, transaction })
-  await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaPower" DROP CONSTRAINT "GuardianMetaPower_check_in_id_fkey";', { type, transaction })
-  await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaSentinelAccelerometer" DROP CONSTRAINT "GuardianMetaSentinelAccelerometer_check_in_id_fkey";', { type, transaction })
-  await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaSentinelCompass" DROP CONSTRAINT "GuardianMetaSentinelCompass_check_in_id_fkey";', { type, transaction })
-  await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaSentinelPower" DROP CONSTRAINT "GuardianMetaSentinelPower_check_in_id_fkey";', { type, transaction })
+  try {
+    await queryInterface.sequelize.query('ALTER TABLE "GuardianAudio" DROP CONSTRAINT "GuardianAudio_check_in_id_fkey";', { type, transaction })
+    await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaBattery" DROP CONSTRAINT "GuardianMetaBattery_check_in_id_fkey";', { type, transaction })
+    await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaCPU" DROP CONSTRAINT "GuardianMetaCPU_check_in_id_fkey";', { type, transaction })
+    await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaDataTransfer" DROP CONSTRAINT "GuardianMetaDataTransfer_check_in_id_fkey";', { type, transaction })
+    await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaDateTimeOffsets" DROP CONSTRAINT "GuardianMetaDateTimeOffsets_check_in_id_fkey";', { type, transaction })
+    await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaGeoLocations" DROP CONSTRAINT "GuardianMetaGeoLocations_check_in_id_fkey";', { type, transaction })
+    await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaGeoPositions" DROP CONSTRAINT "GuardianMetaGeoPositions_check_in_id_fkey";', { type, transaction })
+    await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaLightMeter" DROP CONSTRAINT "GuardianMetaLightMeter_check_in_id_fkey";', { type, transaction })
+    await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaMessages" DROP CONSTRAINT "GuardianMetaMessages_check_in_id_fkey";', { type, transaction })
+    await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaMqttBrokerConnections" DROP CONSTRAINT "GuardianMetaMqttBrokerConnections_check_in_id_fkey";', { type, transaction })
+    await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaNetwork" DROP CONSTRAINT "GuardianMetaNetwork_check_in_id_fkey";', { type, transaction })
+    await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaOffline" DROP CONSTRAINT "GuardianMetaOffline_check_in_id_fkey";', { type, transaction })
+    await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaPower" DROP CONSTRAINT "GuardianMetaPower_check_in_id_fkey";', { type, transaction })
+    await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaSentinelAccelerometer" DROP CONSTRAINT "GuardianMetaSentinelAccelerometer_check_in_id_fkey";', { type, transaction })
+    await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaSentinelCompass" DROP CONSTRAINT "GuardianMetaSentinelCompass_check_in_id_fkey";', { type, transaction })
+    await queryInterface.sequelize.query('ALTER TABLE "GuardianMetaSentinelPower" DROP CONSTRAINT "GuardianMetaSentinelPower_check_in_id_fkey";', { type, transaction })
+  } catch (e) {
+    console.log("Guardian meta constraints don't exist")
+  }
 }
 
 async function addConstraints (queryInterface, transaction) {

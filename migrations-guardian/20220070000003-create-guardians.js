@@ -1,4 +1,6 @@
 'use strict'
+const Op = require('sequelize').Op
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.sequelize.transaction(async (transaction) => {
@@ -163,13 +165,7 @@ module.exports = {
         },
         creator: {
           type: Sequelize.INTEGER,
-          allowNull: true,
-          references: {
-            model: {
-              tableName: 'Users'
-            },
-            key: 'id'
-          }
+          allowNull: true
         },
         created_at: {
           type: Sequelize.DATE,
@@ -187,9 +183,9 @@ module.exports = {
         fields: ['latitude'],
         where: {
           latitude: {
-            [Sequelize.Op.and]: {
-              [Sequelize.Op.gte]: -90,
-              [Sequelize.Op.lte]: 90
+            [Op.and]: {
+              [Op.gte]: -90,
+              [Op.lte]: 90
             }
           }
         },
@@ -200,9 +196,9 @@ module.exports = {
         fields: ['longitude'],
         where: {
           longitude: {
-            [Sequelize.Op.and]: {
-              [Sequelize.Op.gte]: -180,
-              [Sequelize.Op.lte]: 180
+            [Op.and]: {
+              [Op.gte]: -180,
+              [Op.lte]: 180
             }
           }
         },

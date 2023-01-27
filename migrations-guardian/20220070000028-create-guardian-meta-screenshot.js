@@ -6,7 +6,6 @@ module.exports = {
         id: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          primaryKey: true,
           autoIncrement: true
         },
         captured_at: {
