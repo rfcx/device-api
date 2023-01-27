@@ -1,5 +1,5 @@
 import { ValidationError } from '@rfcx/http-utils'
-import { muteConsole } from '../../db/testing'
+import { muteConsole } from '../../common/db/testing'
 import { splitBuffer } from './buffer'
 
 beforeAll(() => {
@@ -71,7 +71,6 @@ describe('splitBuffer function', () => {
     test('correct data when json, audio, screnshot, log are full', () => {
       const buf = Buffer.from('000000000001a000000000002ab000000000003abc000000000004abcd')
       const splitted = splitBuffer(buf)
-      console.log('\n\nsplitted', splitted, '\n\n')
       expect(splitted.json.toString('utf8')).toBe('a')
       expect(splitted.audio?.toString('utf8')).toBe('ab')
       expect(splitted.screenshot?.toString('utf8')).toBe('abc')

@@ -1,2 +1,2 @@
 export * from './audio/types'
-export * from './mqtt/types'
+export * from '../mqtt/types'

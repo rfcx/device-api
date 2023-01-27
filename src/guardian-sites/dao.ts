@@ -1,4 +1,4 @@
-import { Transactionable, Op } from 'sequelize/types'
+import { Transactionable, Op } from 'sequelize'
 import GuardianSite from './guardian-site.model'
 
 export async function get (id: string, o: Transactionable = {}): Promise<GuardianSite | null> {

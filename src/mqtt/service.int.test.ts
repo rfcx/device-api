@@ -1,4 +1,4 @@
-import { muteConsole } from '../db/testing'
+import { muteConsole } from '../common/db/testing'
 import { parseMessage } from './service'
 import { readFileSync } from 'fs'
 

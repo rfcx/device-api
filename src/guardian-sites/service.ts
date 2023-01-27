@@ -1,4 +1,4 @@
-import { Transactionable } from 'sequelize/types'
+import { Transactionable } from 'sequelize'
 import { EmptyResultError } from '@rfcx/http-utils'
 import GuardianSite from './guardian-site.model'
 import dao from './dao'

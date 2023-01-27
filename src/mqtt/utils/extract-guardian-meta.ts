@@ -14,7 +14,7 @@ import {
   GuardianDataTransferMeta,
   GuardianStorageMeta,
   MqttMessageJson
-} from '../../types'
+} from '../../common/types'
 
 dayjs.extend(utc)
 

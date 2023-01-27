@@ -1,4 +1,4 @@
-import { muteConsole } from '../../db/testing'
+import { muteConsole } from '../../common/db/testing'
 import {
   parseCheckinStatusMeta,
   parseBrokerConnectionsMeta,

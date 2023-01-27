@@ -5,13 +5,43 @@ import { promisify } from 'util'
 import { splitBuffer, saveFileBufToDisk, extractAudioFileMeta, extractGuardianMeta } from './utils'
 import { parseMqttStrArr } from './utils/parse-mqtt-str-arr'
 import { ValidationError } from '@rfcx/http-utils'
-import { MqttMessageJson } from './types'
+import { MqttMessageJson, AuthenticationDecision } from './types'
+import guardianDao from '../guardians/dao'
+import { sha1 } from '../common/hash'
 
 const gunzipAsync = promisify(gunzip)
 
 // async function authenticateGuardian (): Promise<void> {
 
 // }
+
+export const checkGuardianToken = async function (guardianGuid: string, token: string): Promise<boolean> {
+  const guardian = await guardianDao.get(guardianGuid)
+  if (guardian === null) {
+    return false
+  }
+  return guardian.authTokenHash === sha1(guardian.authTokenSalt + token)
+}
+
+export const allowUserPath = async function (username: string, password: string): Promise<AuthenticationDecision> {
+  const isTokenCorrect = await checkGuardianToken(username, password)
+  return isTokenCorrect ? 'allow' : 'deny'
+}
+
+export const allowVhostOrResourcePath = async function (guardianGuid: string): Promise<AuthenticationDecision> {
+  const guardian = await guardianDao.get(guardianGuid)
+  return guardian !== null ? 'allow' : 'deny'
+}
+
+export const allowTopicPath = async function (guardianGuid: string, permission: 'read' | 'write', routingKey: string): Promise<AuthenticationDecision> {
+  const guardian = await guardianDao.get(guardianGuid)
+  if (guardian === null ||
+      (permission === 'read' && routingKey !== `grd.${guardianGuid}.cmd`) ||
+      (permission === 'write' && ![`grd.${guardianGuid}.chk`, `grd.${guardianGuid}.png`].includes(routingKey))) {
+    return 'deny'
+  }
+  return 'allow'
+}
 
 export const decodeData = async function (buf: Buffer): Promise<object> {
   if (!Buffer.isBuffer(buf)) {

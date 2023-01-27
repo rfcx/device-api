@@ -1,5 +1,5 @@
 import routes from './router'
-import { migrate, truncate, expressApp, seed, seedValues } from '../common/db/testing'
+import { migrate, truncateDevice, expressApp, seedDevice, seedValues } from '../common/db/testing'
 import request from 'supertest'
 import dbConstructor from '../common/db'
 import Deployment from 'src/deployments/deployment.model'
@@ -13,11 +13,11 @@ const app = expressApp()
 app.use('/', routes)
 
 beforeAll(async () => {
-  await migrate(db.sequelize)
-  await seed()
+  await migrate(db.sequelize, 'device')
+  await seedDevice()
 })
 beforeEach(async () => {
-  await truncate()
+  await truncateDevice()
 })
 
 const endpoint = 'streams'

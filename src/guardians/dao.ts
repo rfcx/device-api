@@ -1,4 +1,4 @@
-import { Transactionable, Op } from 'sequelize/types'
+import { Transactionable, Op } from 'sequelize'
 import { GuardianUpdatable } from '../types'
 import Guardian from './guardian.model'
 

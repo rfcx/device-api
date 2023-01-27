@@ -45,4 +45,6 @@ export interface MqttMessageJson {
   checkins_to_verify?: string[]
 }
 
+export type AuthenticationDecision = 'allow' | 'deny'
+
 export * from './utils/types'

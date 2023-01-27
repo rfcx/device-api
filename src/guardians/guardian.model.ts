@@ -60,7 +60,7 @@ export default class Guardian extends Model {
   altitude!: number
 
   @IsDate
-  @Default(Sequelize.fn('NOW'))
+  @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
   @Column(DataType.DATE)
   lastCheckIn!: Date
 
@@ -73,12 +73,12 @@ export default class Guardian extends Model {
   authTokenHash!: string
 
   @IsDate
-  @Default(Sequelize.fn('NOW'))
+  @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
   @Column(DataType.DATE(3))
   authTokenUpdatedAt!: Date
 
   @IsDate
-  @Default(Sequelize.fn('NOW'))
+  @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
   @Column(DataType.DATE(3))
   authTokenExpiresAt!: Date
 

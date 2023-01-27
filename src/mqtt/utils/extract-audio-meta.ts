@@ -1,12 +1,12 @@
 import { stat, unlink } from 'fs/promises'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import { codecToMime, transcodeToFile } from '../../audio'
+import { codecToMime, transcodeToFile } from '../../common/audio'
 import { promisify } from 'util'
 import { exec } from 'child_process'
-import config from '../../../config'
+import config from '../../config'
 import { ValidationError } from '@rfcx/http-utils'
-import { AudioFileMeta } from '../../types'
+import { AudioFileMeta } from '../../common/types'
 
 const execAsync = promisify(exec)
 

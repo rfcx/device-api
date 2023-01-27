@@ -1,5 +1,5 @@
 import routes from './router'
-import { migrate, truncate, expressApp, seed, seedValues, muteConsole } from '../common/db/testing'
+import { migrate, truncateDevice, expressApp, seedDevice, seedValues, muteConsole } from '../common/db/testing'
 import request from 'supertest'
 import dbConstructor from '../common/db'
 import Deployment from 'src/deployments/deployment.model'
@@ -17,11 +17,11 @@ app.use('/', routes)
 
 beforeAll(async () => {
   muteConsole()
-  await migrate(db.sequelize)
-  await seed()
+  await migrate(db.sequelize, 'device')
+  await seedDevice()
 })
 beforeEach(async () => {
-  await truncate()
+  await truncateDevice()
 })
 afterEach(async () => {
   await jest.clearAllMocks()

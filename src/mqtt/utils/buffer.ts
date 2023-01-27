@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-throw-literal */
 import path from 'path'
 import { writeFile } from 'fs/promises'
-import config from '../../../config'
+import config from '../../config'
 import { ValidationError } from '@rfcx/http-utils'
-import { MqttMessageBuffers } from '../../../types'
-import { randomString, getFileSha1 } from '../../hash'
+import { MqttMessageBuffers } from '../../types'
+import { randomString, getFileSha1 } from '../../common/hash'
 import { gunzip } from 'zlib'
 import { promisify } from 'util'
 

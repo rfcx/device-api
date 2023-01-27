@@ -1,5 +1,5 @@
 import routes from './router'
-import { migrate, truncate, expressApp, seed } from '../common/db/testing'
+import { migrate, truncateDevice, expressApp, seedDevice } from '../common/db/testing'
 import request from 'supertest'
 import dbConstructor from '../common/db'
 import Asset from 'src/assets/asset.model'
@@ -10,11 +10,11 @@ const app = expressApp()
 app.use('/', routes)
 
 beforeAll(async () => {
-  await migrate(db.sequelize)
-  await seed()
+  await migrate(db.sequelize, 'device')
+  await seedDevice()
 })
 beforeEach(async () => {
-  await truncate()
+  await truncateDevice()
 })
 
 describe('DELETE /assets/:id', () => {

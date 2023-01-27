@@ -1,5 +1,4 @@
-import { AllowNull, Table, Column, Model, DataType, PrimaryKey, CreatedAt, UpdatedAt, Unique, Default, HasMany } from 'sequelize-typescript'
-import Guardian from '../guardians/guardian.model'
+import { AllowNull, Table, Column, Model, DataType, PrimaryKey, CreatedAt, UpdatedAt, Unique, Default } from 'sequelize-typescript'
 import db from '../common/db/guardian'
 
 @Table({
@@ -66,9 +65,6 @@ export default class GuardianSite extends Model {
 
   @UpdatedAt
   updatedAt!: Date
-
-  @HasMany(() => Guardian, 'siteId')
-  format!: Guardian
 }
 
 db.sequelize.addModels([GuardianSite])
