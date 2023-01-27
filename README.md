@@ -44,10 +44,17 @@ yarn stop.timescale
 
 ---
 
-## Run local dev server (live reload)
+## Run local dev server (http) (live reload)
 
 ```sh
-yarn serve
+yarn serve:http
+```
+
+
+## Run local dev server (mqtt) (live reload)
+
+```sh
+yarn serve:mqtt
 ```
 
 ---

@@ -17,5 +17,9 @@ export default {
   MANDRILL_KEY: process.env.MANDRILL_KEY ?? '',
   CACHE_DIRECTORY: process.env.CACHE_DIRECTORY ?? './tmp',
   FFMPEG_PATH: process.env.FFMPEG_PATH ?? '/usr/local/bin/ffmpeg',
-  SOX_PATH: process.env.SOX_PATH ?? '/usr/local/bin/sox'
+  SOX_PATH: process.env.SOX_PATH ?? '/usr/local/bin/sox',
+  MQTT_BROKER_HOST: process.env.MQTT_BROKER_HOST ?? 'api-mqtt.rfcx.org',
+  MQTT_BROKER_PORT: process.env.MQTT_BROKER_PORT !== undefined ? parseInt(process.env.MQTT_BROKER_PORT) : 8883,
+  MQTT_BROKER_USER: process.env.MQTT_BROKER_USER ?? '',
+  MQTT_BROKER_PASSWORD: process.env.MQTT_BROKER_PASSWORD ?? ''
 }

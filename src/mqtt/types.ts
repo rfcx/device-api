@@ -47,4 +47,10 @@ export interface MqttMessageJson {
 
 export type AuthenticationDecision = 'allow' | 'deny'
 
+export interface MqttMessageProcessResult {
+  gzip: Buffer
+  guardianGuid: string
+  obj?: any
+}
+
 export * from './utils/types'

@@ -5,7 +5,7 @@ import { promisify } from 'util'
 import { splitBuffer, saveFileBufToDisk, extractAudioFileMeta, extractGuardianMeta } from './utils'
 import { parseMqttStrArr } from './utils/parse-mqtt-str-arr'
 import { ValidationError } from '@rfcx/http-utils'
-import { MqttMessageJson, AuthenticationDecision } from './types'
+import { MqttMessageJson, AuthenticationDecision, MqttMessageProcessResult } from './types'
 import guardianDao from '../guardians/dao'
 import { sha1 } from '../common/hash'
 
@@ -69,4 +69,15 @@ export const parseMessage = async function (data: Buffer): Promise<any> {
   return json
 }
 
-export default { parseMessage }
+export const processCheckinMessage = async function (data: Buffer, messageId: string): Promise<MqttMessageProcessResult> {
+  // TODO: guardian authentication is needed here
+  await parseMessage(data)
+  return { gzip: Buffer.from(''), guardianGuid: '' }
+}
+
+export const processPingMessage = async function (data: Buffer, messageId: string): Promise<MqttMessageProcessResult> {
+  // TODO: guardian authentication is needed here
+  return { gzip: Buffer.from(''), guardianGuid: '' }
+}
+
+export default { parseMessage, processCheckinMessage, processPingMessage }
