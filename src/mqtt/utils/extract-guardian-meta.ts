@@ -193,7 +193,7 @@ export const parseStorageMeta = function (metaStr: string): GuardianStorageMeta[
 export const extractGuardianMeta = function (json: MqttMessageJson): unknown {
   const checkinStatus = parseCheckinStatusMeta(json.checkins)
   const brokerConnections = json.broker_connections !== undefined ? parseBrokerConnectionsMeta(json.broker_connections) : null
-  const cpu = json.cpu !== undefined ? parseBrokerConnectionsMeta(json.cpu) : null
+  const cpu = json.cpu !== undefined ? parseCPUMeta(json.cpu) : null
   const memory = json.memory !== undefined ? parseMemoryMeta(json.memory) : null
   const assetExchange = parseAssetExchangeLog(json)
   const software = json.software !== undefined ? parseSoftwareMeta(json.software) : null

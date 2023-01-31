@@ -7,6 +7,7 @@ import { parseMqttStrArr } from './utils/parse-mqtt-str-arr'
 import { ValidationError } from '@rfcx/http-utils'
 import { MqttMessageJson, AuthenticationDecision, MqttMessageProcessResult } from './types'
 import guardianDao from '../guardians/dao'
+import { expandAbbreviatedFieldNames } from '../guardian-checkin/utils/message/expand-abbr'
 import { sha1 } from '../common/hash'
 
 const gunzipAsync = promisify(gunzip)
@@ -59,25 +60,21 @@ export const saveFileToDisk = async function (buf: Buffer, meta: string[][]): Pr
 // export const parseMessage = async function (data: Buffer): CheckinPayload {
 export const parseMessage = async function (data: Buffer): Promise<any> {
   const buffers = splitBuffer(data)
-  const json = await decodeData(buffers.json) as MqttMessageJson
+  let json = await decodeData(buffers.json) as MqttMessageJson
+  json = expandAbbreviatedFieldNames(json)
   if (buffers.audio !== null) {
     const audioMetaArr = parseMqttStrArr(json.audio)
     const audioFilePath = await saveFileToDisk(buffers.audio, audioMetaArr)
     const audioMeta = await extractAudioFileMeta(audioMetaArr[0], audioFilePath)
   }
   const guardianMeta = await extractGuardianMeta(json)
-  return json
+  return
 }
 
-export const processCheckinMessage = async function (data: Buffer, messageId: string): Promise<MqttMessageProcessResult> {
+export const processMessage = async function (data: Buffer, messageId: string): Promise<MqttMessageProcessResult> {
   // TODO: guardian authentication is needed here
   await parseMessage(data)
   return { gzip: Buffer.from(''), guardianGuid: '' }
 }
 
-export const processPingMessage = async function (data: Buffer, messageId: string): Promise<MqttMessageProcessResult> {
-  // TODO: guardian authentication is needed here
-  return { gzip: Buffer.from(''), guardianGuid: '' }
-}
-
-export default { parseMessage, processCheckinMessage, processPingMessage }
+export default { parseMessage, processMessage }

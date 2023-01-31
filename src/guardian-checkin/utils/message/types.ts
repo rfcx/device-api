@@ -58,3 +58,45 @@ export interface GuardianMessageObject {
   rtrn: MqttReturnObject
   abbr: GuardianMessageAbbr
 }
+
+export interface GuardianAndroidMetaAbbr {
+  p: string | undefined
+  br: string | undefined
+  m: string | undefined
+  bu: string | undefined
+  a: string | undefined
+  mf: string | undefined
+}
+
+export interface GuardianPhoneMetaAbbr {
+  s: string | undefined
+  n: string | undefined
+  imei: string | undefined
+  imsi: string | undefined
+}
+
+export interface GuardianDeviceMetaAbbr {
+  a: GuardianAndroidMetaAbbr | undefined
+  p: GuardianPhoneMetaAbbr | undefined
+}
+
+export interface GuardianAndroidMeta {
+  product: string | undefined
+  brand: string | undefined
+  model: string | undefined
+  build: string | undefined
+  android: string | undefined
+  manufacturer: string | undefined
+}
+
+export interface GuardianPhoneMeta {
+  sim: string | undefined
+  number: string | undefined
+  imei: string | undefined
+  imsi: string | undefined
+}
+
+export interface GuardianDeviceMeta {
+  android: GuardianAndroidMeta | undefined
+  phone: GuardianPhoneMeta | undefined
+}

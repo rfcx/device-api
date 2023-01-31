@@ -1,3 +1,5 @@
+import { GuardianDeviceMetaAbbr, GuardianDeviceMeta } from '../../types'
+
 export const expandAbbreviatedFieldNames = function (json: any): any {
   const { dt, c, btt, nw, str, mm, bc, dtt, sw, chn, sp, dv, ma, msg, mid, did, p, pf, ...others } = json
   return {
@@ -12,7 +14,7 @@ export const expandAbbreviatedFieldNames = function (json: any): any {
     software: sw,
     checkins: chn,
     sentinel_power: sp,
-    device: dv,
+    device: expandAbbreviatedDevice(dv),
     measured_at: ma,
     messages: msg,
     meta_ids: mid,
@@ -28,7 +30,38 @@ function expandAbbreviatedPrefs (prefsObj: any): any {
     return prefsObj
   }
   const { s, v, ...others } = prefsObj
-  return { sha1: s, vals: v, ...others }
+  return {
+    sha1: s ?? null,
+    vals: v ?? null,
+    ...others
+  }
+}
+
+function expandAbbreviatedDevice (deviceObj: GuardianDeviceMetaAbbr): GuardianDeviceMeta {
+  if (deviceObj === undefined) {
+    return { android: undefined, phone: undefined }
+  }
+  const { a, p } = deviceObj
+  return {
+    android: a !== undefined
+      ? {
+          product: a.p,
+          brand: a.br,
+          model: a.m,
+          build: a.bu,
+          android: a.a,
+          manufacturer: a.mf
+        }
+      : undefined,
+    phone: p !== undefined
+      ? {
+          sim: p.s,
+          number: p.n,
+          imei: p.imei,
+          imsi: p.imsi
+        }
+      : undefined
+  }
 }
 
 export default { expandAbbreviatedFieldNames }

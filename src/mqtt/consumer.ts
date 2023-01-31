@@ -2,7 +2,7 @@ import config from '../config'
 import { connect, MqttClient, QoS } from 'mqtt'
 import { randomString } from '../common/hash'
 import { guid } from '../common/guid'
-import { processCheckinMessage, processPingMessage } from './service'
+import { processMessage } from './service'
 import { MqttMessageProcessResult } from '../types'
 
 const CHECKINS_TOPIC_NAME = 'grd/+/chk'
@@ -64,14 +64,14 @@ export const onMessage = function (app: MqttClient, topic: string, data: Buffer)
 
   if (/grd\/.+\/chk/.test(topic)) {
     messageType = 'checkin'
-    processCheckinMessage(data, messageId)
+    processMessage(data, messageId)
       .then((result: MqttMessageProcessResult) => {
         app.publish(`grd/${result.guardianGuid}/cmd`, result.gzip)
       })
       .catch((err) => { console.error('MQTT: message error', err) })
   } else if (/grd\/.+\/png/.test(topic)) {
     messageType = 'ping'
-    processPingMessage(data, messageId)
+    processMessage(data, messageId)
       .then((result: MqttMessageProcessResult) => {
         if (Object.keys(result.obj).length > 0) {
           app.publish(`grd/${result.guardianGuid}/cmd`, result.gzip)
