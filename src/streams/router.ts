@@ -108,8 +108,8 @@ router.get('/:id/assets', (req: Request, res: Response, next: NextFunction): voi
 
 router.get('/:id/deployment/parameters', (req: Request, res: Response, next: NextFunction): void => {
   const streamId = req.params.id
-  deploymentDao.getByStreamId(streamId).then(results => {
-    unZipDeploymentParameters(results).then(params => {
+  deploymentDao.getByStreamId(streamId).then(async (results) => {
+    await unZipDeploymentParameters(results).then(params => {
       res.json(params)
     })
   }).catch(next)

@@ -16,11 +16,10 @@ export const mapStreamsAndDeployments = (streams: any[], deployments: any[]): Ma
 
 export const unZipDeploymentParameters = async (deployment: Deployment | null): Promise<any> => {
   const params = deployment?.deviceParameters
-  if (params == undefined) return params
   if (params == null) return params
 
   const json = JSON.parse(params.toString())
   if (!('ping' in json)) return params
-  
+
   return await gzip.unZipJson(json.ping)
 }

@@ -18,7 +18,6 @@ export const getByStreamId = async (streamId: string): Promise<Deployment | null
       [Op.eq]: streamId
     }
   }
-  console.log(where)
   return await Deployment.findOne({
     where,
     attributes: {
