@@ -12,6 +12,21 @@ export async function get (id: string): Promise<Deployment | null> {
   })
 }
 
+export const getByStreamId = async (streamId: string): Promise<Deployment | null> => {
+  const where: { streamId: { [Op.eq]: string } } = {
+    streamId: {
+      [Op.eq]: streamId
+    }
+  }
+  console.log(where)
+  return await Deployment.findOne({
+    where,
+    attributes: {
+      exclude: ['createdById', 'createdAt', 'updatedAt', 'deletedAt']
+    }
+  })
+}
+
 export const getDeployments = async (streamIds: string[], options: DeploymentQuery = {}): Promise<Deployment[]> => {
   const where: { isActive?: boolean, streamId: { [Op.in]: string[] } } = {
     streamId: {
@@ -123,4 +138,4 @@ export const createGuardianLog = async (guid: string, type: string, body: string
   }
 }
 
-export default { get, getDeployments, createDeployment, updateDeployment, deleteDeployment, getStreamIdById, createGuardianLog }
+export default { get, getByStreamId, getDeployments, createDeployment, updateDeployment, deleteDeployment, getStreamIdById, createGuardianLog }

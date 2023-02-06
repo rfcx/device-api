@@ -46,7 +46,7 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
       await updateGuardian(uid, token, deviceParameters, guardianUpdate)
 
       // Remove guardian token and ping - no need to be stored in database *use only for ping guardian
-      const { guardianToken, ping, ...rest } = deployment.deviceParameters
+      const { guardianToken, ...rest } = deployment.deviceParameters
       deployment.deviceParameters = rest
     }
   }

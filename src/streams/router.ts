@@ -3,7 +3,7 @@ import { Router } from 'express'
 import * as api from '../common/core-api'
 import assetDao from '../assets/dao'
 import deploymentDao from '../deployments/dao'
-import { mapStreamsAndDeployments } from './serializer'
+import { mapStreamsAndDeployments, unZipDeploymentParameters } from './serializer'
 
 const router = Router()
 
@@ -103,6 +103,15 @@ router.get('/:id/assets', (req: Request, res: Response, next: NextFunction): voi
   const streamId = req.params.id
   assetDao.query({ streamId }).then(results => {
     res.json(results)
+  }).catch(next)
+})
+
+router.get('/:id/deployment/parameters', (req: Request, res: Response, next: NextFunction): void => {
+  const streamId = req.params.id
+  deploymentDao.getByStreamId(streamId).then(results => {
+    unZipDeploymentParameters(results).then(params => {
+      res.json(params)
+    })
   }).catch(next)
 })
 
