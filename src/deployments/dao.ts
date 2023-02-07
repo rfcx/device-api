@@ -13,10 +13,11 @@ export async function get (id: string): Promise<Deployment | null> {
 }
 
 export const getByStreamId = async (streamId: string): Promise<Deployment | null> => {
-  const where: { streamId: { [Op.eq]: string } } = {
+  const where: { streamId: { [Op.eq]: string }, isActive: boolean } = {
     streamId: {
       [Op.eq]: streamId
-    }
+    },
+    isActive: true
   }
   return await Deployment.findOne({
     where,

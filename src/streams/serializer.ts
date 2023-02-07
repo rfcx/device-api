@@ -18,8 +18,14 @@ export const unZipDeploymentParameters = async (deployment: Deployment | null): 
   const params = deployment?.deviceParameters
   if (params == null) return params
 
-  const json = JSON.parse(params.toString())
-  if (!('ping' in json)) return params
+  try {
+    const json = JSON.parse(params.toString())
+    if (!('ping' in json)) return json
 
-  return await gzip.unZipJson(json.ping)
+    json.ping = await gzip.unZipJson(json.ping)
+    return json
+  } catch {
+    // In case JSON parsing is failed or cannot unzip
+    return params
+  }
 }
