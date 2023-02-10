@@ -1,20 +1,10 @@
 import * as querystring from 'querystring'
-import * as zlib from 'zlib'
+import { gunzip } from 'zlib'
+import { promisify } from 'util'
+
+const gunzipAsync = promisify(gunzip)
 
 export const unZipJson = async (gZippedJson: string): Promise<string> => {
-  return await new Promise(function (resolve, reject) {
-    try {
-      zlib.unzip(
-        Buffer.from(querystring.parse('gzipped=' + gZippedJson).gzipped as string, 'base64'),
-        function (zLibError, zLibBuffer) {
-          if (zLibError == null) {
-            resolve(JSON.parse(zLibBuffer.toString()))
-          } else {
-            reject(new Error(zLibError.message))
-          }
-        })
-    } catch (err) {
-      reject(new Error(err))
-    }
-  })
+  const unzippedJson = await gunzipAsync(Buffer.from(querystring.parse('gzipped=' + gZippedJson).gzipped as string, 'base64'))
+  return JSON.parse(unzippedJson.toString('utf-8'))
 }

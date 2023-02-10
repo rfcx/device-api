@@ -14,9 +14,9 @@ export const mapStreamsAndDeployments = (streams: any[], deployments: any[]): Ma
   })
 }
 
-export const unZipDeploymentParameters = async (deployment: Deployment | null): Promise<any> => {
+export const unZipDeploymentParameters = async (deployment: Deployment | null): Promise<String | any | null> => {
   const params = deployment?.deviceParameters
-  if (params == null) return params
+  if (params == null) return null
 
   try {
     const json = JSON.parse(params.toString())
