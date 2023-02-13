@@ -1,4 +1,6 @@
+import Deployment from 'src/deployments/deployment.model'
 import { MappedDeploymentInfo } from '../types'
+import * as gzip from '../common/gzip'
 
 export const mapStreamsAndDeployments = (streams: any[], deployments: any[]): MappedDeploymentInfo[] => {
   const deploymentsData = deployments.map(dp => dp.dataValues)
@@ -10,4 +12,20 @@ export const mapStreamsAndDeployments = (streams: any[], deployments: any[]): Ma
     }
     return mappedDeploymentInfo
   })
+}
+
+export const unZipDeploymentParameters = async (deployment: Deployment | null): Promise<String | any | null> => {
+  const params = deployment?.deviceParameters
+  if (params == null) return null
+
+  try {
+    const json = JSON.parse(params.toString())
+    if (!('ping' in json)) return json
+
+    json.ping = await gzip.unZipJson(json.ping)
+    return json
+  } catch {
+    // In case JSON parsing is failed or cannot unzip
+    return params
+  }
 }
