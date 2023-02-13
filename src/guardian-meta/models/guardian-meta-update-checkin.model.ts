@@ -8,7 +8,7 @@ import GuardianSoftwareVersion from '../../guardian-software/models/guardian-sof
   paranoid: false,
   tableName: 'GuardianMetaUpdateCheckIns'
 })
-export default class GuardianMetaUpdateCheckIn extends Model {
+export class GuardianMetaUpdateCheckIn extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
   id!: number
@@ -30,3 +30,5 @@ export default class GuardianMetaUpdateCheckIn extends Model {
 }
 
 db.sequelize.addModels([GuardianMetaUpdateCheckIn])
+
+export default GuardianMetaUpdateCheckIn

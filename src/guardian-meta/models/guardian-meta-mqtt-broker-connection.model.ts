@@ -1,36 +1,32 @@
-import { BelongsTo, Table, Column, Model, DataType, PrimaryKey, CreatedAt, UpdatedAt, Min, IsInt, Default } from 'sequelize-typescript'
+import { BelongsTo, Table, Column, Model, DataType, PrimaryKey, CreatedAt, UpdatedAt, Min, IsInt } from 'sequelize-typescript'
 import db from '../../common/db/guardian'
 import Guardian from '../../guardians/guardian.model'
+import GuardianCheckin from '../../guardian-checkin/guardian-checkin.model'
 
 @Table({
   paranoid: false,
   tableName: 'GuardianMetaMqttBrokerConnections'
 })
-export default class GuardianMetaMqttBrokerConnection extends Model {
+export class GuardianMetaMqttBrokerConnection extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
   id!: number
 
-  @Default(DataType.UUIDV4)
-  @Column(DataType.UUID)
-  guid!: string
-
   @Column(DataType.DATE(3))
-  receivedAt!: Date
-
-  @Column(DataType.DATE(3))
-  sentAt!: Date
+  connectedAt!: Date
 
   @Column(DataType.STRING)
-  address!: string
-
-  @Column(DataType.TEXT)
-  body!: string
+  brokerUri!: string
 
   @IsInt
   @Min(0)
   @Column(DataType.INTEGER)
-  androidId!: string
+  connectionLatency!: number
+
+  @IsInt
+  @Min(0)
+  @Column(DataType.INTEGER)
+  subscriptionLatency!: number
 
   @CreatedAt
   createdAt!: Date
@@ -40,6 +36,11 @@ export default class GuardianMetaMqttBrokerConnection extends Model {
 
   @BelongsTo(() => Guardian, 'guardianId')
   guardian!: Guardian
+
+  @BelongsTo(() => GuardianCheckin, 'checkinId')
+  checkin!: GuardianCheckin
 }
 
 db.sequelize.addModels([GuardianMetaMqttBrokerConnection])
+
+export default GuardianMetaMqttBrokerConnection

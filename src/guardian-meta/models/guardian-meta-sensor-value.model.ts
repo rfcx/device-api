@@ -7,7 +7,7 @@ import GuardianMetaSensor from './guardian-meta-sensor.model'
   paranoid: false,
   tableName: 'GuardianMetaSensorValues'
 })
-export default class GuardianMetaSensorValue extends Model {
+export class GuardianMetaSensorValue extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
   id!: number
@@ -32,3 +32,5 @@ export default class GuardianMetaSensorValue extends Model {
 }
 
 db.sequelize.addModels([GuardianMetaSensorValue])
+
+export default GuardianMetaSensorValue

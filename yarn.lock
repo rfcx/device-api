@@ -595,10 +595,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@rfcx/http-utils@1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@rfcx/http-utils/-/http-utils-1.0.10.tgz#9d4b59cd1e7d174ed419524a56d0972405174263"
-  integrity sha512-xtPzIiP/InEppVMfHUyrIEIAvt4jfph4tAdBfK4BW4ytldd+mitM43DZJWKjvlHsCCOWnyrrlB/X7OwCfpajuw==
+"@rfcx/http-utils@^1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@rfcx/http-utils/-/http-utils-1.0.11.tgz#619b37d78b63bd3aabab42f9bd8ddd472c7f8eaf"
+  integrity sha512-cJJmfYrkPF97bo1coC5ZliOuMcBvGAN9ufudATJzYAet1JlyXCBoTVKhQ2MHptoiTzcoj+AOVYHLSyiUiWdAzg==
   dependencies:
     moment-timezone "0.5.31"
 

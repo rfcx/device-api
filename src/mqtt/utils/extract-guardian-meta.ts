@@ -8,13 +8,14 @@ import {
   GuardianMemoryMeta,
   GuardianAssetExchangeLogMeta,
   GuardianAssetExchangeLogMetaList,
-  GuardianSoftwareMeta,
   GuardianRebootsMeta,
   GuardianBatteryMeta,
   GuardianDataTransferMeta,
-  GuardianStorageMeta,
+  GuardianDiskUsageMeta,
+  GuardianMeta,
+  GuardianSoftwareMeta,
   MqttMessageJson
-} from '../../common/types'
+} from '../../types'
 
 dayjs.extend(utc)
 
@@ -42,7 +43,7 @@ export const parseBrokerConnectionsMeta = function (metaStr: string): GuardianMq
   return metaArr.reduce((acc: GuardianMqttBrokerConnectionMeta[], item: string[]) => {
     if (item[3] != null) {
       acc.push({
-        connectedAt: dayjs(parseInt(item[0])).toISOString(),
+        connectedAt: dayjs.utc(parseInt(item[0])).toISOString(),
         connectionLatency: parseInt(item[1]),
         subscriptionLatency: parseInt(item[2]),
         brokerUri: item[3]
@@ -168,7 +169,7 @@ export const parseDataTransferMeta = function (metaStr: string): GuardianDataTra
   }, [])
 }
 
-export const parseStorageMeta = function (metaStr: string): GuardianStorageMeta[] {
+export const parseDiskUsage = function (metaStr: string): GuardianDiskUsageMeta[] {
   const metaArr = parseMqttStrArr(metaStr)
   const groupedMetas: any[] = metaArr.reduce((acc: any, item: string[]) => {
     const typeRaw = item[0]
@@ -182,7 +183,7 @@ export const parseStorageMeta = function (metaStr: string): GuardianStorageMeta[
     return acc
   }, {})
   return Object.keys(groupedMetas)
-    .map((timestamp: string): GuardianStorageMeta => {
+    .map((timestamp: string): GuardianDiskUsageMeta => {
       return {
         measuredAt: dayjs(parseInt(timestamp)).toISOString(),
         ...groupedMetas[timestamp]
@@ -190,17 +191,18 @@ export const parseStorageMeta = function (metaStr: string): GuardianStorageMeta[
     })
 }
 
-export const extractGuardianMeta = function (json: MqttMessageJson): unknown {
+export const extractGuardianMeta = function (json: MqttMessageJson): GuardianMeta {
   const checkinStatus = parseCheckinStatusMeta(json.checkins)
   const brokerConnections = json.broker_connections !== undefined ? parseBrokerConnectionsMeta(json.broker_connections) : null
   const cpu = json.cpu !== undefined ? parseCPUMeta(json.cpu) : null
   const memory = json.memory !== undefined ? parseMemoryMeta(json.memory) : null
   const assetExchange = parseAssetExchangeLog(json)
   const software = json.software !== undefined ? parseSoftwareMeta(json.software) : null
-  const reboots = json.reboots !== undefined ? parseSoftwareMeta(json.reboots) : null
-  const battery = json.battery !== undefined ? parseSoftwareMeta(json.battery) : null
-  const dataTransfer = json.data_transfer !== undefined ? parseSoftwareMeta(json.data_transfer) : null
-  const storage = json.storage !== undefined ? parseSoftwareMeta(json.storage) : null
+  const reboots = json.reboots !== undefined ? parseRebootsMeta(json.reboots) : null
+  const battery = json.battery !== undefined ? parseBatteryMeta(json.battery) : null
+  const dataTransfer = json.data_transfer !== undefined ? parseDataTransferMeta(json.data_transfer) : null
+  const diskUsage = json.storage !== undefined ? parseDiskUsage(json.storage) : null
+  const guardian = json.guardian
   return {
     checkinStatus,
     brokerConnections,
@@ -211,6 +213,7 @@ export const extractGuardianMeta = function (json: MqttMessageJson): unknown {
     reboots,
     battery,
     dataTransfer,
-    storage
+    diskUsage,
+    guardian
   }
 }

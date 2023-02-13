@@ -8,7 +8,7 @@ import GuardianSoftwareVersion from '../../guardian-software/models/guardian-sof
   paranoid: false,
   tableName: 'GuardianMetaSoftwareVersions'
 })
-export default class GuardianMetaSoftwareVersion extends Model {
+export class GuardianMetaSoftwareVersion extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
   id!: number
@@ -35,3 +35,5 @@ export default class GuardianMetaSoftwareVersion extends Model {
 }
 
 db.sequelize.addModels([GuardianMetaSoftwareVersion])
+
+export default GuardianMetaSoftwareVersion

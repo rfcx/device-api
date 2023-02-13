@@ -6,7 +6,7 @@ import Guardian from '../../guardians/guardian.model'
   paranoid: false,
   tableName: 'GuardianMetaDataTransfer'
 })
-export default class GuardianMetaDataTransfer extends Model {
+export class GuardianMetaDataTransfer extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
   id!: number
@@ -90,3 +90,5 @@ export default class GuardianMetaDataTransfer extends Model {
 }
 
 db.sequelize.addModels([GuardianMetaDataTransfer])
+
+export default GuardianMetaDataTransfer

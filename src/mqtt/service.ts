@@ -5,7 +5,7 @@ import { promisify } from 'util'
 import { splitBuffer, saveFileBufToDisk, extractAudioFileMeta, extractGuardianMeta } from './utils'
 import { parseMqttStrArr } from './utils/parse-mqtt-str-arr'
 import { ValidationError } from '@rfcx/http-utils'
-import { MqttMessageJson, AuthenticationDecision, MqttMessageProcessResult } from './types'
+import { MqttMessageJson, AuthenticationDecision, MqttMessageProcessResult, CheckinPayload } from '../types'
 import guardianDao from '../guardians/dao'
 import { expandAbbreviatedFieldNames } from '../guardian-checkin/utils/message/expand-abbr'
 import { sha1 } from '../common/hash'
@@ -57,18 +57,29 @@ export const saveFileToDisk = async function (buf: Buffer, meta: string[][]): Pr
   return await saveFileBufToDisk(buf, true, meta[0][2], meta[0][3])
 }
 
-// export const parseMessage = async function (data: Buffer): CheckinPayload {
-export const parseMessage = async function (data: Buffer): Promise<any> {
+export const parseMessage = async function (data: Buffer): Promise<CheckinPayload> {
   const buffers = splitBuffer(data)
   let json = await decodeData(buffers.json) as MqttMessageJson
   json = expandAbbreviatedFieldNames(json)
+  const guardianMeta = await extractGuardianMeta(json)
+  const result: CheckinPayload = {
+    guardian: {
+      guid: json.guardian.guid,
+      token: json.guardian.token,
+      meta: guardianMeta
+    },
+    audio: null
+  }
   if (buffers.audio !== null) {
     const audioMetaArr = parseMqttStrArr(json.audio)
     const audioFilePath = await saveFileToDisk(buffers.audio, audioMetaArr)
     const audioMeta = await extractAudioFileMeta(audioMetaArr[0], audioFilePath)
+    result.audio = {
+      meta: audioMeta,
+      path: audioFilePath
+    }
   }
-  const guardianMeta = await extractGuardianMeta(json)
-  return
+  return result
 }
 
 export const processMessage = async function (data: Buffer, messageId: string): Promise<MqttMessageProcessResult> {

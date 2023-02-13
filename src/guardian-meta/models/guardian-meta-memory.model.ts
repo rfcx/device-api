@@ -6,7 +6,7 @@ import Guardian from '../../guardians/guardian.model'
   paranoid: false,
   tableName: 'GuardianMetaMemory'
 })
-export default class GuardianMetaMemory extends Model {
+export class GuardianMetaMemory extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
   id!: number
@@ -43,3 +43,5 @@ export default class GuardianMetaMemory extends Model {
 }
 
 db.sequelize.addModels([GuardianMetaMemory])
+
+export default GuardianMetaMemory

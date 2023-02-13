@@ -6,7 +6,7 @@ import Guardian from '../../guardians/guardian.model'
   paranoid: false,
   tableName: 'GuardianMetaAssetExchangeLogs'
 })
-export default class GuardianMetaAssetExchangeLog extends Model {
+export class GuardianMetaAssetExchangeLog extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
   id!: number
@@ -28,3 +28,5 @@ export default class GuardianMetaAssetExchangeLog extends Model {
 }
 
 db.sequelize.addModels([GuardianMetaAssetExchangeLog])
+
+export default GuardianMetaAssetExchangeLog

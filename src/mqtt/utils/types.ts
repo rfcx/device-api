@@ -47,26 +47,6 @@ export interface GuardianAssetExchangeLogMetaList {
   purged: GuardianAssetExchangeLogMeta[]
 }
 
-export interface GuardianSoftwareMeta {
-  guardian?: string
-  admin?: string
-  classify?: string
-  updater?: string
-  cputuner?: string
-  api?: string
-  audio?: string
-  carrier?: string
-  connect?: string
-  reboot?: string
-  system?: string
-  sentinel?: string
-  setup?: string
-  moduleloader?: string
-  encode?: string
-  'updater-cli'?: string
-  'guardian-cli'?: string
-}
-
 export interface GuardianRebootsMeta {
   completedAt: string
 }
@@ -95,10 +75,15 @@ export interface GuardianDataTransferMeta {
   totalBytesSent: number
 }
 
-export interface GuardianStorageMeta {
+export interface GuardianDiskUsageMeta {
   measuredAt: string
   internalBytesAvailable: number
   internalBytesUsed: number
   externalBytesAvailable: number
   externalBytesUsed: number
+}
+
+export interface GuardianAuthInfo {
+  guid: string
+  token: string
 }

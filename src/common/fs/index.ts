@@ -1,6 +1,9 @@
 import config from '../../config'
-import { existsSync, mkdirSync } from 'fs'
+import { existsSync, mkdirSync, readFile } from 'fs'
 import path from 'path'
+import { promisify } from 'util'
+
+export const readFileAsync = promisify(readFile)
 
 export const ensureTmpDirExists = async function (): Promise<void> {
   if (!existsSync(config.CACHE_DIRECTORY)) {
@@ -10,4 +13,8 @@ export const ensureTmpDirExists = async function (): Promise<void> {
   if (!existsSync(uploads)) {
     mkdirSync(uploads)
   }
+}
+
+export const getFilenameFromPath = function (filePath: string): string {
+  return path.basename(filePath)
 }

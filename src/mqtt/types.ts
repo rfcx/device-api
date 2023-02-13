@@ -1,3 +1,5 @@
+export * from './utils/types'
+
 export interface MqttMessageBuffers {
   json: Buffer
   audio: Buffer | null
@@ -33,9 +35,9 @@ export interface MqttMessageJson {
   meta_ids?: string[]
   data_transfer: string
   storage: string
-  guardian?: {
-    guid?: string
-    token?: string
+  guardian: {
+    guid: string
+    token: string
   }
   broker_connections?: string
   detections?: string
@@ -52,5 +54,3 @@ export interface MqttMessageProcessResult {
   guardianGuid: string
   obj?: any
 }
-
-export * from './utils/types'

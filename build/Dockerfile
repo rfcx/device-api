@@ -13,6 +13,8 @@ COPY --from=builder /build/admin ./admin
 COPY --from=builder /build/migrations ./migrations
 COPY --from=builder /build/dist ./dist
 
+# TODO: add ffmpeg installation
+
 FROM build as device-api-http
 EXPOSE 3000
 CMD ["yarn", "start:http"]

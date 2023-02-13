@@ -35,4 +35,20 @@ noncoreInstance.interceptors.response.use(function (response) {
   return await Promise.reject(error)
 })
 
-export default { coreInstance, noncoreInstance }
+export const ingestInstance = axios.create({
+  baseURL: config.INGEST_SERVICE_URL,
+  timeout: 30000,
+  headers: { 'Content-Type': 'application/json' }
+})
+ingestInstance.interceptors.request.use(function (conf) {
+  return conf
+}, async function (error) {
+  return await Promise.reject(error)
+})
+ingestInstance.interceptors.response.use(function (response) {
+  return response
+}, async function (error) {
+  return await Promise.reject(error)
+})
+
+export default { coreInstance, noncoreInstance, ingestInstance }

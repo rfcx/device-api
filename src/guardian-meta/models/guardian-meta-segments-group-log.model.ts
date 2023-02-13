@@ -6,7 +6,7 @@ import Guardian from '../../guardians/guardian.model'
   paranoid: false,
   tableName: 'GuardianMetaSegmentsGroupLogs'
 })
-export default class GuardianMetaSegmentsGroupLog extends Model {
+export class GuardianMetaSegmentsGroupLog extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
   id!: number
@@ -40,3 +40,5 @@ export default class GuardianMetaSegmentsGroupLog extends Model {
 }
 
 db.sequelize.addModels([GuardianMetaSegmentsGroupLog])
+
+export default GuardianMetaSegmentsGroupLog

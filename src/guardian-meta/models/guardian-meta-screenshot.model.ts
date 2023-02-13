@@ -6,7 +6,7 @@ import Guardian from '../../guardians/guardian.model'
   paranoid: false,
   tableName: 'GuardianMetaScreenShots'
 })
-export default class GuardianMetaScreenShot extends Model {
+export class GuardianMetaScreenShot extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
   id!: number
@@ -41,3 +41,5 @@ export default class GuardianMetaScreenShot extends Model {
 }
 
 db.sequelize.addModels([GuardianMetaScreenShot])
+
+export default GuardianMetaScreenShot

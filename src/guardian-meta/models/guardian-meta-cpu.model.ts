@@ -6,7 +6,7 @@ import Guardian from '../../guardians/guardian.model'
   paranoid: false,
   tableName: 'GuardianMetaCPU'
 })
-export default class GuardianMetaCPU extends Model {
+export class GuardianMetaCPU extends Model {
   @PrimaryKey
   @Column(DataType.INTEGER)
   id!: number
@@ -34,3 +34,5 @@ export default class GuardianMetaCPU extends Model {
 }
 
 db.sequelize.addModels([GuardianMetaCPU])
+
+export default GuardianMetaCPU
