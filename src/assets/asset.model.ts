@@ -24,6 +24,9 @@ export default class Asset extends Model {
   @Column(DataType.STRING(16))
   deploymentId!: string
 
+  @Column(DataType.STRING(255))
+  assetParameters?: string
+
   @CreatedAt
   createdAt!: Date
 
