@@ -3,14 +3,14 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addColumn(
       'assets',
-      'asset_parameters',
+      'meta',
       {
-        type: Sequelize.STRING,
+        type: Sequelize.JSON,
         allowNull: true
       }
     )
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.removeColumn('assets', 'asset_parameters')
+    return queryInterface.removeColumn('assets', 'meta')
   }
 }
