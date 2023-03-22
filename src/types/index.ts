@@ -57,6 +57,7 @@ export interface NewAsset {
   mimeType: string
   deploymentId: string
   streamId: string
+  meta?: JSON
 }
 
 export interface User {

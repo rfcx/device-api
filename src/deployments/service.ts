@@ -56,7 +56,7 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
   return result
 }
 
-export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: string, file?: any): Promise<string> => {
+export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: string, file?: any, meta?: string): Promise<string> => {
   if (file === null) {
     throw new Error('File should not be null')
   }
@@ -64,8 +64,12 @@ export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: stri
     const buf = file.buffer
     const fileName = generateFilename(file.originalname)
     const mimeType = file.mimetype
+    let metaJson
+    if (meta != null) {
+      metaJson = JSON.parse(meta)
+    }
     const newAsset: NewAsset = {
-      fileName, mimeType, streamId, deploymentId
+      fileName, mimeType, streamId, deploymentId, meta: metaJson
     }
     const asset = await assetDao.create(newAsset)
     const remotePath = assetPath(asset)
