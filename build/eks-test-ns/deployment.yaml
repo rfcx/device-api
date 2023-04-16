@@ -1,0 +1,32 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: device-api
+  namespace: staging
+spec:
+  selector:
+    matchLabels:
+      app: device-api
+  template:
+    metadata:
+      labels:
+        app: device-api
+    spec:
+      containers:
+        - name: device-api
+          image: 887044485231.dkr.ecr.us-east-1.amazonaws.com/device-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+          envFrom:
+            - secretRef:
+                name: device-api-secrets
+            - configMapRef:
+                name: device-api-config
