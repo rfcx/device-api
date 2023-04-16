@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: device-api-config
-  namespace: staging
+  namespace: eks-test-ns
 data:
-  CORE_URL: http://core-api-service.staging.svc.cluster.local
-  NONCORE_URL: http://noncore-api-service.staging.svc.cluster.local
+  CORE_URL: http://core-api-service.eks-test-ns.svc.cluster.local
+  NONCORE_URL: http://noncore-api-service.eks-test-ns.svc.cluster.local

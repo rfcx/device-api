@@ -2,7 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: device-api-service
-  namespace: staging
+  namespace: eks-test-ns
   labels:
     app: device-api
 spec:

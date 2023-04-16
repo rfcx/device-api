@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: device-api
-  namespace: staging
+  namespace: eks-test-ns
 spec:
   selector:
     matchLabels:
