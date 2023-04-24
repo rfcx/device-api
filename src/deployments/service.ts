@@ -27,7 +27,7 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
     }
     const newStreamId = await api.createStream(token, stream)
     deployment.stream = { id: newStreamId }
-    guardianUpdate = { ...getGuardianUpdate(stream), stream_id: newStreamId }
+    guardianUpdate = { ...getGuardianUpdate(stream, deployment.deployedAt), stream_id: newStreamId }
   } else {
     // Check the stream exists
     const streamOrUndefined = await api.getStream(token, stream.id)
@@ -37,7 +37,7 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
     if (stream.name != null || stream.latitude != null || stream.longitude != null || stream.altitude != null) {
       await api.updateStream(token, stream)
     }
-    guardianUpdate = getGuardianUpdate(stream)
+    guardianUpdate = getGuardianUpdate(stream, deployment.deployedAt)
   }
 
   if (deployment.deploymentType === 'guardian') {
@@ -112,7 +112,7 @@ const hasGuardianProperties = (deviceParameters: any): Boolean => {
   return deviceParameters.guid != null
 }
 
-const getGuardianUpdate = (stream: Stream): UpdateGuardian => {
+const getGuardianUpdate = (stream: Stream, deployedAt: Date): UpdateGuardian => {
   return {
     stream_id: stream.id,
     shortname: stream.name,
@@ -120,7 +120,8 @@ const getGuardianUpdate = (stream: Stream): UpdateGuardian => {
     longitude: stream.longitude,
     altitude: stream.altitude,
     project_id: stream.project?.id,
-    is_deployed: true
+    is_deployed: true,
+    last_deployed: deployedAt
   }
 }
 

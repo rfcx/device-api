@@ -73,6 +73,7 @@ export interface UpdateGuardian {
   project_id?: string
   shortname?: string
   is_deployed?: boolean
+  last_deployed?: Date
 }
 
 export interface UpdateGuardianResponse {
