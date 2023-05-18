@@ -62,7 +62,7 @@ jobs:
     with:
       tag: ${{ needs.build.outputs.unique-tag }}
       namespace: ${{ needs.configure.outputs.namespace }}
-      environment: ${{ needs.configure.outputs.environment }}/device-api
+      environment: ${{ needs.configure.outputs.environment }}
       secrets_name: device-api-secrets
       secrets_list: "AWS_ACCESS_KEY_ID,AWS_SECRET_KEY,AWS_S3_BUCKET,DB_DBNAME,DB_HOSTNAME,DB_PASSWORD,DB_PORT,DB_SSL_ENABLED,DB_USER,MANDRILL_KEY"
     secrets: inherit
