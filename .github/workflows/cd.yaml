@@ -53,7 +53,7 @@ jobs:
       tag-latest: ${{ needs.configure.outputs.namespace == 'eks-test-ns' }}
     secrets:
       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_NONPROD_APP_DEPLOY }}
-      aws-secret-access-key: ${{ secrets.ecrets.AWS_SECRET_ACCESS_KEY_NONPROD_APP_DEPLOY }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_NONPROD_APP_DEPLOY }}
 
   deploy-device-api-secrets:
     name: 'Deploy device-api secrets'
