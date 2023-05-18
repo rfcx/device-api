@@ -77,8 +77,8 @@ jobs:
       namespace: ${{ needs.configure.outputs.namespace }}
     secrets:
 #      kube-config: ${{ secrets.KUBE_CONFIG_SUPER }}
-      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_NONPROD_K8S }}
-      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_NONPROD_K8S }}
+      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_NONPROD_APP_DEPLOY }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_NONPROD_APP_DEPLOY }}
 
 #  notify:
 #    name: 'Notify'
