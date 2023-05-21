@@ -15,9 +15,6 @@ on:
         type: string
         required: true
     secrets:
-#      kube-config:
-#        description: KUBE_CONFIG file
-#        required: true
       aws-access-key-id:
         description: AWS Access Key ID
         required: true
