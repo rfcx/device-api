@@ -3,7 +3,7 @@ import { Router } from 'express'
 import dayjs from 'dayjs'
 import dao from './dao'
 import assetDao from '../assets/dao'
-import { DeploymentRequest, Stream, User } from '../types'
+import { DeploymentRequest, Stream, User, DeploymentQuery } from '../types'
 import { multerFile } from '../common/multer'
 import * as api from '../common/core-api'
 import { getUserUid } from '../common/user'
@@ -63,6 +63,24 @@ router.get('/:id', (req: Request, res: Response, next: NextFunction): void => {
     } else {
       next(error)
     }
+  })
+})
+
+router.get('/', (req: Request, res: Response, next: NextFunction): void => {
+  const query = req.query as DeploymentQuery
+  let streamIds: string[] | string | undefined = query.streamIds
+  if (streamIds == null) {
+    console.error('query: streamIds should not be null')
+    res.status(400).send('query: streamIds should not be null')
+    return
+  }
+  if (typeof streamIds === 'string') {
+    streamIds = [streamIds]
+  }
+  dao.getDeployments(streamIds, query).then(async deployments => {
+    res.json(deployments)
+  }).catch(error => {
+    next(error)
   })
 })
 

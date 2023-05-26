@@ -11,6 +11,7 @@ export interface DeploymentQuery {
   isActive?: boolean
   limit?: number
   offset?: number
+  streamIds?: string[]
 }
 
 export type MappedDeploymentInfo = StreamResponse & { deployment?: DeploymentResponse }
