@@ -28,13 +28,17 @@ export const getByStreamId = async (streamId: string): Promise<Deployment | null
 }
 
 export const getDeployments = async (streamIds: string[], options: DeploymentQuery = {}): Promise<Deployment[]> => {
-  const where: { isActive?: boolean, streamId: { [Op.in]: string[] } } = {
+  const where: { isActive?: boolean, streamId: { [Op.in]: string[] }, deploymentType?: string } = {
     streamId: {
       [Op.in]: streamIds
     }
   }
 
   where.isActive = options.isActive ?? true
+  
+  if (options.type != null) {
+    where.deploymentType = options.type
+  }
 
   return await Deployment.findAll({
     where,
