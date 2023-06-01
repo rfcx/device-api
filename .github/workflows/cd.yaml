@@ -4,19 +4,9 @@ on:
   push:
     branches:
       - eks-branch
-#      - master
-#      - staging
+
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 jobs:
-
-#  prepare:
-#    name: 'Prepare'
-#    uses: rfcx/cicd/.github/workflows/notify-prepare.yaml@master
-#    with:
-#      repo: device-api
-#      workflow-id: cd.yaml
-#    secrets:
-#      github-token: ${{ secrets.GITHUB_TOKEN }}
 
   configure:
       name: 'Configure'
@@ -41,10 +31,7 @@ jobs:
 
   build:
     name: 'Build'
-#    needs: [prepare, configure]
     needs: [configure]
-#    uses: rfcx/cicd/.github/workflows/ecr-build-push.yaml@master
-# -- need move to common catalog
     uses: rfcx/device-api/.github/workflows/eks-ecr-build-push.yaml@eks-branch
     with:
       dockerfile: build/Dockerfile
@@ -60,7 +47,6 @@ jobs:
     needs: [configure]
     uses: rfcx/cicd/.github/workflows/eks-reusable-k8s-deploy-sec.yaml@eks_cicd
     with:
-      tag: ${{ needs.build.outputs.unique-tag }}
       namespace: ${{ needs.configure.outputs.namespace }}
       environment: ${{ needs.configure.outputs.environment }}
       secrets_name: device-api-secrets
@@ -70,13 +56,11 @@ jobs:
   deploy:
     name: 'Deploy'
     needs: [build, configure]
-#    uses: rfcx/cicd/.github/workflows/k8s-deploy.yaml@master
     uses: rfcx/device-api/.github/workflows/eks-reusable-k8s-deploy.yaml@eks-branch
     with:
       tag: ${{ needs.build.outputs.unique-tag }}
       namespace: ${{ needs.configure.outputs.namespace }}
     secrets:
-#      kube-config: ${{ secrets.KUBE_CONFIG_SUPER }}
       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_NONPROD_APP_DEPLOY }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_NONPROD_APP_DEPLOY }}
 
