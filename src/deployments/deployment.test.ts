@@ -156,7 +156,7 @@ describe('POST /deployments', () => {
   test('create guardian deployment success with guid in deviceParameters save in GuardianLog', async () => {
     const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
     const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { guid: 'gggggggggggg123' } }
-    const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', shortname: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project_id: 'bbbbbbbbbbbb', is_deployed: true }
+    const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', shortname: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project_id: 'bbbbbbbbbbbb', is_deployed: true, last_deployed: dayJs('2021-05-12T05:21:21.960Z') }
 
     const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
@@ -172,9 +172,9 @@ describe('POST /deployments', () => {
 
   test('create guardian deployment success with guid and token for registration in deviceParameters', async () => {
     const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
-    const mockDeviceParameters = { guid: 'gggggggggggg', token: 'token', pin_code: 'pinCode' }
+    const mockDeviceParameters = { guid: 'gggggggggggg', guardianToken: 'token', pinCode: 'pinCode' }
     const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: mockDeviceParameters }
-    const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', shortname: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project_id: 'bbbbbbbbbbbb', is_deployed: true }
+    const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', shortname: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project_id: 'bbbbbbbbbbbb', is_deployed: true, last_deployed: dayJs('2021-05-12T05:21:21.960Z') }
 
     const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
@@ -254,5 +254,35 @@ describe('POST /deployment/:id/assets', () => {
     expect(spy).toHaveBeenCalled()
     expect(response.statusCode).toBe(201)
     expect(response.headers.location).toEqual(`/assets/${mockUploadReturn}`)
+  })
+})
+
+describe('GET /deployments', () => {
+  test('get 1 deployment by stream id', async () => {
+    const deploymentId = '0000000000000000'
+    const mockDeployment = { id: deploymentId, streamId: 'aaaaaaaaaaaa', deploymentType: 'audiomoth', deployedAt: dayJs('2021-05-12T05:21:21.960Z').toDate(), isActive: true, createdById: seedValues.primarySub }
+    await Deployment.create(mockDeployment)
+    const streamId = 'aaaaaaaaaaaa'
+
+    const response = await request(app).get(`?streamIds=${streamId}`)
+
+    expect(response.statusCode).toBe(200)
+    expect(response.body).toHaveLength(1)
+  })
+
+  test('get 2 deployment by stream ids', async () => {
+    const deploymentId1 = '0000000000000000'
+    const deploymentId2 = '0000000000000001'
+    const streamId1 = 'aaaaaaaaaaa1'
+    const streamId2 = 'aaaaaaaaaaa2'
+    const mockDeployment1 = { id: deploymentId1, streamId: streamId1, deploymentType: 'audiomoth', deployedAt: dayJs('2021-05-12T05:21:21.960Z').toDate(), isActive: true, createdById: seedValues.primarySub }
+    const mockDeployment2 = { id: deploymentId2, streamId: streamId2, deploymentType: 'audiomoth', deployedAt: dayJs('2021-05-12T05:21:21.960Z').toDate(), isActive: true, createdById: seedValues.primarySub }
+    await Deployment.create(mockDeployment1)
+    await Deployment.create(mockDeployment2)
+
+    const response = await request(app).get(`?streamIds=${streamId1}&streamIds=${streamId2}`)
+
+    expect(response.statusCode).toBe(200)
+    expect(response.body).toHaveLength(2)
   })
 })
