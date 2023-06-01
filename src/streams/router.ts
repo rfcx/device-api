@@ -101,7 +101,9 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
   const token = req.headers.authorization ?? ''
   api.getStreams(token, req.query).then(async (streams) => {
     const queryOption = req.query as DeploymentQuery
-    const deployments = await deploymentDao.getDeployments(streams.map(stream => stream.id), queryOption)
+    // Offset won't be used to query deployments
+    const { offset, ...excludeOffset } = queryOption
+    const deployments = await deploymentDao.getDeployments(streams.map(stream => stream.id), excludeOffset)
     const deploymentsInfo = mapStreamsAndDeployments(streams, deployments)
     res.send(deploymentsInfo)
   }).catch(next)
