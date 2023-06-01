@@ -54,6 +54,18 @@ describe('GET /streams', () => {
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual([])
   })
+
+  test('get stream with offset will not effect deployment', async () => {
+    const mockDeployment = { id: '0000000000000000', streamId: 'aaaaaaaaaaaa', deploymentType: 'audiomoth', deployedAt: dayJs('2021-05-12T05:21:21.960Z').toDate(), isActive: true, createdById: seedValues.primarySub }
+    await Deployment.create(mockDeployment)
+    const mockStream = { id: 'aaaaaaaaaaaa', name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb', name: 'test-project', isPublic: true, externalId: null }, countryName: 'Thailand' }
+
+    setupMockAxios(GET, endpoint, 200, [mockStream])
+    const response = await request(app).get('/?offset=1')
+
+    expect(response.statusCode).toBe(200)
+    expect(response.body[0]).toHaveProperty('deployment')
+  })
 })
 
 describe('GET /streams/:id/assets', () => {
