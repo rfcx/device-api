@@ -31,7 +31,7 @@ export const getDeployments = async (streamIds: string[] | undefined, options: D
   const where: { isActive?: boolean, streamId?: { [Op.in]: string[] }, deploymentType?: string } = {}
 
   where.isActive = options.isActive ?? true
-  
+
   if (streamIds != null) {
     where.streamId = {
       [Op.in]: streamIds
@@ -44,8 +44,8 @@ export const getDeployments = async (streamIds: string[] | undefined, options: D
 
   return await Deployment.findAll({
     where,
-    limit: options.limit || 100,
-    offset: options.offset || 0,
+    limit: options.limit ?? 100,
+    offset: options.offset ?? 0,
     attributes: {
       exclude: ['createdById', 'createdAt', 'updatedAt', 'deletedAt']
     }
