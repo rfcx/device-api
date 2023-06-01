@@ -69,11 +69,6 @@ router.get('/:id', (req: Request, res: Response, next: NextFunction): void => {
 router.get('/', (req: Request, res: Response, next: NextFunction): void => {
   const query = req.query as DeploymentQuery
   let streamIds: string[] | string | undefined = query.streamIds
-  if (streamIds == null) {
-    console.error('query: streamIds should not be null')
-    res.status(400).send('query: streamIds should not be null')
-    return
-  }
   if (typeof streamIds === 'string') {
     streamIds = [streamIds]
   }
