@@ -13,7 +13,12 @@ router.get('/:id', (req: Request, res: Response, next: NextFunction): void => {
     } else {
       res.header('Content-Type', asset.mimeType)
       const path = assetPath(asset)
-      downloadAsStream(path).pipe(res)
+      downloadAsStream(path)
+        .on('error', (e) => {
+          // On NoSuchKey, InvalidKeyId, etc
+          res.status(500).send('Unexpected error while getting an asset')
+        })
+        .pipe(res)
     }
   }).catch(next)
 })
