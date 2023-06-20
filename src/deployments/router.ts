@@ -56,8 +56,8 @@ router.get('/:id', (req: Request, res: Response): void => {
 
 router.get('/', (req: Request, res: Response, next: NextFunction): void => {
   const converter = new Converter(req.query, {}, { camelize: true })
-  converter.convert('stream_ids').optional().toArray()
-  converter.convert('is_active').optional().toBoolean()
+  converter.convert('streamIds').optional().toArray()
+  converter.convert('isActive').optional().toBoolean()
   converter.convert('limit').default(100).toInt()
   converter.convert('offset').default(0).toInt()
   converter.convert('type').optional().toString()
