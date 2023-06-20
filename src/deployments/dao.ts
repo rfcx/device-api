@@ -32,7 +32,7 @@ export const getDeployments = async (streamIds: string[] | undefined, options: D
 
   where.isActive = options.isActive ?? true
 
-  if (streamIds != null) {
+  if (streamIds !== undefined) {
     where.streamId = {
       [Op.in]: streamIds
     }
