@@ -1,6 +1,7 @@
 import { coreInstance, noncoreInstance } from '../axios'
 import { ProjectResponse, StreamResponse, UpdateGuardian, UpdateGuardianResponse, ProjectByIdResponse, RegisterGuardianResponse, UserTouchResponse, Project, Stream, RegisterGuardianRequest } from '../../types'
 import { snakeToCamel } from '../serializers/snake-camel'
+import { mapAxiosErrorToCustom } from '@rfcx/http-utils'
 
 export const createStream = async (token: string, stream: Stream): Promise<string> => {
   const data = {
@@ -11,6 +12,8 @@ export const createStream = async (token: string, stream: Stream): Promise<strin
     project_id: stream.project !== undefined && 'id' in stream.project ? stream.project.id : undefined
   }
   const response = await coreInstance.post('/streams', data, { headers: { Authorization: token } })
+    // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    .catch(e => { throw mapAxiosErrorToCustom(e) })
   const headers: { location?: string } = response.headers
   if (response.status === 201 && headers.location !== undefined) {
     const regexResult = /\/streams\/(?<id>\w+)$/.exec(headers.location)
@@ -41,6 +44,8 @@ export const updateStream = async (token: string, stream: Stream): Promise<Strea
   const options = { headers: { Authorization: token } }
   if (id == null) throw new Error('id should not be null')
   const response = await coreInstance.patch(`/streams/${id}`, data, options)
+  // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    .catch(e => { throw mapAxiosErrorToCustom(e) })
   return response.data
 }
 
@@ -49,6 +54,8 @@ export const updateProject = async (token: string, project: Project): Promise<Pr
   const options = { headers: { Authorization: token } }
   if (id == null) throw new Error('id should not be null')
   const response = await coreInstance.patch(`/projects/${id}`, data, options)
+  // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    .catch(e => { throw mapAxiosErrorToCustom(e) })
   return response.data
 }
 
@@ -58,6 +65,8 @@ export const getStreams = async (token: string, params: any = {}): Promise<Strea
     params: { ...params, fields: ['id', 'name', 'latitude', 'longitude', 'altitude', 'project', 'created_at', 'updated_at'] }
   }
   const response = await coreInstance.get('/streams', options)
+  // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    .catch(e => { throw mapAxiosErrorToCustom(e) })
   return snakeToCamel(response.data)
 }
 
@@ -67,6 +76,8 @@ export const getStream = async (token: string, id: string): Promise<StreamRespon
     params: { fields: ['id', 'name', 'latitude', 'longitude', 'altitude', 'project'] }
   }
   const response = await coreInstance.get<StreamResponse>(`/streams/${id}`, options)
+  // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    .catch(e => { throw mapAxiosErrorToCustom(e) })
   return snakeToCamel(response.data)
 }
 
@@ -76,6 +87,8 @@ export const getProjects = async (token: string, params: unknown = {}): Promise<
     params
   }
   const response = await coreInstance.get('/projects', options)
+  // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    .catch(e => { throw mapAxiosErrorToCustom(e) })
   return snakeToCamel(response.data)
 }
 
@@ -84,35 +97,47 @@ export const getProject = async (token: string, id: string): Promise<ProjectById
     headers: { Authorization: token }
   }
   const response = await coreInstance.get<StreamResponse>(`/projects/${id}`, options)
+  // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    .catch(e => { throw mapAxiosErrorToCustom(e) })
   return snakeToCamel(response.data)
 }
 
 export const pingGuardian = async (guardianToken: string, guid: string, ping: any): Promise<void> => {
   const options = { headers: { 'x-auth-user': `guardian/${guid}`, 'x-auth-token': guardianToken } }
   const response = await noncoreInstance.post(`/v2/guardians/${guid}/pings`, { json: ping }, options)
+  // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    .catch(e => { throw mapAxiosErrorToCustom(e) })
   return snakeToCamel(response.data)
 }
 
 export const updateGuardian = async (token: string, guid: string, params: UpdateGuardian): Promise<UpdateGuardianResponse> => {
   const options = { headers: { Authorization: token } }
   const response = await noncoreInstance.patch(`/v2/guardians/${guid}`, params, options)
+  // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    .catch(e => { throw mapAxiosErrorToCustom(e) })
   return snakeToCamel(response.data)
 }
 
 export const registerGuardian = async (token: string, parameters: RegisterGuardianRequest): Promise<RegisterGuardianResponse> => {
   const options = { headers: { Authorization: token } }
   const response = await noncoreInstance.post('/v2/guardians/register', { guid: parameters.guid, token: parameters.token, pin_code: parameters.pinCode }, options)
+  // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    .catch(e => { throw mapAxiosErrorToCustom(e) })
   return snakeToCamel(response.data)
 }
 
 export const registerGuardianFromDeviceParameters = async (token: string, parameters: any): Promise<RegisterGuardianResponse> => {
   const options = { headers: { Authorization: token } }
   const response = await noncoreInstance.post('/v2/guardians/register', { guid: parameters.guid, token: parameters.guardianToken, pin_code: parameters.pin_code }, options)
+  // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    .catch(e => { throw mapAxiosErrorToCustom(e) })
   return snakeToCamel(response.data)
 }
 
 export const userTouch = async (token: string): Promise<UserTouchResponse> => {
   const options = { headers: { Authorization: token } }
   const response = await noncoreInstance.get('/v1/users/touchapi', options)
+  // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    .catch(e => { throw mapAxiosErrorToCustom(e) })
   return snakeToCamel(response.data)
 }

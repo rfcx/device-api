@@ -6,7 +6,7 @@ import * as api from '../common/core-api'
 import Deployment from './deployment.model'
 import { assetPath, generateFilename } from '../common/storage/paths'
 import email from '../common/email'
-import { ValidationError, mapAxiosErrorToCustom } from '@rfcx/http-utils'
+import { ValidationError, EmptyResultError } from '@rfcx/http-utils'
 
 export const createDeployment = async (appVersion: number | undefined, uid: string, token: string, user: User, deployment: DeploymentRequest): Promise<Deployment> => {
   // Check if id existed
@@ -24,28 +24,20 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
     // Check for new project
     if (project !== undefined && project.id === undefined) {
       const newProjectId = await api.createProject(token, project)
-        // eslint-disable-next-line @typescript-eslint/no-throw-literal
-        .catch(e => { throw mapAxiosErrorToCustom(e) })
       stream.project = { id: newProjectId }
     }
     const newStreamId = await api.createStream(token, stream)
-      // eslint-disable-next-line @typescript-eslint/no-throw-literal
-      .catch(e => { throw mapAxiosErrorToCustom(e) })
     deployment.stream = { id: newStreamId }
     guardianUpdate = { ...getGuardianUpdate(stream, deployment.deployedAt), stream_id: newStreamId }
   } else {
     // Check the stream exists
     const streamOrUndefined = await api.getStream(token, stream.id)
-      // eslint-disable-next-line @typescript-eslint/no-throw-literal
-      .catch(e => { throw mapAxiosErrorToCustom(e) })
     if (streamOrUndefined === undefined) {
       // eslint-disable-next-line @typescript-eslint/no-throw-literal
-      throw new ValidationError('stream not found')
+      throw new EmptyResultError('stream not found')
     }
     if (stream.name != null || stream.latitude != null || stream.longitude != null || stream.altitude != null) {
       await api.updateStream(token, stream)
-        // eslint-disable-next-line @typescript-eslint/no-throw-literal
-        .catch(e => { throw mapAxiosErrorToCustom(e) })
     }
     guardianUpdate = getGuardianUpdate(stream, deployment.deployedAt)
   }
@@ -54,8 +46,6 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
     const deviceParameters = deployment.deviceParameters
     if (deviceParameters != null) {
       await updateGuardian(uid, token, deviceParameters, guardianUpdate)
-        // eslint-disable-next-line @typescript-eslint/no-throw-literal
-        .catch(e => { throw mapAxiosErrorToCustom(e) })
 
       // Remove guardian token - no need to be stored in database *use only for ping guardian
       const { guardianToken, ...rest } = deployment.deviceParameters
