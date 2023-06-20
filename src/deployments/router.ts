@@ -82,7 +82,7 @@ router.patch('/:id', (req: Request, res: Response): void => {
       await api.updateStream(userToken, stream)
     }
     res.send('Success')
-  }).catch(httpErrorHandler(req, res, 'Failed patching a deployment'))
+  }).catch(httpErrorHandler(req, res, 'Failed updating a deployment'))
 })
 
 router.delete('/:id', (req: Request, res: Response): void => {
