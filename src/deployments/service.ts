@@ -6,12 +6,13 @@ import * as api from '../common/core-api'
 import Deployment from './deployment.model'
 import { assetPath, generateFilename } from '../common/storage/paths'
 import email from '../common/email'
-import { ValidationError } from 'sequelize'
+import { ValidationError } from '@rfcx/http-utils'
 
 export const createDeployment = async (appVersion: number | undefined, uid: string, token: string, user: User, deployment: DeploymentRequest): Promise<Deployment> => {
   // Check if id existed
   if (await dao.get(deployment.deploymentKey) != null) {
     console.error('this deploymentKey is already existed')
+    // eslint-disable-next-line @typescript-eslint/no-throw-literal
     throw new ValidationError('this deploymentKey is already existed')
   }
 
@@ -32,6 +33,7 @@ export const createDeployment = async (appVersion: number | undefined, uid: stri
     // Check the stream exists
     const streamOrUndefined = await api.getStream(token, stream.id)
     if (streamOrUndefined === undefined) {
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw new ValidationError('stream not found')
     }
     if (stream.name != null || stream.latitude != null || stream.longitude != null || stream.altitude != null) {

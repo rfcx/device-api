@@ -595,6 +595,13 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@rfcx/http-utils@1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@rfcx/http-utils/-/http-utils-1.0.10.tgz#9d4b59cd1e7d174ed419524a56d0972405174263"
+  integrity sha512-xtPzIiP/InEppVMfHUyrIEIAvt4jfph4tAdBfK4BW4ytldd+mitM43DZJWKjvlHsCCOWnyrrlB/X7OwCfpajuw==
+  dependencies:
+    moment-timezone "0.5.31"
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.2"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.2.tgz#858f5c4b48d80778fde4b9d541f27edc0d56488b"
@@ -4602,6 +4609,13 @@ mkdirp@^0.5.1:
   integrity sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
   dependencies:
     minimist "^1.2.5"
+
+moment-timezone@0.5.31:
+  version "0.5.31"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.31.tgz#9c40d8c5026f0c7ab46eda3d63e49c155148de05"
+  integrity sha512-+GgHNg8xRhMXfEbv81iDtrVeTcWt0kWmTEY1XQK14dICTXnWJnT0dxdlPspwqF3keKMVPXwayEsk1DI0AA/jdA==
+  dependencies:
+    moment ">= 2.9.0"
 
 moment-timezone@^0.5.31:
   version "0.5.33"

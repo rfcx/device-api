@@ -9,8 +9,8 @@ import * as api from '../common/core-api'
 import { getUserUid } from '../common/user'
 import service from './service'
 import Deployment from './deployment.model'
-import { ValidationError } from 'sequelize'
 import { userAgentToAppInfo } from '../common/headers'
+import { Converter, httpErrorHandler } from '@rfcx/http-utils'
 
 const router = Router()
 
@@ -37,13 +37,7 @@ router.post('/', (req: Request, res: Response, next: NextFunction): void => {
 
   service.createDeployment(appVersion, userId, userToken, user, deployment).then(data => {
     res.location(`/deployments/${data.id}`).sendStatus(201)
-  }).catch(error => {
-    if (error instanceof ValidationError) {
-      res.status(400).send(error.errors.length > 0 ? error.errors.map(e => e.message).join(', ') : error.message)
-    } else {
-      next(error)
-    }
-  })
+  }).catch(httpErrorHandler(req, res, 'Failed creating a deployment'))
 })
 
 router.get('/:id', (req: Request, res: Response, next: NextFunction): void => {
@@ -67,16 +61,21 @@ router.get('/:id', (req: Request, res: Response, next: NextFunction): void => {
 })
 
 router.get('/', (req: Request, res: Response, next: NextFunction): void => {
-  const query = req.query as DeploymentQuery
-  let streamIds: string[] | string | undefined = query.streamIds
-  if (typeof streamIds === 'string') {
-    streamIds = [streamIds]
-  }
-  dao.getDeployments(streamIds, query).then(async deployments => {
-    res.json(deployments)
-  }).catch(error => {
-    next(error)
-  })
+  const converter = new Converter(req.query, {}, { camelize: true })
+  converter.convert('stream_ids').optional().toArray()
+  converter.convert('is_active').optional().toBoolean()
+  converter.convert('limit').default(100).toInt()
+  converter.convert('offset').default(0).toInt()
+  converter.convert('type').optional().toString()
+  converter.validate()
+    .then(async (query: DeploymentQuery) => {
+      dao.getDeployments(query.streamIds, query).then(async deployments => {
+        res.json(deployments)
+      }).catch(error => {
+        next(error)
+      })
+    })
+    .catch(httpErrorHandler(req, res, 'Failed getting deployments.'))
 })
 
 router.patch('/:id', (req: Request, res: Response, next: NextFunction): void => {
