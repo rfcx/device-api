@@ -5,6 +5,7 @@ import assetDao from '../assets/dao'
 import deploymentDao from '../deployments/dao'
 import service from './service'
 import { mapStreamsAndDeployments } from './serializer'
+import { DeploymentQuery } from 'src/types'
 
 const router = Router()
 
@@ -74,6 +75,11 @@ const router = Router()
  *         description: Customize included fields and relations
  *         in: query
  *         type: array
+ *       - name: type
+ *         description: Filter the results to only specify type
+ *         in: query
+ *         type: string
+ *         example: guardian
  *     responses:
  *       200:
  *         description: List of streams objects along with deployments objects
@@ -94,7 +100,10 @@ const router = Router()
 router.get('/', (req: Request, res: Response, next: NextFunction): void => {
   const token = req.headers.authorization ?? ''
   api.getStreams(token, req.query).then(async (streams) => {
-    const deployments = await deploymentDao.getDeployments(streams.map(stream => stream.id))
+    const queryOption = req.query as DeploymentQuery
+    // Offset won't be used to query deployments
+    const { offset, ...excludeOffset } = queryOption
+    const deployments = await deploymentDao.getDeployments(streams.map(stream => stream.id), excludeOffset)
     const deploymentsInfo = mapStreamsAndDeployments(streams, deployments)
     res.send(deploymentsInfo)
   }).catch(next)
