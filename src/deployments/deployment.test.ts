@@ -301,6 +301,22 @@ describe('GET /deployments', () => {
     expect(response.body).toHaveLength(1)
   })
 
+  test('get deployments by guardian type', async () => {
+    const deploymentId1 = '0000000000000000'
+    const deploymentId2 = '0000000000000001'
+    const streamId1 = 'aaaaaaaaaaa1'
+    const streamId2 = 'aaaaaaaaaaa2'
+    const mockDeployment1 = { id: deploymentId1, streamId: streamId1, deploymentType: 'guardian', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
+    const mockDeployment2 = { id: deploymentId2, streamId: streamId2, deploymentType: 'guardian', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
+    await Deployment.create(mockDeployment1)
+    await Deployment.create(mockDeployment2)
+
+    const response = await request(app).get('?type=guardian')
+
+    expect(response.statusCode).toBe(200)
+    expect(response.body).toHaveLength(2)
+  })
+
   test('get deployments by guardian type but empty', async () => {
     const deploymentId1 = '0000000000000000'
     const deploymentId2 = '0000000000000001'
