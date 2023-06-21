@@ -38,7 +38,7 @@ export const getDeployments = async (streamIds: string[] | undefined, options: D
     }
   }
 
-  if (options.type != null) {
+  if (options.type !== undefined) {
     where.deploymentType = options.type
   }
 
