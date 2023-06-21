@@ -27,19 +27,25 @@ export const getByStreamId = async (streamId: string): Promise<Deployment | null
   })
 }
 
-export const getDeployments = async (streamIds: string[], options: DeploymentQuery = {}): Promise<Deployment[]> => {
-  const where: { isActive?: boolean, streamId: { [Op.in]: string[] } } = {
-    streamId: {
+export const getDeployments = async (streamIds: string[] | undefined, options: DeploymentQuery = {}): Promise<Deployment[]> => {
+  const where: { isActive?: boolean, streamId?: { [Op.in]: string[] }, deploymentType?: string } = {}
+
+  where.isActive = options.isActive ?? true
+
+  if (streamIds !== undefined) {
+    where.streamId = {
       [Op.in]: streamIds
     }
   }
 
-  where.isActive = options.isActive ?? true
+  if (options.type !== undefined) {
+    where.deploymentType = options.type
+  }
 
   return await Deployment.findAll({
     where,
-    limit: options.limit,
-    offset: options.offset,
+    limit: options.limit ?? 100,
+    offset: options.offset ?? 0,
     attributes: {
       exclude: ['createdById', 'createdAt', 'updatedAt', 'deletedAt']
     }

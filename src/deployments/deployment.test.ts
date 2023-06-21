@@ -3,7 +3,6 @@ import { migrate, truncate, expressApp, seed, seedValues } from '../common/db/te
 import request from 'supertest'
 import db from '../common/db'
 import Deployment from 'src/deployments/deployment.model'
-import dayJs from 'dayjs'
 import service from './service'
 import email from '../common/email'
 import { GET, POST, PATCH, setupMockAxios } from '../common/axios/mock'
@@ -31,7 +30,7 @@ const streamEndpoint = 'streams'
 describe('GET /deployments/:id', () => {
   test('get deployment success', async () => {
     const deploymentId = '0000000000000000'
-    const mockDeployment = { id: deploymentId, streamId: 'aaaaaaaaaaaa', deploymentType: 'audiomoth', deployedAt: dayJs('2021-05-12T05:21:21.960Z').toDate(), isActive: true, createdById: seedValues.primarySub }
+    const mockDeployment = { id: deploymentId, streamId: 'aaaaaaaaaaaa', deploymentType: 'audiomoth', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
     await Deployment.create(mockDeployment)
     const streamId = 'aaaaaaaaaaaa'
     const mockStream = { id: streamId, name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb', name: 'test-project', isPublic: true, externalId: null }, countryName: 'Thailand' }
@@ -49,7 +48,7 @@ describe('GET /deployments/:id', () => {
 
   test('get deployment no access', async () => {
     const deploymentId = '0000000000000000'
-    const mockDeployment = { id: deploymentId, streamId: 'aaaaaaaaaaaa', deploymentType: 'audiomoth', deployedAt: dayJs('2021-05-12T05:21:21.960Z').toDate(), isActive: true, createdById: seedValues.primarySub }
+    const mockDeployment = { id: deploymentId, streamId: 'aaaaaaaaaaaa', deploymentType: 'audiomoth', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
     await Deployment.create(mockDeployment)
 
     setupMockAxios(GET, `${streamEndpoint}/aaaaaaaaaaaa`, 403)
@@ -60,7 +59,7 @@ describe('GET /deployments/:id', () => {
 
   test('get deployment stream not found', async () => {
     const deploymentId = '0000000000000000'
-    const mockDeployment = { id: deploymentId, streamId: 'aaaaaaaaaaaa', deploymentType: 'audiomoth', deployedAt: dayJs('2021-05-12T05:21:21.960Z').toDate(), isActive: true, createdById: seedValues.primarySub }
+    const mockDeployment = { id: deploymentId, streamId: 'aaaaaaaaaaaa', deploymentType: 'audiomoth', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
     await Deployment.create(mockDeployment)
     const streamId = 'aaaaaaaaaaaa'
 
@@ -76,7 +75,7 @@ describe('POST /deployments', () => {
     const streamId = 'aaaaaaaaaaaa'
     const projectId = 'bbbbbbbbbbbb'
     const mockStream = { id: streamId, name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: projectId, name: 'test-project', isPublic: true, externalId: null }, countryName: 'Thailand' }
-    const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'audiomoth', stream: { id: streamId, project: { id: projectId } } }
+    const mockDeployment = { deployedAt: '2021-05-12T05:21:21.960Z', deploymentKey: '0000000000000000', deploymentType: 'audiomoth', stream: { id: streamId, project: { id: projectId } } }
 
     const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(GET, `${streamEndpoint}/${streamId}`, 200, mockStream)
@@ -88,7 +87,7 @@ describe('POST /deployments', () => {
 
   test('create deployment success include new stream and project id', async () => {
     const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
-    const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'audiomoth', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } } }
+    const mockDeployment = { deployedAt: '2021-05-12T05:21:21.960Z', deploymentKey: '0000000000000000', deploymentType: 'audiomoth', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } } }
 
     const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
@@ -99,7 +98,7 @@ describe('POST /deployments', () => {
   })
 
   test('create deployment failed with no deployment key', async () => {
-    const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentType: 'audiomoth', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } } }
+    const mockDeployment = { deployedAt: '2021-05-12T05:21:21.960Z', deploymentType: 'audiomoth', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } } }
 
     const response = await request(app).post('/').send(mockDeployment)
 
@@ -116,8 +115,8 @@ describe('POST /deployments', () => {
 
   test('create deployment failed with duplicated deployment key', async () => {
     const deploymentId = '0000000000000000'
-    const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: deploymentId, deploymentType: 'audiomoth', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } } }
-    const deployment = { id: deploymentId, streamId: 'aaaaaaaaaaaa', deploymentType: 'audiomoth', deployedAt: dayJs('2021-05-12T05:21:21.960Z').toDate(), isActive: true, createdById: seedValues.primarySub }
+    const mockDeployment = { deployedAt: '2021-05-12T05:21:21.960Z', deploymentKey: deploymentId, deploymentType: 'audiomoth', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } } }
+    const deployment = { id: deploymentId, streamId: 'aaaaaaaaaaaa', deploymentType: 'audiomoth', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
     await Deployment.create(deployment)
 
     const response = await request(app).post('/').send(mockDeployment)
@@ -127,7 +126,7 @@ describe('POST /deployments', () => {
 
   test('create guardian deployment success without guid in deviceParameters', async () => {
     const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
-    const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { something: 'gggggggggggg' } }
+    const mockDeployment = { deployedAt: '2021-05-12T05:21:21.960Z', deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { something: 'gggggggggggg' } }
 
     const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
@@ -141,7 +140,7 @@ describe('POST /deployments', () => {
 
   test('create guardian deployment success with guid is null in deviceParameters', async () => {
     const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
-    const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { guid: null } }
+    const mockDeployment = { deployedAt: '2021-05-12T05:21:21.960Z', deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { guid: null } }
 
     const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
@@ -155,8 +154,8 @@ describe('POST /deployments', () => {
 
   test('create guardian deployment success with guid in deviceParameters save in GuardianLog', async () => {
     const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
-    const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { guid: 'gggggggggggg123' } }
-    const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', shortname: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project_id: 'bbbbbbbbbbbb', is_deployed: true }
+    const mockDeployment = { deployedAt: '2021-05-12T05:21:21.960Z', deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { guid: 'gggggggggggg123' } }
+    const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', shortname: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project_id: 'bbbbbbbbbbbb', is_deployed: true, last_deployed: '2021-05-12T05:21:21.960Z' }
 
     const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
@@ -172,9 +171,9 @@ describe('POST /deployments', () => {
 
   test('create guardian deployment success with guid and token for registration in deviceParameters', async () => {
     const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
-    const mockDeviceParameters = { guid: 'gggggggggggg', token: 'token', pin_code: 'pinCode' }
-    const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: mockDeviceParameters }
-    const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', shortname: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project_id: 'bbbbbbbbbbbb', is_deployed: true }
+    const mockDeviceParameters = { guid: 'gggggggggggg', guardianToken: 'token', pinCode: 'pinCode' }
+    const mockDeployment = { deployedAt: '2021-05-12T05:21:21.960Z', deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: mockDeviceParameters }
+    const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', shortname: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project_id: 'bbbbbbbbbbbb', is_deployed: true, last_deployed: '2021-05-12T05:21:21.960Z' }
 
     const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
@@ -197,7 +196,7 @@ describe('PATCH /deployments/:id', () => {
   test('patch deployment success', async () => {
     const deploymentId = '0000000000000000'
     const streamId = 'aaaaaaaaaaaa'
-    const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'audiomoth', stream: { id: streamId, project: { id: 'bbbbbbbbbbbb' } } }
+    const mockDeployment = { deployedAt: '2021-05-12T05:21:21.960Z', deploymentKey: '0000000000000000', deploymentType: 'audiomoth', stream: { id: streamId, project: { id: 'bbbbbbbbbbbb' } } }
 
     setupMockAxios(PATCH, `${streamEndpoint}/${streamId}`, 201)
     const response = await request(app).patch(`/${deploymentId}`).send(mockDeployment)
@@ -207,7 +206,7 @@ describe('PATCH /deployments/:id', () => {
 
   test('patch deployment success with no stream', async () => {
     const deploymentId = '0000000000000000'
-    const mockDeployment = { deployedAt: dayJs('2021-05-12T05:21:21.960Z'), deploymentKey: '0000000000000000', deploymentType: 'audiomoth' }
+    const mockDeployment = { deployedAt: '2021-05-12T05:21:21.960Z', deploymentKey: '0000000000000000', deploymentType: 'audiomoth' }
 
     const response = await request(app).patch(`/${deploymentId}`).send(mockDeployment)
 
@@ -244,7 +243,7 @@ describe('POST /deployment/:id/assets', () => {
   test('upload deployments assets', async () => {
     const deploymentId = '0000000000000000'
     const mockFile = { file: 'test-file' }
-    const deployment = { id: deploymentId, streamId: 'aaaaaaaaaaaa', deploymentType: 'audiomoth', deployedAt: dayJs('2021-05-12T05:21:21.960Z').toDate(), isActive: true, createdById: seedValues.primarySub }
+    const deployment = { id: deploymentId, streamId: 'aaaaaaaaaaaa', deploymentType: 'audiomoth', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
     await Deployment.create(deployment)
     const mockUploadReturn = 'test-asset-id'
 
@@ -254,5 +253,67 @@ describe('POST /deployment/:id/assets', () => {
     expect(spy).toHaveBeenCalled()
     expect(response.statusCode).toBe(201)
     expect(response.headers.location).toEqual(`/assets/${mockUploadReturn}`)
+  })
+})
+
+describe('GET /deployments', () => {
+  test('get 1 deployment by stream id', async () => {
+    const deploymentId = '0000000000000000'
+    const mockDeployment = { id: deploymentId, streamId: 'aaaaaaaaaaaa', deploymentType: 'audiomoth', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
+    await Deployment.create(mockDeployment)
+    const streamId = 'aaaaaaaaaaaa'
+
+    const response = await request(app).get(`?streamIds=${streamId}`)
+
+    expect(response.statusCode).toBe(200)
+    expect(response.body).toHaveLength(1)
+  })
+
+  test('get 2 deployment by stream ids', async () => {
+    const deploymentId1 = '0000000000000000'
+    const deploymentId2 = '0000000000000001'
+    const streamId1 = 'aaaaaaaaaaa1'
+    const streamId2 = 'aaaaaaaaaaa2'
+    const mockDeployment1 = { id: deploymentId1, streamId: streamId1, deploymentType: 'audiomoth', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
+    const mockDeployment2 = { id: deploymentId2, streamId: streamId2, deploymentType: 'audiomoth', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
+    await Deployment.create(mockDeployment1)
+    await Deployment.create(mockDeployment2)
+
+    const response = await request(app).get(`?streamIds=${streamId1}&streamIds=${streamId2}`)
+
+    expect(response.statusCode).toBe(200)
+    expect(response.body).toHaveLength(2)
+  })
+
+  test('get deployments by audiomoth type', async () => {
+    const deploymentId1 = '0000000000000000'
+    const deploymentId2 = '0000000000000001'
+    const streamId1 = 'aaaaaaaaaaa1'
+    const streamId2 = 'aaaaaaaaaaa2'
+    const mockDeployment1 = { id: deploymentId1, streamId: streamId1, deploymentType: 'audiomoth', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
+    const mockDeployment2 = { id: deploymentId2, streamId: streamId2, deploymentType: 'guardian', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
+    await Deployment.create(mockDeployment1)
+    await Deployment.create(mockDeployment2)
+
+    const response = await request(app).get('?type=audiomoth')
+
+    expect(response.statusCode).toBe(200)
+    expect(response.body).toHaveLength(1)
+  })
+
+  test('get deployments by guardian type but empty', async () => {
+    const deploymentId1 = '0000000000000000'
+    const deploymentId2 = '0000000000000001'
+    const streamId1 = 'aaaaaaaaaaa1'
+    const streamId2 = 'aaaaaaaaaaa2'
+    const mockDeployment1 = { id: deploymentId1, streamId: streamId1, deploymentType: 'audiomoth', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
+    const mockDeployment2 = { id: deploymentId2, streamId: streamId2, deploymentType: 'audiomoth', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
+    await Deployment.create(mockDeployment1)
+    await Deployment.create(mockDeployment2)
+
+    const response = await request(app).get('?type=guardian')
+
+    expect(response.statusCode).toBe(200)
+    expect(response.body).toHaveLength(0)
   })
 })
