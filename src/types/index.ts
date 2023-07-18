@@ -12,6 +12,7 @@ export interface DeploymentQuery {
   limit?: number
   offset?: number
   streamIds?: string[]
+  projectIds?: string[]
   type?: string
 }
 
