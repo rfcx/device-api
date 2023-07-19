@@ -304,8 +304,8 @@ describe('GET /deployments', () => {
   })
 
   test('get deployments by guardian type', async () => {
-    const deploymentId1 = '0000000000000000'
-    const deploymentId2 = '0000000000000001'
+    const deploymentId1 = '00000000000000A3'
+    const deploymentId2 = '00000000000000B3'
     const streamId1 = 'aaaaaaaaaaa1'
     const streamId2 = 'aaaaaaaaaaa2'
     const mockDeployment1 = { id: deploymentId1, streamId: streamId1, deploymentType: 'guardian', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
@@ -317,6 +317,10 @@ describe('GET /deployments', () => {
 
     expect(response.statusCode).toBe(200)
     expect(response.body).toHaveLength(2)
+    expect(response.body[0].id).toBe(deploymentId1)
+    expect(response.body[0].streamId).toBe(streamId1)
+    expect(response.body[1].id).toBe(deploymentId2)
+    expect(response.body[1].streamId).toBe(streamId2)
   })
 
   test('get deployments by guardian type but empty', async () => {
