@@ -57,12 +57,23 @@ router.get('/:id', (req: Request, res: Response): void => {
 router.get('/', (req: Request, res: Response, next: NextFunction): void => {
   const converter = new Converter(req.query, {}, { camelize: true })
   converter.convert('streamIds').optional().toArray()
+  converter.convert('projectIds').optional().toArray()
   converter.convert('isActive').optional().toBoolean()
   converter.convert('limit').default(100).toInt()
   converter.convert('offset').default(0).toInt()
   converter.convert('type').optional().toString()
   converter.validate()
     .then(async (query: DeploymentQuery) => {
+      if (query.streamIds && query.projectIds) {
+        res.status(400).send('Only allow either streamIds and projectId in the same query')
+        return
+      }
+      if (query.projectIds) {
+        const userToken = req.headers.authorization ?? ''
+        const streams = await api.getStreams(userToken, { projects: query.projectIds })
+        query.streamIds = streams.map(stream => stream.id)
+      }
+
       dao.getDeployments(query.streamIds, query).then(async deployments => {
         res.json(deployments)
       }).catch(error => {

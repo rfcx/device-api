@@ -16,6 +16,7 @@ router.get('/:id', (req: Request, res: Response, next: NextFunction): void => {
       downloadAsStream(path)
         .on('error', (e) => {
           // On NoSuchKey, InvalidKeyId, etc
+          console.log(e)
           res.status(500).send('Unexpected error while getting an asset')
         })
         .pipe(res)
