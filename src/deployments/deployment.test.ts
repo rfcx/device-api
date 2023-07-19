@@ -297,7 +297,7 @@ describe('GET /deployments', () => {
     await Deployment.create(mockDeployment1)
     await Deployment.create(mockDeployment2)
 
-    const response = await request(app).get(`/`).query({ type: 'audiomoth'})
+    const response = await request(app).get('/').query({ type: 'audiomoth' })
 
     expect(response.statusCode).toBe(200)
     expect(response.body).toHaveLength(1)
@@ -313,7 +313,7 @@ describe('GET /deployments', () => {
     await Deployment.create(mockDeployment1)
     await Deployment.create(mockDeployment2)
 
-    const response = await request(app).get(`/`).query({ type: 'guardian'})
+    const response = await request(app).get('/').query({ type: 'guardian' })
 
     expect(response.statusCode).toBe(200)
     expect(response.body).toHaveLength(2)
@@ -333,7 +333,7 @@ describe('GET /deployments', () => {
     await Deployment.create(mockDeployment1)
     await Deployment.create(mockDeployment2)
 
-    const response = await request(app).get(`/`).query({ type: 'guardian'})
+    const response = await request(app).get('/').query({ type: 'guardian' })
 
     expect(response.statusCode).toBe(200)
     expect(response.body).toHaveLength(0)
@@ -348,10 +348,10 @@ describe('GET /deployments', () => {
     const mockDeployment2 = { id: deploymentId2, streamId: streamId2, deploymentType: 'audiomoth', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
     await Deployment.create(mockDeployment1)
     await Deployment.create(mockDeployment2)
-    const mockStreamReturn = [{ id: streamId1}, { id: streamId2}] as StreamResponse[]
+    const mockStreamReturn = [{ id: streamId1 }, { id: streamId2 }] as StreamResponse[]
 
     const spy = jest.spyOn(api, 'getStreams').mockReturnValue(Promise.resolve(mockStreamReturn))
-    const response = await request(app).get(`/`).query({ projectIds: ['000000000000']})
+    const response = await request(app).get('/').query({ projectIds: ['000000000000'] })
 
     expect(spy).toHaveBeenCalled()
 
@@ -372,10 +372,10 @@ describe('GET /deployments', () => {
     const mockDeployment2 = { id: deploymentId2, streamId: streamId2, deploymentType: 'audiomoth', deployedAt: '2021-05-12T05:21:21.960Z', isActive: true, createdById: seedValues.primarySub }
     await Deployment.create(mockDeployment1)
     await Deployment.create(mockDeployment2)
-    const mockStreamReturn = [{ id: streamId1}, { id: streamId2}] as StreamResponse[]
+    const mockStreamReturn = [{ id: streamId1 }, { id: streamId2 }] as StreamResponse[]
 
     const spy = jest.spyOn(api, 'getStreams').mockReturnValue(Promise.resolve(mockStreamReturn))
-    const response = await request(app).get(`/`).query({ projectIds: ['000000000000', '000000000001']})
+    const response = await request(app).get('/').query({ projectIds: ['000000000000', '000000000001'] })
 
     expect(spy).toHaveBeenCalled()
 
@@ -397,7 +397,7 @@ describe('GET /deployments', () => {
     await Deployment.create(mockDeployment1)
     await Deployment.create(mockDeployment2)
 
-    const response = await request(app).get(`/`).query({ streamIds: ['000000000000'], projectIds: ['000000000001']})
+    const response = await request(app).get('/').query({ streamIds: ['000000000000'], projectIds: ['000000000001'] })
 
     expect(response.statusCode).toBe(400)
   })
