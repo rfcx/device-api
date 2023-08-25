@@ -36,7 +36,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
     },
     {
       id: '1692966951000',
-      name: 'asia-elephant-edge-v2',
+      name: 'new-asia-elephant-edge',
       version: '3',
       path: 'https://rfcx-install.s3.eu-west-1.amazonaws.com/rfcx-guardian/guardian-asset-classifier/1692966951000.tflite.gz',
       type: 'tflite',
