@@ -40,7 +40,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
       version: '3',
       path: 'https://rfcx-install.s3.eu-west-1.amazonaws.com/rfcx-guardian/guardian-asset-classifier/1692966951000.tflite.gz',
       type: 'tflite',
-      sha1: 'c97252e9c2d75fad1d51fb278b672fcbfa4bb8ef',
+      sha1: 'f809836421d42fa529032b8fb4567f7995801ed9',
       sample_rate: '16000',
       input_gain: '1.0',
       window_size: '1000',
