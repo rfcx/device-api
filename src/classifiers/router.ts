@@ -24,7 +24,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
       id: '1637901623151',
       name: 'asia-elephant-edge',
       version: '2',
-      path: 'https://rfcx-install.s3.eu-west-1.amazonaws.com/rfcx-guardian/guardian-asset-classifier/1692966951000.tflite.gz',
+      path: 'https://rfcx-install.s3.eu-west-1.amazonaws.com/rfcx-guardian/guardian-asset-classifier/1637901623151.tflite.gz',
       type: 'tflite',
       sha1: '69482d8b65083e2fabcf1096033c863409cc50f7',
       sample_rate: '8000',
@@ -43,7 +43,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
       sha1: 'f809836421d42fa529032b8fb4567f7995801ed9',
       sample_rate: '16000',
       input_gain: '1.0',
-      window_size: '1000',
+      window_size: '1.000',
       step_size: '1.0000',
       classifications: 'elephas_maximus_courtship_song,elephas_maximus_simple_call,elephas_maximus_simple_call_2,elephas_maximus_territorial_song',
       classifications_filter_threshold: '0.98,1.00'
