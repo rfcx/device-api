@@ -46,7 +46,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
       window_size: '1.000',
       step_size: '1.0000',
       classifications: 'elephas_maximus_courtship_song,elephas_maximus_simple_call,elephas_maximus_simple_call_2,elephas_maximus_territorial_song',
-      classifications_filter_threshold: '0.98,1.00'
+      classifications_filter_threshold: '0.98,0.98,0.98,0.98'
     }
   ]
   res.json(classifiers)
