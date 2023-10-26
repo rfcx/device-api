@@ -46,8 +46,21 @@ You are ready to run `yarn serve` and test the endpoints.
 Run lint:
 `yarn lint`
 
+Tests are to test a set of component (functions, modules) working together which it requires a database open (it is requirement to this API).
+
+To run all the tests, you will need to have a test database running. It is recommented to use a separated database from your development database because the data will be dropped from the tables when running tests.
+
+To start a test database (requires Docker to be running):
+
+```
+yarn serve-db:test
+```
+
 Run tests:
-`yarn test`
+
+```
+yarn test
+```
 
 ---
 
