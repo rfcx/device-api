@@ -28,18 +28,11 @@ const dbConfigPostgres: SequelizeOptions = {
   port: config.DB_PORT
 }
 
-const dbConfigSqlite: SequelizeOptions = {
-  dialect: 'sqlite'
-}
-
 const options: SequelizeOptions = {
   ...baseOptions,
-  ...(process.env.NODE_ENV === 'test' ? dbConfigSqlite : dbConfigPostgres)
+  ...dbConfigPostgres
 }
 
-let sequelize = new Sequelize(config.DB_DBNAME, config.DB_USER, config.DB_PASSWORD, options)
-if (process.env.NODE_ENV === 'test') {
-  sequelize = new Sequelize(options)
-}
+const sequelize = new Sequelize(config.DB_DBNAME, config.DB_USER, config.DB_PASSWORD, options)
 
 export default { sequelize }

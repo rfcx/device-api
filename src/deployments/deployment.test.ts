@@ -156,17 +156,17 @@ describe('POST /deployments', () => {
 
   test('create guardian deployment success with guid in deviceParameters save in GuardianLog', async () => {
     const streamHeaders = { location: `/${streamEndpoint}/aaaaaaaaaaaa` }
-    const mockDeployment = { deployedAt: '2021-05-12T05:21:21.960Z', deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { guid: 'gggggggggggg123' } }
+    const mockDeployment = { deployedAt: '2021-05-12T05:21:21.960Z', deploymentKey: '0000000000000000', deploymentType: 'guardian', stream: { name: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project: { id: 'bbbbbbbbbbbb' } }, deviceParameters: { guid: 'ggggggggg123' } }
     const expectedGuardianLogBody = { stream_id: 'aaaaaaaaaaaa', shortname: 'test-stream', latitude: -2.644, longitude: -46.56, altitude: 25, project_id: 'bbbbbbbbbbbb', is_deployed: true, last_deployed: '2021-05-12T05:21:21.960Z' }
 
     const spy = jest.spyOn(email, 'sendNewDeploymentSuccessEmail').mockReturnValue(Promise.resolve('Message sent'))
     setupMockAxios(POST, streamEndpoint, 201, null, streamHeaders)
     const response = await request(app).post('/').send(mockDeployment)
-    const guardianLog = await GuardianLog.findOne({ where: { guardian_id: 'gggggggggggg123' } })
+    const guardianLog = await GuardianLog.findOne({ where: { guardian_id: 'ggggggggg123' } })
 
     expect(spy).toHaveBeenCalled()
     expect(response.statusCode).toBe(201)
-    expect(guardianLog?.guardianId).toBe('gggggggggggg123')
+    expect(guardianLog?.guardianId).toBe('ggggggggg123')
     expect(guardianLog?.type).toBe('update')
     expect(guardianLog?.body).toBe(JSON.stringify(expectedGuardianLogBody))
   })
