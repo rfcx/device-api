@@ -7,7 +7,7 @@ export default {
   CORE_URL: process.env.CORE_URL ?? 'https://staging-api.rfcx.org',
   NONCORE_URL: process.env.NONCORE_URL ?? 'https://staging-api.rfcx.org',
   DB_HOSTNAME: process.env.DB_HOSTNAME ?? 'localhost',
-  DB_PORT: parseInt(process.env.DB_PORT ?? '') ?? 5432,
+  DB_PORT: parseInt(process.env.DB_PORT ?? '5433'),
   DB_SSL_ENABLED: process.env.DB_SSL_ENABLED === 'true',
   DB_DBNAME: process.env.DB_DBNAME ?? 'postgres',
   DB_USER: process.env.DB_USER ?? 'postgres',

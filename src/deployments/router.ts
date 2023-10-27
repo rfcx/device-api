@@ -64,11 +64,11 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
   converter.convert('type').optional().toString()
   converter.validate()
     .then(async (query: DeploymentQuery) => {
-      if (query.streamIds && query.projectIds) {
+      if (query.streamIds != null && query.projectIds != null) {
         res.status(400).send('Only allow either streamIds and projectId in the same query')
         return
       }
-      if (query.projectIds) {
+      if (query.projectIds != null) {
         const userToken = req.headers.authorization ?? ''
         const streams = await api.getStreams(userToken, { projects: query.projectIds })
         query.streamIds = streams.map(stream => stream.id)

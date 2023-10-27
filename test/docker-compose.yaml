@@ -1,0 +1,13 @@
+version: "3.2"
+name: device-api-int-test
+services:
+  timescaledb-device-int-test:
+    container_name: timescaledb-device-int-test
+    image: "timescale/timescaledb:latest-pg14"
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./init.d:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=test
