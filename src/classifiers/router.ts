@@ -33,6 +33,20 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
       step_size: '2.0000',
       classifications: 'elephas_maximus_courtship_song,elephas_maximus_simple_call,elephas_maximus_simple_call_2,elephas_maximus_territorial_song',
       classifications_filter_threshold: '0.98,0.98,0.98,0.98'
+    },
+    {
+      id: '1698664736000',
+      name: 'gunshot-edge',
+      version: '1',
+      path: 'https://rfcx-install.s3.eu-west-1.amazonaws.com/rfcx-guardian/guardian-asset-classifier/1698664736000.tflite.gz',
+      type: 'tflite',
+      sha1: 'c5529b154a9a4148aacbf76c0417dfd817e7c20c',
+      sample_rate: '8000',
+      input_gain: '1.0',
+      window_size: '4.0000',
+      step_size: '4.0000',
+      classifications: 'environment,gunshot',
+      classifications_filter_threshold: '1.00,0.95'
     }
   ]
   res.json(classifiers)
