@@ -35,12 +35,12 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
       classifications_filter_threshold: '0.98,0.98,0.98,0.98'
     },
     {
-      id: '1698664736000',
+      id: '1699427478000',
       name: 'gunshot-edge',
-      version: '1',
-      path: 'https://rfcx-install.s3.eu-west-1.amazonaws.com/rfcx-guardian/guardian-asset-classifier/1698664736000.tflite.gz',
+      version: '2',
+      path: 'https://rfcx-install.s3.eu-west-1.amazonaws.com/rfcx-guardian/guardian-asset-classifier/1699427478000.tflite.gz',
       type: 'tflite',
-      sha1: 'c5529b154a9a4148aacbf76c0417dfd817e7c20c',
+      sha1: '6554a1fabc0b89317e801d901bf9b29e9d11836b',
       sample_rate: '8000',
       input_gain: '1.0',
       window_size: '4.0000',
