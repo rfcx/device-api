@@ -46,7 +46,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
       window_size: '4.0000',
       step_size: '4.0000',
       classifications: 'environment,gunshot', // need to swap order later
-      classifications_filter_threshold: '0.95,1.00'
+      classifications_filter_threshold: '0.90,1.00'
     }
   ]
   res.json(classifiers)
