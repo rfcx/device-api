@@ -3,6 +3,7 @@ import { Router } from 'express'
 import { downloadAsStream } from '../common/storage'
 import assetDao from '../assets/dao'
 import { assetPath } from '../common/storage/paths'
+import { httpErrorHandler } from '@rfcx/http-utils'
 
 const router = Router()
 
@@ -21,7 +22,7 @@ router.get('/:id', (req: Request, res: Response, next: NextFunction): void => {
         })
         .pipe(res)
     }
-  }).catch(next)
+  }).catch(httpErrorHandler(req, res, 'Failed getting assets.'))
 })
 
 router.delete('/:id', (req: Request, res: Response, next: NextFunction): void => {
@@ -31,7 +32,7 @@ router.delete('/:id', (req: Request, res: Response, next: NextFunction): void =>
     } else {
       res.status(204).send()
     }
-  }).catch(next)
+  }).catch(httpErrorHandler(req, res, 'Failed deleting assets.'))
 })
 
 export default router
