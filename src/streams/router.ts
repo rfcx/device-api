@@ -6,6 +6,7 @@ import deploymentDao from '../deployments/dao'
 import service from './service'
 import { mapStreamsAndDeployments } from './serializer'
 import { DeploymentQuery } from 'src/types'
+import { httpErrorHandler } from '@rfcx/http-utils'
 
 const router = Router()
 
@@ -106,21 +107,21 @@ router.get('/', (req: Request, res: Response, next: NextFunction): void => {
     const deployments = await deploymentDao.getDeployments(streams.map(stream => stream.id), excludeOffset)
     const deploymentsInfo = mapStreamsAndDeployments(streams, deployments)
     res.send(deploymentsInfo)
-  }).catch(next)
+  }).catch(httpErrorHandler(req, res, 'Failed getting streams.'))
 })
 
 router.get('/:id/assets', (req: Request, res: Response, next: NextFunction): void => {
   const streamId = req.params.id
   assetDao.query({ streamId }).then(results => {
     res.json(results)
-  }).catch(next)
+  }).catch(httpErrorHandler(req, res, 'Failed getting stream assets.'))
 })
 
 router.get('/:id/deployment/parameters', (req: Request, res: Response, next: NextFunction): void => {
   const streamId = req.params.id
   service.getDeviceParametersByStreamId(streamId).then(result => {
     res.json(result)
-  }).catch(next)
+  }).catch(httpErrorHandler(req, res, 'Failed getting deployment parameters.'))
 })
 
 export default router

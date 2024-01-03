@@ -8,7 +8,6 @@ import { multerFile } from '../common/multer'
 import * as api from '../common/core-api'
 import { getUserUid } from '../common/user'
 import service from './service'
-import Deployment from './deployment.model'
 import { userAgentToAppInfo } from '../common/headers'
 import { Converter, httpErrorHandler } from '@rfcx/http-utils'
 
@@ -46,7 +45,7 @@ router.get('/:id', (req: Request, res: Response): void => {
     if (deployment === null) {
       res.status(404).send('Not found')
     } else {
-      const { streamId, ...partialDeployment } = deployment.toJSON() as Deployment
+      const { streamId, ...partialDeployment } = deployment.toJSON()
       const stream = await api.getStream(userToken, deployment.streamId)
       const result = { ...partialDeployment, stream }
       res.json(result)
