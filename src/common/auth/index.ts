@@ -13,12 +13,12 @@ const baseJWT = {
   algorithms: ['RS256']
 }
 
-export const jwtCheck = () => {
+export const jwtCheck = (): jwt.RequestHandler => {
   baseJWT.issuer = `https://${config.AUTH0_DOMAIN}/`
-  jwt(baseJWT)
+  return jwt(baseJWT)
 }
 
-export const jwtCustomCheck = () => {
+export const jwtCustomCheck = (): jwt.RequestHandler => {
   baseJWT.issuer = `https://${config.AUTH0_CUSTOM_DOMAIN}/`
-  jwt(baseJWT)
+  return jwt(baseJWT)
 }
