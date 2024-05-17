@@ -4,6 +4,7 @@ export default {
   AWS_S3_BUCKET: process.env.AWS_S3_BUCKET ?? 'rfcx-device-assets-staging',
   AWS_REGION_ID: process.env.AWS_REGION_ID ?? 'eu-west-1',
   AUTH0_DOMAIN: process.env.AUTH0_DOMAIN ?? 'auth.rfcx.org',
+  AUTH0_CUSTOM_DOMAIN: process.env.AUTH0_CUSTOM_DOMAIN ?? 'rfcx.eu.auth0.com',
   CORE_URL: process.env.CORE_URL ?? 'https://staging-api.rfcx.org',
   NONCORE_URL: process.env.NONCORE_URL ?? 'https://staging-api.rfcx.org',
   DB_HOSTNAME: process.env.DB_HOSTNAME ?? 'localhost',
