@@ -20,7 +20,7 @@ app.use(logging)
 
 app.use('/docs', docs)
 
-app.use(jwtCheck, jwtCustomCheck)
+app.use(jwtCheck(), jwtCustomCheck())
 
 app.use('/assets', assets)
 app.use('/deployments', deployments)
