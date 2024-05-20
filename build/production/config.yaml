@@ -6,5 +6,5 @@ metadata:
 data:
   CORE_URL: http://core-api-service.production.svc.cluster.local
   NONCORE_URL: http://noncore-api-service.production.svc.cluster.local
-  AUTH0_DOMAIN: "auth.rfcx.org"
-  AUTH0_CUSTOM_DOMAIN: "rfcx.eu.auth0.com"
+  AUTH0_DOMAIN: "rfcx.eu.auth0.com"
+  AUTH0_CUSTOM_DOMAIN: "auth.rfcx.org"

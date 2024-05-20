@@ -8,7 +8,7 @@ import guardians from './guardians/router'
 import usertouch from './usertouch/router'
 import classifiers from './classifiers/router'
 import docs from './docs'
-import { jwtCheck, jwtCustomCheck } from './common/auth'
+import { jwtCheck } from './common/auth'
 import logging from './common/logging'
 import { errorHandler, notFoundHandler } from './common/error-handlers'
 
@@ -20,7 +20,7 @@ app.use(logging)
 
 app.use('/docs', docs)
 
-app.use(jwtCheck(), jwtCustomCheck())
+app.use(jwtCheck)
 
 app.use('/assets', assets)
 app.use('/deployments', deployments)
