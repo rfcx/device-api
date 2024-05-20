@@ -23,13 +23,13 @@ router.post('/', (req: Request, res: Response): void => {
   // TODO needs validation on all fields (especially deploymentKey)
 
   if (deployment.deploymentKey == null) {
-    console.info('deploymentKey should not be null')
+    console.warn('deploymentKey should not be null')
     res.status(400).send('deploymentKey should not be null')
     return
   }
 
   if (!dayjs(deployment.deployedAt).isValid()) {
-    console.info('Invalid format: deployedAt')
+    console.warn('Invalid format: deployedAt')
     res.status(400).send('Invalid format: deployedAt')
     return
   }
