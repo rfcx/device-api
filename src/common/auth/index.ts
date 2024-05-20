@@ -9,7 +9,6 @@ export const jwtCheck = jwt({
     jwksRequestsPerMinute: 5,
     jwksUri: `https://${config.AUTH0_DOMAIN}/.well-known/jwks.json`
   }),
-  // audience: config.AUTH0_API_AUDIENCE TODO:// check if this property is really important and more secure,
-  issuer: `https://${config.AUTH0_DOMAIN}/`,
+  issuer: [`https://${config.AUTH0_DOMAIN}/`, `https://${config.AUTH0_CUSTOM_DOMAIN}/`],
   algorithms: ['RS256']
 })

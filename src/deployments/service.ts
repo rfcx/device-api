@@ -10,8 +10,8 @@ import { ValidationError, EmptyResultError } from '@rfcx/http-utils'
 
 export const createDeployment = async (appVersion: number | undefined, uid: string, token: string, user: User, deployment: DeploymentRequest): Promise<Deployment> => {
   // Check if id existed
-  if (await dao.get(deployment.deploymentKey) != null) {
-    console.error('this deploymentKey is already existed')
+  if ((await dao.get(deployment.deploymentKey)) != null) {
+    console.warn('this deploymentKey is already existed')
     // eslint-disable-next-line @typescript-eslint/no-throw-literal
     throw new ValidationError('this deploymentKey is already existed')
   }
@@ -85,19 +85,19 @@ export const uploadFileAndSaveToDb = async (streamId: string, deploymentId: stri
 const updateGuardian = async (uid: string, token: string, deviceParameters: any, guardianUpdate: UpdateGuardian): Promise<void> => {
   if (hasRegistrationProperties(deviceParameters) === true) {
     await api.registerGuardianFromDeviceParameters(token, deviceParameters).catch(async (e) => {
-      console.error(`error on register: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(deviceParameters)}, auth0_uid:${uid}`)
+      console.warn(`error on register: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(deviceParameters)}, auth0_uid:${uid}`)
       await dao.createGuardianLog(deviceParameters.guid, 'register', JSON.stringify(deviceParameters))
     })
   }
   if (hasGuardianProperties(deviceParameters) === true) {
     await api.updateGuardian(token, deviceParameters.guid, guardianUpdate).catch(async (e) => {
-      console.error(`error on update: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(guardianUpdate)}, auth0_uid:${uid}`)
+      console.warn(`error on update: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(guardianUpdate)}, auth0_uid:${uid}`)
       await dao.createGuardianLog(deviceParameters.guid, 'update', JSON.stringify(guardianUpdate))
     })
   }
   if (hasPingProperties(deviceParameters) === true) {
     await api.pingGuardian(deviceParameters.guardianToken, deviceParameters.guid, deviceParameters.ping).catch(async (e) => {
-      console.error(`error on ping: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(deviceParameters)}, auth0_uid:${uid}`)
+      console.warn(`error on ping: guid:${String(deviceParameters.guid)}, body:${JSON.stringify(deviceParameters)}, auth0_uid:${uid}`)
     })
   }
 }
