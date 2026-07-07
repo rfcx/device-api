@@ -13,5 +13,7 @@ export default {
   DB_DBNAME: process.env.DB_DBNAME ?? 'postgres',
   DB_USER: process.env.DB_USER ?? 'postgres',
   DB_PASSWORD: process.env.DB_PASSWORD ?? 'test',
-  MANDRILL_KEY: process.env.MANDRILL_KEY ?? ''
+  MANDRILL_KEY: process.env.MANDRILL_KEY ?? '',
+  EMAIL_SEND_URL: process.env.EMAIL_SEND_URL ?? '',
+  EMAIL_SEND_TOKEN: process.env.EMAIL_SEND_TOKEN ?? ''
 }

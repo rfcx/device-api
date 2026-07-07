@@ -2,28 +2,22 @@ import config from '../../config'
 import { User, DeploymentRequest } from '../../types'
 import { EmailMessage } from './email'
 import mandrill from 'mandrill-api'
-import handlebars from 'handlebars'
-import fs from 'fs'
-import path from 'path'
+import axios from 'axios'
 import dayjs from 'dayjs'
+import { DEFAULT_FROM, renderEmail } from '@rfcx/notification-templates'
 
-const mandrillClient = new mandrill.Mandrill(config.MANDRILL_KEY)
-
-export const generateHTML = (deployment: DeploymentRequest, type: string): string => {
-  const filePath = path.join(__dirname, './deploy-success-email-template.html')
-  const source = fs.readFileSync(filePath).toString()
-  const template = handlebars.compile(source)
-  handlebars.registerHelper('ifEqual', (arg1, arg2, arg3, options) => {
-    return (arg1 === arg2 || arg1 === arg3) ? options.fn(this) : options.inverse(this)
+const sendEmailViaNotifyGateway = async (message: EmailMessage): Promise<string> => {
+  await axios.post(config.EMAIL_SEND_URL, message, {
+    headers: {
+      Authorization: `Bearer ${config.EMAIL_SEND_TOKEN}`
+    },
+    timeout: 10000
   })
-  const deployedAt = dayjs(deployment.deployedAt).toDate()
-  const date = deployedAt.toLocaleDateString()
-  const time = deployedAt.toLocaleTimeString()
-  const data = { date: date, time: time, type: type }
-  return template(data)
+  return 'Message sent'
 }
 
-const sendEmailWithMessage = async (message: EmailMessage): Promise<string> => {
+const sendEmailViaMandrill = async (message: EmailMessage): Promise<string> => {
+  const mandrillClient = new mandrill.Mandrill(config.MANDRILL_KEY)
   return await new Promise((resolve, reject) => {
     mandrillClient.messages.send({ message: message, async: true },
       () => {
@@ -32,6 +26,17 @@ const sendEmailWithMessage = async (message: EmailMessage): Promise<string> => {
         reject(error)
       })
   })
+}
+
+const sendEmailWithMessage = async (message: EmailMessage): Promise<string> => {
+  if (config.EMAIL_SEND_URL !== '' && config.EMAIL_SEND_TOKEN !== '') {
+    try {
+      return await sendEmailViaNotifyGateway(message)
+    } catch (error) {
+      if (config.MANDRILL_KEY === '') throw error
+    }
+  }
+  return await sendEmailViaMandrill(message)
 }
 
 export default {
@@ -45,12 +50,18 @@ export default {
     } else if (deployment.deploymentType === 'audiomoth') {
       type = 'AudioMoth'
     }
+    const deployedAt = dayjs(deployment.deployedAt).toDate()
+    const rendered = renderEmail('device.deploymentSuccess', {
+      deviceType: type,
+      date: deployedAt.toLocaleDateString(),
+      time: deployedAt.toLocaleTimeString()
+    })
     const msg = {
-      text: `Your ${type} device was deployed successfully`,
-      subject: `Your ${type} device was deployed successfully`,
-      html: generateHTML(deployment, type),
-      from_email: 'contact@rfcx.org',
-      from_name: 'Rainforest Connection',
+      text: rendered.text,
+      subject: rendered.subject,
+      html: rendered.html,
+      from_email: DEFAULT_FROM.rfcx.email,
+      from_name: DEFAULT_FROM.rfcx.name,
       to: [{
         email: user.email,
         name: user.name,
