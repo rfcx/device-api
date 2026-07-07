@@ -42,7 +42,8 @@
     "umzug": "^2.3.0",
     "uuid": "^8.3.2",
     "winston": "^3.7.2",
-    "@rfcx/http-utils": "1.0.10"
+    "@rfcx/http-utils": "1.0.10",
+    "@rfcx/notification-templates": "file:vendor/rfcx-notification-templates"
   },
   "devDependencies": {
     "@types/cors": "^2.8.9",
