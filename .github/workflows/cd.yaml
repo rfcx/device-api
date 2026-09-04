@@ -44,6 +44,13 @@ jobs:
       repo: device-api
       dockerfile: build/Dockerfile
       targets: '["device-api"]'
+      # BuildKit registry layer cache (rfcx/cicd#10, 2026-09-04). Single
+      # target, so the win is cross-RUN: both `yarn --frozen-lockfile` layers
+      # (builder + runtime) depend only on package.json + yarn.lock and stay
+      # cached until a dependency changes. Last master run: 71s build. Fails
+      # safe (missing/GC'd cache tag = miss, ignore-error on export). Pattern
+      # proven on rfcx/arbimon (14.6 -> 2.5 min) and measured on rfcx-api.
+      build-cache: true
       deployments: |
         [
           {"name": "device-api", "image": "device-api"}
