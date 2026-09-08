@@ -1,11 +1,11 @@
-FROM node:20.9.0 AS builder
+FROM node:22-bookworm AS builder
 WORKDIR /build
 COPY package.json yarn.lock ./
 RUN yarn --frozen-lockfile
 COPY . .
 RUN yarn build
 
-FROM node:20.9.0 as device-api
+FROM node:22-bookworm as device-api
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn --production --frozen-lockfile
